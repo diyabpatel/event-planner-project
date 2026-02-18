@@ -8,7 +8,7 @@ if(!isset($_SESSION['user_id'])){
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin Dashboard</title>
+<title>College Dashboard</title>
 
 <style>
 body{
@@ -50,6 +50,7 @@ p{
     color:white;
     text-decoration:none;
     border-radius:5px;
+    transition:0.3s;
 }
 
 .logout-btn:hover{
@@ -62,9 +63,8 @@ p{
 
 <div class="container">
     <div class="card">
-        <h2>Admin Dashboard (Event Planner)</h2>
-        <p>Welcome <strong>Admin</strong></p>
-
+        <h2>College Dashboard</h2>
+        <p>Welcome <strong><?php echo $_SESSION['college_name']; ?></strong></p>
         <a href="../logout.php" class="logout-btn">Logout</a>
     </div>
 </div>
