@@ -1,14 +1,18 @@
 <?php
-// index.php
 session_start();
+include("db.php");
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+
+    <meta charset="UTF-8">
+
     <title>College Event Management System</title>
     
     <style>
+
         body {
             font-family: Arial;
             margin: 0;
@@ -22,7 +26,8 @@ session_start();
         }
 
         header h1 {
-            display: inline;
+            display: inline-block;
+            margin: 0;
         }
 
         nav {
@@ -34,10 +39,63 @@ session_start();
             margin-left: 20px;
             text-decoration: none;
             font-weight: bold;
+            display: inline-block;
         }
 
         nav a:hover {
             text-decoration: underline;
+        }
+
+        /* Dropdown container */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Dropdown button */
+        .dropdown > a {
+            color: white;
+            margin-left: 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* CSS Arrow (fix encoding issue) */
+        .dropdown > a::after {
+            content: "";
+            display: inline-block;
+            margin-left: 6px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid white;
+            vertical-align: middle;
+        }
+
+        /* Dropdown content */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0px 0px 10px gray;
+            z-index: 999;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px;
+            display: block;
+            text-decoration: none;
+            margin-left: 0;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Show dropdown */
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
 
         .hero {
@@ -60,6 +118,7 @@ session_start();
             display: flex;
             justify-content: center;
             gap: 30px;
+            flex-wrap: wrap;
         }
 
         .card {
@@ -95,7 +154,9 @@ session_start();
             text-align: center;
             margin-top: 40px;
         }
+
     </style>
+
 </head>
 
 <body>
@@ -108,7 +169,29 @@ session_start();
 
         <a href="index.php">Home</a>
 
-        <a href="packages.php">Events</a>
+        <!-- Events Dropdown -->
+        <div class="dropdown">
+
+            <a href="#">Events</a>
+
+            <div class="dropdown-content">
+
+<?php
+
+$query = "SELECT * FROM events ORDER BY event_name ASC";
+$result = mysqli_query($conn, $query);
+
+while($row = mysqli_fetch_assoc($result))
+{
+    echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
+}
+
+?>
+
+</div>
+
+
+        </div>
 
         <a href="gallery.php">Work Gallery</a>
 
@@ -137,7 +220,7 @@ session_start();
     <h2>College Event Package Management System</h2>
 
     <p>
-        Book complete event packages with venue, food, decoration, seating, and coverage.
+        Book complete event packages with venue, food, decoration, seating, photography, and videography.
     </p>
 
 </div>
@@ -150,47 +233,21 @@ session_start();
     <div class="packages">
 
         <div class="card">
-
             <h3>Basic Package</h3>
-
-            <p>
-                Affordable package with essential event arrangements.
-            </p>
-
-            <button onclick="location.href='packages.php'">
-                View Details
-            </button>
-
+            <p>Affordable package with essential event arrangements.</p>
+            <button onclick="location.href='index.php'">View Events</button>
         </div>
 
-
         <div class="card">
-
             <h3>Standard Package</h3>
-
-            <p>
-                Best package for medium scale college events.
-            </p>
-
-            <button onclick="location.href='packages.php'">
-                View Details
-            </button>
-
+            <p>Best package for medium scale college events.</p>
+            <button onclick="location.href='index.php'">View Events</button>
         </div>
 
-
         <div class="card">
-
             <h3>Premium Package</h3>
-
-            <p>
-                Complete premium event management solution.
-            </p>
-
-            <button onclick="location.href='packages.php'">
-                View Details
-            </button>
-
+            <p>Complete premium event management solution.</p>
+            <button onclick="location.href='index.php'">View Events</button>
         </div>
 
     </div>
@@ -200,9 +257,7 @@ session_start();
 
 <footer>
 
-    <p>
-        © 2026 College Event Management System
-    </p>
+    <p>© 2026 College Event Management System</p>
 
 </footer>
 

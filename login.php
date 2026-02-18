@@ -2,25 +2,35 @@
 session_start();
 include("db.php");
 
-if(isset($_POST['login'])){
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+if(isset($_POST['login']))
+{
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $password = md5($_POST['password']);
 
-    $query = "SELECT * FROM users WHERE email='$email'";
-    $result = mysqli_query($conn,$query);
-    $user = mysqli_fetch_assoc($result);
+    $query = "SELECT * FROM users WHERE email='$email' AND password='$password'";
+    $result = mysqli_query($conn, $query);
 
-    if($user && md5($password) == $user['password']){
+    if(mysqli_num_rows($result) == 1)
+    {
+        $user = mysqli_fetch_assoc($result);
+
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['college_name'] = $user['college_name'];
 
-        if($user['user_id'] == 1){
+        // Redirect based on user role
+        if($user['user_id'] == 1)
+        {
             header("Location: admin/admindashboard.php");
-        } else {
-            header("Location: user/userdashboard.php");
         }
-        exit;
-    } else {
+        else
+        {
+            header("Location: index.php");   // redirect to main homepage
+        }
+
+        exit();
+    }
+    else
+    {
         echo "<script>alert('Invalid Email or Password');</script>";
     }
 }
@@ -29,9 +39,11 @@ if(isset($_POST['login'])){
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <title>Login</title>
 
 <style>
+
 body{
     margin:0;
     padding:0;
@@ -100,23 +112,32 @@ a{
 a:hover{
     text-decoration:underline;
 }
+
 </style>
 
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <h2> Login</h2>
 
-        <form method="post">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" name="login">Login</button>
-        </form>
+<div class="card">
 
-        <a href="register.php">Create new account</a>
-    </div>
+<h2>Login</h2>
+
+<form method="post">
+
+<input type="email" name="email" placeholder="Email" required>
+
+<input type="password" name="password" placeholder="Password" required>
+
+<button type="submit" name="login">Login</button>
+
+</form>
+
+<a href="register.php">Create new account</a>
+
+</div>
+
 </div>
 
 </body>
