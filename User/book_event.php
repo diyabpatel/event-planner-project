@@ -18,14 +18,20 @@ if(!isset($_GET['event_id']))
 }
 
 $event_id = intval($_GET['event_id']);
+$package_id = isset($_GET['package_id']) ? intval($_GET['package_id']) : "";
 
+
+// fetch event
 $event_query = "SELECT * FROM events WHERE event_id=$event_id";
 $event_result = mysqli_query($conn,$event_query);
 $event = mysqli_fetch_assoc($event_result);
 
-$package_query = "SELECT * FROM packages WHERE event_id=$event_id";
-$packages = mysqli_query($conn,$package_query);
 
+// fetch packages
+$packages = mysqli_query($conn,"SELECT * FROM packages WHERE event_id=$event_id");
+
+
+// BOOKING INSERT
 if(isset($_POST['book']))
 {
 
@@ -33,128 +39,238 @@ $package_id = $_POST['package_id'];
 $venue_id = $_POST['venue_id'];
 $decoration_id = $_POST['decoration_id'];
 $seat_id = $_POST['seat_id'];
-$food_id = $_POST['food_id'];
-$coverage_id = $_POST['coverage_id'];
+$capacity = $_POST['capacity'];
+$food_ids = isset($_POST['food_id']) ? $_POST['food_id'] : array();
+$coverage_ids = isset($_POST['coverage_id']) ? $_POST['coverage_id'] : array();
 $event_date = $_POST['event_date'];
 
 $total = 0;
 
-$q = mysqli_query($conn,"SELECT price FROM venues WHERE venue_id=$venue_id");
+
+// venue
+$q=mysqli_query($conn,"SELECT price FROM venues WHERE venue_id=$venue_id");
 $total += mysqli_fetch_assoc($q)['price'];
 
-$q = mysqli_query($conn,"SELECT price FROM decorations WHERE decoration_id=$decoration_id");
+
+// decoration
+$q=mysqli_query($conn,"SELECT price FROM decorations WHERE decoration_id=$decoration_id");
 $total += mysqli_fetch_assoc($q)['price'];
 
-$q = mysqli_query($conn,"SELECT price FROM seats WHERE seat_id=$seat_id");
-$total += mysqli_fetch_assoc($q)['price'];
 
-$q = mysqli_query($conn,"SELECT price FROM food WHERE food_id=$food_id");
-$total += mysqli_fetch_assoc($q)['price'];
+// seat × capacity
+$q=mysqli_query($conn,"SELECT price FROM seats WHERE seat_id=$seat_id");
+$seat_price = mysqli_fetch_assoc($q)['price'];
+$total += $seat_price * $capacity;
 
-$q = mysqli_query($conn,"SELECT price FROM coverage WHERE coverage_id=$coverage_id");
-$total += mysqli_fetch_assoc($q)['price'];
 
-$query = "INSERT INTO bookings
-(user_id,event_id,package_id,event_date,total_price)
+// food × capacity
+foreach($food_ids as $fid)
+{
+$q=mysqli_query($conn,"SELECT price FROM food WHERE food_id=$fid");
+$food_price = mysqli_fetch_assoc($q)['price'];
+$total += $food_price * $capacity;
+}
+
+
+// coverage
+foreach($coverage_ids as $cid)
+{
+$q=mysqli_query($conn,"SELECT price FROM coverage WHERE coverage_id=$cid");
+$total += mysqli_fetch_assoc($q)['price'];
+}
+
+
+$food_string = implode(",", $food_ids);
+$coverage_string = implode(",", $coverage_ids);
+
+
+mysqli_query($conn,"
+INSERT INTO bookings
+(user_id,event_id,package_id,event_date,total_price,food_ids,coverage_ids,capacity)
 VALUES
-('$user_id','$event_id','$package_id','$event_date','$total')";
-
-mysqli_query($conn,$query);
+('$user_id','$event_id','$package_id','$event_date','$total','$food_string','$coverage_string','$capacity')
+");
 
 echo "<script>alert('Booking Successful! Total: ₹$total');</script>";
+
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <title>Book Event</title>
 
 <style>
 
-body{
-    margin:0;
-    padding:0;
-    height:100vh;
-    font-family: 'Poppins', sans-serif;
-    background: url('/event-planner-project/uploads/images/annual/stage_bg.jpg') no-repeat center center/cover;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+/* NAVBAR */
+
+.navbar{
+background:#0f172a;
+padding:15px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
 }
+
+.logo{
+color:#00c6ff;
+font-size:22px;
+font-weight:bold;
+}
+
+.menu a{
+color:white;
+text-decoration:none;
+margin-left:20px;
+font-size:15px;
+}
+
+.menu a:hover{
+color:#00c6ff;
+}
+
+
+/* BODY */
+
+body{
+margin:0;
+font-family:'Segoe UI', Arial;
+background:url('../uploads/images/annual/stage_bg.jpg') center/cover no-repeat;
+min-height:100vh;
+}
+
+
+/* CONTAINER */
 
 .container{
-    width:420px;
-    padding:28px 30px;
-    border-radius:22px;
-    background: rgba(20,20,40,0.75);
-    backdrop-filter: blur(20px);
-    box-shadow: 0 0 50px rgba(0,255,255,0.35);
-    color:white;
+width:900px;
+max-width:95%;
+background:rgba(20,20,40,0.95);
+padding:35px;
+border-radius:18px;
+color:white;
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+margin:40px auto;
 }
 
-h2{
-    font-size:20px;
-    text-align:center;
-    margin-bottom:4px;
-}
-
-.subtitle{
-    font-size:12px;
-    text-align:center;
-    margin-bottom:15px;
-    opacity:0.8;
+h3{
+margin-bottom:20px;
+font-size:26px;
 }
 
 label{
-    font-size:12px;
-    margin-bottom:3px;
-    display:block;
+display:block;
+margin-top:18px;
+margin-bottom:6px;
 }
 
-select,input{
-    width:100%;
-    padding:8px 12px;
-    border-radius:10px;
-    border:none;
-    outline:none;
-    margin-bottom:10px;
-    background: rgba(255,255,255,0.15);
-    color:white;
-    font-size:13px;
+select,input[type="number"],input[type="date"]{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.2);
+background:rgba(255,255,255,0.08);
+color:white;
+font-size:15px;
 }
 
 select option{
-    background:#1b1b2f;
-    color:white;
+background:#1e293b;
+color:white;
 }
+
+
+/* PACKAGE CARDS */
+
+.package-title{
+margin-bottom:10px;
+font-size:18px;
+}
+
+.package-cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+margin-bottom:25px;
+}
+
+.package-card{
+background:rgba(255,255,255,0.08);
+padding:20px;
+border-radius:12px;
+cursor:pointer;
+transition:0.3s;
+text-align:center;
+border:2px solid transparent;
+}
+
+.package-card:hover{
+background:rgba(0,198,255,0.25);
+transform:translateY(-5px);
+}
+
+.package-card.active{
+border:2px solid #00c6ff;
+background:rgba(0,198,255,0.35);
+}
+
+
+/* CHECKBOX GROUP */
+
+.checkbox-group{
+background:rgba(255,255,255,0.08);
+padding:15px;
+border-radius:12px;
+margin-top:8px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.checkbox-group label{
+display:flex;
+align-items:center;
+gap:10px;
+margin:0;
+cursor:pointer;
+}
+
+.checkbox-group input{
+width:18px;
+height:18px;
+}
+
+
+/* TOTAL */
 
 #totalBox{
-    margin:10px 0;
-    padding:10px;
-    border-radius:10px;
-    background: rgba(0,0,0,0.5);
-    text-align:center;
-    font-weight:600;
-    font-size:14px;
+margin-top:20px;
+font-size:20px;
+text-align:center;
+background:rgba(0,198,255,0.15);
+padding:12px;
+border-radius:10px;
 }
 
+
+/* BUTTON */
+
 button{
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:12px;
-    background: linear-gradient(90deg,#6dd5ed,#2193b0);
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-    transition:0.3s;
+width:100%;
+padding:14px;
+margin-top:15px;
+background:#00c6ff;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-size:16px;
 }
 
 button:hover{
-    transform:scale(1.04);
-    box-shadow:0 0 20px #6dd5ed;
+background:#0094cc;
 }
 
 </style>
@@ -163,127 +279,223 @@ button:hover{
 
 <body>
 
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">
+EventHub
+</div>
+
+<div class="menu">
+
+<a href="../index.php">Home</a>
+
+<a href="my_bookings.php">My Bookings</a>
+
+<a href="../logout.php">Logout</a>
+
+</div>
+
+</div>
+
+
+
 <div class="container">
 
-<h2>🎉 Book Event: <?php echo $event['event_name']; ?></h2>
-<div class="subtitle">Select your package and confirm booking</div>
+<h3>Book Event: <?php echo $event['event_name']; ?></h3>
+
+
+<div class="package-title">Select Package</div>
+
+<div class="package-cards">
+
+<?php
+mysqli_data_seek($packages,0);
+
+while($row=mysqli_fetch_assoc($packages))
+{
+
+$active = ($package_id == $row['package_id']) ? "active" : "";
+
+$icon="🥉";
+if(strtolower($row['package_name'])=="standard") $icon="🥈";
+if(strtolower($row['package_name'])=="premium") $icon="🥇";
+
+echo "
+<div class='package-card $active'
+onclick='selectPackage(".$row['package_id'].")'>
+
+<h3>$icon ".$row['package_name']."</h3>
+<p>Click to select</p>
+
+</div>
+";
+}
+?>
+
+</div>
+
+
+<form id="packageForm" method="GET">
+<input type="hidden" name="event_id" value="<?php echo $event_id; ?>">
+<input type="hidden" name="package_id" id="packageInput">
+</form>
+
+
+<?php if($package_id!=""){ ?>
 
 <form method="POST">
 
-<label>Select Package</label>
-<select name="package_id" required onchange="this.form.submit()">
-<option value="">Select Package</option>
+<input type="hidden" name="package_id" value="<?php echo $package_id; ?>">
 
-<?php
-while($row=mysqli_fetch_assoc($packages))
-{
-$selected = (isset($_POST['package_id']) && $_POST['package_id']==$row['package_id']) ? "selected" : "";
-echo "<option value='".$row['package_id']."' $selected>".$row['package_name']."</option>";
-}
-?>
-</select>
+<label>Capacity</label>
+<input type="number" name="capacity" id="capacity" min="1" required>
 
-<?php
-if(isset($_POST['package_id']))
-{
-$package_id = $_POST['package_id'];
-?>
 
 <label>Select Venue</label>
-<select name="venue_id" required>
+<select name="venue_id" id="venueSelect" required>
+<option value="">Select Venue</option>
 <?php
 $q=mysqli_query($conn,"SELECT * FROM venues WHERE package_id=$package_id");
 while($row=mysqli_fetch_assoc($q))
 {
-echo "<option value='".$row['venue_id']."'>".$row['venue_name']." (₹".$row['price'].")</option>";
+echo "<option value='".$row['venue_id']."' data-price='".$row['price']."'>
+".$row['venue_name']." ₹".$row['price']."
+</option>";
 }
 ?>
 </select>
 
+
 <label>Select Decoration</label>
-<select name="decoration_id" required>
+<select name="decoration_id" id="decorationSelect" required>
+<option value="">Select Decoration</option>
 <?php
 $q=mysqli_query($conn,"SELECT * FROM decorations WHERE package_id=$package_id");
 while($row=mysqli_fetch_assoc($q))
 {
-echo "<option value='".$row['decoration_id']."'>".$row['decoration_name']." (₹".$row['price'].")</option>";
+echo "<option value='".$row['decoration_id']."' data-price='".$row['price']."'>
+".$row['decoration_name']." ₹".$row['price']."
+</option>";
 }
 ?>
 </select>
 
-<label>Select Seat Type</label>
-<select name="seat_id" required>
+
+<label>Select Seat</label>
+<select name="seat_id" id="seatSelect" required>
+<option value="">Select Seat</option>
 <?php
 $q=mysqli_query($conn,"SELECT * FROM seats WHERE package_id=$package_id");
 while($row=mysqli_fetch_assoc($q))
 {
-echo "<option value='".$row['seat_id']."'>".$row['seat_type']." (₹".$row['price'].")</option>";
+echo "<option value='".$row['seat_id']."' data-price='".$row['price']."'>
+".$row['seat_type']." ₹".$row['price']." per person
+</option>";
 }
 ?>
 </select>
 
+
 <label>Select Food</label>
-<select name="food_id" required>
+<div class="checkbox-group">
 <?php
 $q=mysqli_query($conn,"SELECT * FROM food WHERE package_id=$package_id");
 while($row=mysqli_fetch_assoc($q))
 {
-echo "<option value='".$row['food_id']."'>".$row['menu']." (₹".$row['price'].")</option>";
+echo "<label>
+<input type='checkbox'
+name='food_id[]'
+value='".$row['food_id']."'
+data-price='".$row['price']."'
+class='foodCheckbox'>
+<span>".$row['menu']." ₹".$row['price']." per person</span>
+</label>";
 }
 ?>
-</select>
+</div>
+
 
 <label>Select Coverage</label>
-<select name="coverage_id" required>
+<div class="checkbox-group">
 <?php
 $q=mysqli_query($conn,"SELECT * FROM coverage WHERE package_id=$package_id");
 while($row=mysqli_fetch_assoc($q))
 {
-echo "<option value='".$row['coverage_id']."'>".$row['coverage_type']." (₹".$row['price'].")</option>";
+echo "<label>
+<input type='checkbox'
+name='coverage_id[]'
+value='".$row['coverage_id']."'
+data-price='".$row['price']."'
+class='coverageCheckbox'>
+<span>".$row['coverage_type']." ₹".$row['price']."</span>
+</label>";
 }
 ?>
-</select>
+</div>
 
-<label>Select Event Date</label>
+
+<label>Select Date</label>
 <input type="date" name="event_date" required>
+
 
 <div id="totalBox">
 Total Price: ₹ <span id="totalAmount">0</span>
 </div>
 
+
 <button type="submit" name="book">
 Book Now
 </button>
 
-<?php } ?>
-
 </form>
+
+<?php } ?>
 
 </div>
 
+
 <script>
 
-function calculateTotal(){
-    let total = 0;
-
-    document.querySelectorAll("select").forEach(select => {
-        let text = select.options[select.selectedIndex]?.text;
-        if(text){
-            let match = text.match(/₹(\d+)/);
-            if(match){
-                total += parseInt(match[1]);
-            }
-        }
-    });
-
-    document.getElementById("totalAmount").innerText = total;
+function selectPackage(id)
+{
+document.getElementById("packageInput").value=id;
+document.getElementById("packageForm").submit();
 }
 
-document.querySelectorAll("select").forEach(select => {
-    select.addEventListener("change", calculateTotal);
+function calculateTotal(){
+
+let total = 0;
+let capacity = parseInt(document.getElementById("capacity")?.value) || 0;
+
+let venue = document.getElementById("venueSelect");
+if(venue?.value)
+total += parseInt(venue.selectedOptions[0].dataset.price);
+
+let decoration = document.getElementById("decorationSelect");
+if(decoration?.value)
+total += parseInt(decoration.selectedOptions[0].dataset.price);
+
+let seat = document.getElementById("seatSelect");
+if(seat?.value && capacity>0)
+total += parseInt(seat.selectedOptions[0].dataset.price) * capacity;
+
+document.querySelectorAll(".foodCheckbox:checked").forEach(cb=>{
+if(capacity>0)
+total += parseInt(cb.dataset.price) * capacity;
 });
 
-calculateTotal();
+document.querySelectorAll(".coverageCheckbox:checked").forEach(cb=>{
+total += parseInt(cb.dataset.price);
+});
+
+document.getElementById("totalAmount").innerText = total;
+}
+
+document.addEventListener("change", calculateTotal);
+document.getElementById("capacity")?.addEventListener("input", calculateTotal);
 
 </script>
 

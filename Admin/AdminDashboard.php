@@ -2,6 +2,12 @@
 session_start();
 include("../db.php");
 
+// protect page
+if(!isset($_SESSION['user_id'])){
+    header("Location: ../login.php");
+    exit();
+}
+
 // total colleges (exclude admin)
 $college_q = mysqli_query($conn, "SELECT COUNT(*) AS total FROM users WHERE user_id != 1");
 $college = mysqli_fetch_assoc($college_q);
@@ -31,19 +37,42 @@ $revenue = mysqli_fetch_assoc($revenue_q);
 }
 body{
     margin:0;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family:'Segoe UI', Arial, sans-serif;
     background:linear-gradient(135deg,#eef4ff,#f8fbff);
 }
 
 /* HEADER */
 .header{
     background:linear-gradient(90deg,#2563eb,#1e40af);
-    padding:25px;
+    padding:20px 30px;
     color:#fff;
-    text-align:center;
+}
+
+.header-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.header-title{
     font-size:26px;
     font-weight:600;
     letter-spacing:1px;
+}
+
+.logout-btn{
+    background:#ef4444;
+    color:#fff;
+    padding:8px 18px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    transition:0.25s;
+}
+
+.logout-btn:hover{
+    background:#dc2626;
 }
 
 /* CONTAINER */
@@ -119,7 +148,10 @@ body{
 <body>
 
 <div class="header">
-    Admin Dashboard
+    <div class="header-container">
+        <div class="header-title">Admin Dashboard</div>
+        <a href="../logout.php" class="logout-btn">Logout</a>
+    </div>
 </div>
 
 <div class="container">
@@ -127,6 +159,7 @@ body{
     <!-- STATS -->
     <div class="section-title">Overview</div>
     <div class="cards">
+
         <div class="card stat">
             <h2><?php echo $college['total']; ?></h2>
             <p>Total Colleges</p>
@@ -143,9 +176,10 @@ body{
         </div>
 
         <div class="card stat">
-            <h2>₹ <?php echo $revenue['total']; ?></h2>
+            <h2>₹ <?php echo $revenue['total'] ? $revenue['total'] : 0; ?></h2>
             <p>Total Revenue</p>
         </div>
+
     </div>
 
     <!-- MANAGEMENT -->
@@ -187,7 +221,7 @@ body{
             <p>Manage Seats</p>
         </a>
 
-        <a href="manage_booking.php" class="card manage">
+        <a href="manage_bookings.php" class="card manage">
             <h2>📑</h2>
             <p>Manage Bookings</p>
         </a>

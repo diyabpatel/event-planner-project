@@ -7,174 +7,163 @@ include("db.php");
 <html>
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <title>College Event Management System</title>
-    
-    <style>
+<title>College Event Management System</title>
 
-        body {
-            font-family: Arial;
-            margin: 0;
-            background-color: #f4f6f8;
-        }
+<style>
 
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
-        }
+body {
+    font-family: Arial;
+    margin: 0;
+    background-color: #f4f6f8;
+}
 
-        header h1 {
-            display: inline-block;
-            margin: 0;
-        }
+/* HEADER */
 
-        nav {
-            float: right;
-        }
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    position: relative;
+    z-index: 1000;
+}
 
-        nav a {
-            color: white;
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: bold;
-            display: inline-block;
-        }
+header h1 {
+    display: inline-block;
+    margin: 0;
+}
 
-        nav a:hover {
-            text-decoration: underline;
-        }
+nav {
+    float: right;
+}
 
-        /* Dropdown container */
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+}
 
-        /* Dropdown button */
-        .dropdown > a {
-            color: white;
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: bold;
-        }
+nav a:hover {
+    text-decoration: underline;
+}
 
-        /* CSS Arrow (fix encoding issue) */
-        .dropdown > a::after {
-            content: "";
-            display: inline-block;
-            margin-left: 6px;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid white;
-            vertical-align: middle;
-        }
 
-        /* Dropdown content */
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: white;
-            min-width: 200px;
-            box-shadow: 0px 0px 10px gray;
-            z-index: 999;
-        }
+/* Dropdown */
 
-        .dropdown-content a {
-            color: black;
-            padding: 10px;
-            display: block;
-            text-decoration: none;
-            margin-left: 0;
-        }
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
 
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
+.dropdown > a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
 
-        /* Show dropdown */
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+.dropdown > a::after {
+    content: "";
+    display: inline-block;
+    margin-left: 6px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+    vertical-align: middle;
+}
 
-        .hero {
-            background-color: #3498db;
-            color: white;
-            padding: 60px;
-            text-align: center;
-        }
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0px 0px 10px gray;
+}
 
-        .hero h2 {
-            font-size: 36px;
-        }
+.dropdown-content a {
+    color: black;
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+}
 
-        .container {
-            padding: 40px;
-            text-align: center;
-        }
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
 
-        .packages {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
+.dropdown:hover .dropdown-content {
+    display: block;
+}
 
-        .card {
-            background-color: white;
-            padding: 20px;
-            width: 250px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px gray;
-        }
 
-        .card h3 {
-            color: #2c3e50;
-        }
+/* FULL BACKGROUND IMAGE SECTION */
 
-        .card button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px;
-            width: 100%;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+.hero-background {
 
-        .card button:hover {
-            background-color: #2980b9;
-        }
+    height: calc(100vh - 70px);
 
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            margin-top: 40px;
-        }
+    background: url('uploads/images/bg.jpg') no-repeat center center;
 
-    </style>
+    background-size: cover;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+}
+
+
+/* Optional overlay text */
+
+.hero-text {
+
+    background: rgba(0,0,0,0.5);
+
+    color: white;
+
+    padding: 30px;
+
+    border-radius: 10px;
+
+    text-align: center;
+
+}
+
+.hero-text h2{
+    font-size: 36px;
+    margin: 0;
+}
+
+.hero-text p{
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+</style>
 
 </head>
 
 <body>
 
+
 <header>
 
-    <h1>Event Management System</h1>
+<h1>Event Management System</h1>
 
-    <nav>
+<nav>
 
-        <a href="index.php">Home</a>
+<a href="index.php">Home</a>
 
-        <!-- Events Dropdown -->
-        <div class="dropdown">
+<div class="dropdown">
 
-            <a href="#">Events</a>
+<a href="#">Events</a>
 
-            <div class="dropdown-content">
+<div class="dropdown-content">
 
 <?php
 
@@ -183,83 +172,50 @@ $result = mysqli_query($conn, $query);
 
 while($row = mysqli_fetch_assoc($result))
 {
-    echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
+echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
 }
 
 ?>
 
 </div>
 
+</div>
 
-        </div>
+<a href="gallery.php">Work Gallery</a>
 
-        <a href="gallery.php">Work Gallery</a>
+<?php
+if(isset($_SESSION['user_id']))
+{
+echo '<a href="user/MyBookings.php">My Bookings</a>';
+echo '<a href="logout.php">Logout</a>';
+}
+else
+{
+echo '<a href="login.php">Login</a>';
+}
+?>
 
-        <?php
-        if(isset($_SESSION['user_id']))
-        {
-            echo '<a href="dashboard.php">Dashboard</a>';
-            echo '<a href="logout.php">Logout</a>';
-        }
-        else
-        {
-            echo '<a href="login.php">Login</a>';
-            echo '<a href="register.php">Register</a>';
-        }
-        ?>
+</nav>
 
-    </nav>
-
-    <div style="clear:both;"></div>
+<div style="clear:both;"></div>
 
 </header>
 
 
-<div class="hero">
 
-    <h2>College Event Package Management System</h2>
+<!-- FULL BACKGROUND IMAGE -->
 
-    <p>
-        Book complete event packages with venue, food, decoration, seating, photography, and videography.
-    </p>
+<div class="hero-background">
 
-</div>
+<div class="hero-text">
 
+<h2>College Event Package Management System</h2>
 
-<div class="container">
-
-    <h2>Our Packages</h2>
-
-    <div class="packages">
-
-        <div class="card">
-            <h3>Basic Package</h3>
-            <p>Affordable package with essential event arrangements.</p>
-            <button onclick="location.href='index.php'">View Events</button>
-        </div>
-
-        <div class="card">
-            <h3>Standard Package</h3>
-            <p>Best package for medium scale college events.</p>
-            <button onclick="location.href='index.php'">View Events</button>
-        </div>
-
-        <div class="card">
-            <h3>Premium Package</h3>
-            <p>Complete premium event management solution.</p>
-            <button onclick="location.href='index.php'">View Events</button>
-        </div>
-
-    </div>
+<p>Book complete event packages with venue, food, decoration, seating, photography, and videography.</p>
 
 </div>
 
-
-<footer>
-
-    <p>© 2026 College Event Management System</p>
-
-</footer>
+</div>
 
 
 </body>

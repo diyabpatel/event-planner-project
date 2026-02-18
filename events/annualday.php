@@ -48,8 +48,8 @@ text-decoration:none;
 }
 
 .hero{
-background-image:url("../uploads/images/annual/annualday_bg.jpg");
-height:500px;
+background-image:url("../uploads/images/annual/annualday_bg.png");
+height:700px;
 background-size:cover;
 background-position:center;
 display:flex;
@@ -182,7 +182,7 @@ text-align:center;
 <?php
 if(isset($_SESSION['user_id']))
 {
-echo '<a href="../user/my_bookings.php">My Bookings</a>';
+echo '<a href="../user/MyBookings.php">My Bookings</a>';
 echo '<a href="../user/logout.php">Logout</a>';
 }
 else
@@ -229,7 +229,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="about">
 
-<img src="../uploads/images/annual/about.jpg">
+<img src="../uploads/images/annual/annualday_about.jpg">
 
 <div>
 
@@ -251,27 +251,27 @@ We provide complete event management including venue, catering, decoration, phot
 
 <div class="services">
 
-<h2>Services</h2>
+<h2>Services Provided</h2>
 
 <div class="service-grid">
 
 <div class="service-card">
-<img src="../uploads/images/annual/venue.jpg">
+<img src="../uploads/images/annual/venue.png">
 <h3>Venue Setup</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/annual/decoration.jpg">
+<img src="../uploads/images/annual/decoration.png">
 <h3>Decoration</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/annual/catering.jpg">
+<img src="../uploads/images/annual/catering.png">
 <h3>Catering</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/annual/photography.jpg">
+<img src="../uploads/images/annual/photography.png">
 <h3>Photography</h3>
 </div>
 
@@ -281,7 +281,7 @@ We provide complete event management including venue, catering, decoration, phot
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/annual/sound.jpg">
+<img src="../uploads/images/annual/sound.png">
 <h3>Sound & Lighting</h3>
 </div>
 
@@ -293,13 +293,16 @@ We provide complete event management including venue, catering, decoration, phot
 
 <div class="gallery">
 
-<h2>Gallery</h2>
+<h2>Our Previous Works</h2>
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/annual/gallery1.jpg">
-<img src="../uploads/images/annual/gallery2.jpg">
-<img src="../uploads/images/annual/gallery3.jpg">
+<img src="../uploads/images/annual/image1.webp">
+<img src="../uploads/images/annual/image2.jpg">
+<img src="../uploads/images/annual/image3.jpg">
+<img src="../uploads/images/annual/image4.jpg">
+<img src="../uploads/images/annual/image5.jpg">
+<img src="../uploads/images/annual/image6.jpg">
 
 </div>
 
