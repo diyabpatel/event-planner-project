@@ -61,7 +61,7 @@ VALUES
 
 mysqli_query($conn,$query);
 
-echo "<script>alert('Booking Successful');</script>";
+echo "<script>alert('Booking Successful! Total: ₹$total');</script>";
 }
 ?>
 
@@ -128,6 +128,16 @@ select,input{
 select option{
     background:#1b1b2f;
     color:white;
+}
+
+#totalBox{
+    margin:10px 0;
+    padding:10px;
+    border-radius:10px;
+    background: rgba(0,0,0,0.5);
+    text-align:center;
+    font-weight:600;
+    font-size:14px;
 }
 
 button{
@@ -237,6 +247,10 @@ echo "<option value='".$row['coverage_id']."'>".$row['coverage_type']." (₹".$r
 <label>Select Event Date</label>
 <input type="date" name="event_date" required>
 
+<div id="totalBox">
+Total Price: ₹ <span id="totalAmount">0</span>
+</div>
+
 <button type="submit" name="book">
 Book Now
 </button>
@@ -246,6 +260,32 @@ Book Now
 </form>
 
 </div>
+
+<script>
+
+function calculateTotal(){
+    let total = 0;
+
+    document.querySelectorAll("select").forEach(select => {
+        let text = select.options[select.selectedIndex]?.text;
+        if(text){
+            let match = text.match(/₹(\d+)/);
+            if(match){
+                total += parseInt(match[1]);
+            }
+        }
+    });
+
+    document.getElementById("totalAmount").innerText = total;
+}
+
+document.querySelectorAll("select").forEach(select => {
+    select.addEventListener("change", calculateTotal);
+});
+
+calculateTotal();
+
+</script>
 
 </body>
 </html>
