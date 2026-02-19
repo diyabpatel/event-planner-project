@@ -8,7 +8,6 @@ include("db.php");
 <head>
 
 <meta charset="UTF-8">
-
 <title>College Event Management System</title>
 
 <style>
@@ -49,7 +48,6 @@ nav a {
 nav a:hover {
     text-decoration: underline;
 }
-
 
 /* Dropdown */
 
@@ -98,40 +96,25 @@ nav a:hover {
     display: block;
 }
 
-
 /* FULL BACKGROUND IMAGE SECTION */
 
 .hero-background {
-
     height: calc(100vh - 70px);
-
     background: url('uploads/images/bg.jpg') no-repeat center center;
-
     background-size: cover;
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
-
 }
-
 
 /* Optional overlay text */
 
 .hero-text {
-
     background: rgba(0,0,0,0.5);
-
     color: white;
-
     padding: 30px;
-
     border-radius: 10px;
-
     text-align: center;
-
 }
 
 .hero-text h2{
@@ -150,7 +133,6 @@ nav a:hover {
 
 <body>
 
-
 <header>
 
 <h1>Event Management System</h1>
@@ -160,13 +142,11 @@ nav a:hover {
 <a href="index.php">Home</a>
 
 <div class="dropdown">
-
 <a href="#">Events</a>
 
 <div class="dropdown-content">
 
 <?php
-
 $query = "SELECT * FROM events ORDER BY event_name ASC";
 $result = mysqli_query($conn, $query);
 
@@ -174,11 +154,9 @@ while($row = mysqli_fetch_assoc($result))
 {
 echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
 }
-
 ?>
 
 </div>
-
 </div>
 
 <a href="gallery.php">Work Gallery</a>
@@ -186,12 +164,13 @@ echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
 <?php
 if(isset($_SESSION['user_id']))
 {
-echo '<a href="user/my_bookings.php">My Bookings</a>';
-echo '<a href="logout.php">Logout</a>';
+echo '<a href="User/profile.php">Profile</a>';
+echo '<a href="User/my_bookings.php">My Bookings</a>';
+echo '<a href="User/logout.php">Logout</a>';
 }
 else
 {
-echo '<a href="login.php">Login</a>';
+echo '<a href="User/login.php">Login</a>';
 }
 ?>
 
@@ -200,8 +179,6 @@ echo '<a href="login.php">Login</a>';
 <div style="clear:both;"></div>
 
 </header>
-
-
 
 <!-- FULL BACKGROUND IMAGE -->
 
@@ -216,7 +193,6 @@ echo '<a href="login.php">Login</a>';
 </div>
 
 </div>
-
 
 </body>
 </html>
