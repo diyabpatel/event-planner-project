@@ -6,12 +6,10 @@ include("db.php");
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <title>College Event Management System</title>
 
 <style>
-
 body {
     font-family: Arial;
     margin: 0;
@@ -24,8 +22,6 @@ header {
     background-color: #2c3e50;
     color: white;
     padding: 15px;
-    position: relative;
-    z-index: 1000;
 }
 
 header h1 {
@@ -42,7 +38,6 @@ nav a {
     margin-left: 20px;
     text-decoration: none;
     font-weight: bold;
-    display: inline-block;
 }
 
 nav a:hover {
@@ -54,13 +49,6 @@ nav a:hover {
 .dropdown {
     position: relative;
     display: inline-block;
-}
-
-.dropdown > a {
-    color: white;
-    margin-left: 20px;
-    text-decoration: none;
-    font-weight: bold;
 }
 
 .dropdown > a::after {
@@ -79,6 +67,7 @@ nav a:hover {
     background-color: white;
     min-width: 200px;
     box-shadow: 0px 0px 10px gray;
+    z-index: 999;
 }
 
 .dropdown-content a {
@@ -96,7 +85,7 @@ nav a:hover {
     display: block;
 }
 
-/* FULL BACKGROUND IMAGE SECTION */
+/* HERO SECTION */
 
 .hero-background {
     height: calc(100vh - 70px);
@@ -107,10 +96,8 @@ nav a:hover {
     align-items: center;
 }
 
-/* Optional overlay text */
-
 .hero-text {
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.6);
     color: white;
     padding: 30px;
     border-radius: 10px;
@@ -126,9 +113,7 @@ nav a:hover {
     margin-top: 10px;
     font-size: 18px;
 }
-
 </style>
-
 </head>
 
 <body>
@@ -143,19 +128,16 @@ nav a:hover {
 
 <div class="dropdown">
 <a href="#">Events</a>
-
 <div class="dropdown-content">
-
 <?php
 $query = "SELECT * FROM events ORDER BY event_name ASC";
 $result = mysqli_query($conn, $query);
 
 while($row = mysqli_fetch_assoc($result))
 {
-echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
+    echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
 }
 ?>
-
 </div>
 </div>
 
@@ -164,13 +146,14 @@ echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
 <?php
 if(isset($_SESSION['user_id']))
 {
-echo '<a href="User/profile.php">Profile</a>';
-echo '<a href="User/my_bookings.php">My Bookings</a>';
-echo '<a href="User/logout.php">Logout</a>';
+    echo '<a href="User/profile.php">Profile</a>';
+    echo '<a href="User/my_bookings.php">My Bookings</a>';
+    echo '<a href="logout.php">Logout</a>';  // ✅ Corrected
 }
 else
 {
-echo '<a href="User/login.php">Login</a>';
+    echo '<a href="login.php">Login</a>';
+    echo '<a href="register.php">Register</a>';
 }
 ?>
 
@@ -180,18 +163,11 @@ echo '<a href="User/login.php">Login</a>';
 
 </header>
 
-<!-- FULL BACKGROUND IMAGE -->
-
 <div class="hero-background">
-
 <div class="hero-text">
-
 <h2>College Event Package Management System</h2>
-
 <p>Book complete event packages with venue, food, decoration, seating, photography, and videography.</p>
-
 </div>
-
 </div>
 
 </body>
