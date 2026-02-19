@@ -6,7 +6,6 @@ include("db.php");
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <title>College Event Management System</title>
 
@@ -17,7 +16,85 @@ body {
     background-color: #f4f6f8;
 }
 
-/* HERO SECTION ONLY (Navbar CSS removed) */
+/* HEADER */
+
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    position: relative;
+    z-index: 1000;
+}
+
+header h1 {
+    display: inline-block;
+    margin: 0;
+}
+
+nav {
+    float: right;
+}
+
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Dropdown */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown > a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.dropdown > a::after {
+    content: "";
+    display: inline-block;
+    margin-left: 6px;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid white;
+    vertical-align: middle;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 200px;
+    box-shadow: 0px 0px 10px gray;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* FULL BACKGROUND IMAGE SECTION */
 
 .hero-background {
     height: calc(100vh - 60px);
@@ -29,7 +106,7 @@ body {
 }
 
 .hero-text {
-    background: rgba(0,0,0,0.55);
+    background: rgba(0,0,0,0.5);
     color: white;
     padding: 35px;
     border-radius: 12px;
@@ -48,24 +125,68 @@ body {
     line-height: 1.6;
 }
 </style>
-
 </head>
 
 <body>
 
-<!-- ✅ NAVBAR INCLUDE -->
-<?php include("navbar.php"); ?>
+<header>
 
-<!-- ✅ HERO SECTION -->
+<h1>Event Management System</h1>
+
+<nav>
+
+<a href="index.php">Home</a>
+
+<div class="dropdown">
+<a href="#">Events</a>
+
+<div class="dropdown-content">
+
+<?php
+$query = "SELECT * FROM events ORDER BY event_name ASC";
+$result = mysqli_query($conn, $query);
+
+while($row = mysqli_fetch_assoc($result))
+{
+echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
+}
+?>
+
+</div>
+</div>
+
+<a href="gallery.php">Work Gallery</a>
+
+<?php
+if(isset($_SESSION['user_id']))
+{
+echo '<a href="User/profile.php">Profile</a>';
+echo '<a href="User/my_bookings.php">My Bookings</a>';
+echo '<a href="User/logout.php">Logout</a>';
+}
+else
+{
+echo '<a href="User/login.php">Login</a>';
+}
+?>
+
+</nav>
+
+<div style="clear:both;"></div>
+
+</header>
+
+<!-- FULL BACKGROUND IMAGE -->
+
 <div class="hero-background">
 
-    <div class="hero-text">
-        <h2>College Event Package Management System</h2>
-        <p>
-            Book complete event packages with venue, food, decoration,
-            seating, photography, and videography.
-        </p>
-    </div>
+<div class="hero-text">
+
+<h2>College Event Package Management System</h2>
+
+<p>Book complete event packages with venue, food, decoration, seating, photography, and videography.</p>
+
+</div>
 
 </div>
 
