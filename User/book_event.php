@@ -292,7 +292,7 @@ EventHub
 
 <a href="../index.php">Home</a>
 
-<a href="my_bookings.php">My Bookings</a>
+<a href="MyBookings.php">My Bookings</a>
 
 <a href="../logout.php">Logout</a>
 
