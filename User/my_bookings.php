@@ -40,7 +40,7 @@ $result = mysqli_query($conn,$query);
 
 <style>
 
-/* ===== NAVBAR ===== */
+/* NAVBAR */
 
 .navbar{
 background:#0f172a;
@@ -50,32 +50,29 @@ justify-content:space-between;
 align-items:center;
 }
 
-.navbar .logo{
+.logo{
 color:#00c6ff;
 font-size:22px;
 font-weight:bold;
 }
 
-.navbar .menu a{
+.menu a{
 color:white;
 text-decoration:none;
 margin-left:20px;
-font-size:15px;
-transition:0.3s;
 }
 
-.navbar .menu a:hover{
+.menu a:hover{
 color:#00c6ff;
 }
 
 
-/* ===== BODY ===== */
+/* BODY */
 
 body{
 margin:0;
-font-family:'Segoe UI', Arial;
+font-family:'Segoe UI';
 background:linear-gradient(135deg,#1e3c72,#2a5298);
-min-height:100vh;
 color:white;
 }
 
@@ -85,24 +82,14 @@ margin:30px auto;
 padding:20px;
 }
 
-h2{
-margin-bottom:25px;
-}
 
-
-/* ===== CARD ===== */
+/* CARD */
 
 .card{
 background:rgba(255,255,255,0.08);
 padding:20px;
 margin-bottom:20px;
 border-radius:15px;
-box-shadow:0 0 15px rgba(0,0,0,0.3);
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-5px);
 }
 
 .card-header{
@@ -120,17 +107,15 @@ font-weight:bold;
 background:#00c6ff;
 padding:5px 12px;
 border-radius:8px;
-font-size:14px;
 }
 
 
-/* DETAILS */
+/* DETAILS GRID */
 
 .details{
 display:grid;
 grid-template-columns:repeat(2,1fr);
 gap:10px;
-margin-bottom:15px;
 }
 
 .detail-box{
@@ -156,13 +141,12 @@ background:#22c55e;
 background:#ef4444;
 }
 
+.payment-paid{
+background:#22c55e;
+}
 
-/* CHANGE MESSAGE */
-
-.change-msg{
-margin-top:10px;
-font-size:14px;
-color:#ffd166;
+.payment-pending{
+background:#f59e0b;
 }
 
 
@@ -176,16 +160,11 @@ background:#00c6ff;
 color:white;
 text-decoration:none;
 border-radius:8px;
-font-size:14px;
 }
 
 .btn.disabled{
 background:gray;
 pointer-events:none;
-}
-
-.btn:hover{
-background:#0094cc;
 }
 
 </style>
@@ -195,20 +174,14 @@ background:#0094cc;
 <body>
 
 
-<!-- ===== NAVBAR ===== -->
-
 <div class="navbar">
 
-<div class="logo">
-EventHub
-</div>
+<div class="logo">EventHub</div>
 
 <div class="menu">
 
 <a href="../index.php">Home</a>
-
 <a href="my_bookings.php">My Bookings</a>
-
 <a href="../logout.php">Logout</a>
 
 </div>
@@ -216,8 +189,6 @@ EventHub
 </div>
 
 
-
-<!-- ===== CONTENT ===== -->
 
 <div class="container">
 
@@ -232,15 +203,25 @@ while($row=mysqli_fetch_assoc($result))
 {
 
 $event_date = $row['event_date'];
+
 $change_last_date = date("Y-m-d", strtotime($event_date . " -5 days"));
 
 $today = date("Y-m-d");
 
 $is_edit_allowed = ($today <= $change_last_date);
 
-$status = ($today <= $event_date)
+
+// event status
+$event_status = ($today <= $event_date)
 ? "<span class='status upcoming'>Upcoming</span>"
 : "<span class='status completed'>Completed</span>";
+
+
+// payment status
+$payment_status = ($row['payment_status']=="Advance Paid")
+? "<span class='status payment-pending'>Advance Paid</span>"
+: "<span class='status payment-paid'>Fully Paid</span>";
+
 
 echo "
 
@@ -278,23 +259,44 @@ echo "
 </div>
 
 <div class='detail-box'>
+<b>Advance Paid:</b><br>
+₹ ".$row['advance_paid']."
+</div>
+
+<div class='detail-box'>
+<b>Remaining Amount:</b><br>
+₹ ".$row['remaining_amount']."
+</div>
+
+<div class='detail-box'>
+<b>Payment Method:</b><br>
+".$row['payment_method']."
+</div>
+
+<div class='detail-box'>
+<b>Payment Status:</b><br>
+".$payment_status."
+</div>
+
+<div class='detail-box'>
+<b>Event Status:</b><br>
+".$event_status."
+</div>
+
+<div class='detail-box'>
 <b>Booked On:</b><br>
 ".$row['booking_date']."
 </div>
 
-<div class='detail-box'>
-<b>Status:</b><br>
-$status
-</div>
-
 </div>
 
 
-<div class='change-msg'>
+<div style='margin-top:10px;color:#ffd166;'>
 Changes allowed until: <b>".$change_last_date."</b>
 </div>
 
 ";
+
 
 if($is_edit_allowed)
 {
