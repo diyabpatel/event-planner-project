@@ -40,131 +40,145 @@ $result = mysqli_query($conn,$query);
 
 <style>
 
-/* NAVBAR */
-
-.navbar{
-background:#0f172a;
-padding:15px 40px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-.logo{
-color:#00c6ff;
-font-size:22px;
-font-weight:bold;
-}
-
-.menu a{
-color:white;
-text-decoration:none;
-margin-left:20px;
-}
-
-.menu a:hover{
-color:#00c6ff;
-}
-
-
-/* BODY */
-
+/* ===== BODY ===== */
 body{
-margin:0;
-font-family:'Segoe UI';
-background:linear-gradient(135deg,#1e3c72,#2a5298);
-color:white;
+    margin:0;
+    font-family:'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:#ffffff;
 }
 
+/* ===== CONTAINER ===== */
 .container{
-max-width:1000px;
-margin:30px auto;
-padding:20px;
+    max-width:1100px;
+    margin:40px auto 60px; /* 🔥 navbar niche tight */
+    padding:20px;
 }
 
 
-/* CARD */
+h2{
+    font-size:30px;
+    font-weight:600;
+    letter-spacing:0.5px;
+    margin-top:5px;   /* 🔥 removes extra gap */
+    margin-bottom:35px;
+}
 
+/* ===== CARD ===== */
 .card{
-background:rgba(255,255,255,0.08);
-padding:20px;
-margin-bottom:20px;
-border-radius:15px;
+    background:rgba(255,255,255,0.10);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-radius:20px;
+    padding:28px;
+    margin-bottom:30px;
+    box-shadow:
+        0 25px 45px rgba(0,0,0,0.35),
+        inset 0 0 0 1px rgba(255,255,255,0.08);
+    transition:0.35s ease;
 }
 
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:
+        0 35px 70px rgba(0,0,0,0.45),
+        inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+/* ===== CARD HEADER ===== */
 .card-header{
-display:flex;
-justify-content:space-between;
-margin-bottom:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:22px;
 }
 
 .event-name{
-font-size:22px;
-font-weight:bold;
+    font-size:24px;
+    font-weight:600;
+    letter-spacing:0.3px;
 }
 
 .package{
-background:#00c6ff;
-padding:5px 12px;
-border-radius:8px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    padding:7px 16px;
+    border-radius:30px;
+    font-size:13px;
+    font-weight:500;
+    box-shadow:0 5px 15px rgba(0,114,255,0.4);
 }
 
-
-/* DETAILS GRID */
-
+/* ===== DETAILS GRID ===== */
 .details{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:14px;
 }
 
 .detail-box{
-background:rgba(0,0,0,0.2);
-padding:10px;
-border-radius:8px;
+    background:rgba(0,0,0,0.35);
+    padding:14px 16px;
+    border-radius:14px;
+    font-size:14px;
+    line-height:1.6;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06);
 }
 
+.detail-box b{
+    font-weight:500;
+    color:#cde9ff;
+}
 
-/* STATUS */
-
+/* ===== STATUS BADGES ===== */
 .status{
-padding:5px 10px;
-border-radius:8px;
-font-size:13px;
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:500;
+    letter-spacing:0.4px;
 }
 
 .upcoming{
-background:#22c55e;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
 }
 
 .completed{
-background:#ef4444;
+    background:linear-gradient(135deg,#ef4444,#b91c1c);
 }
 
 .payment-paid{
-background:#22c55e;
+    background:linear-gradient(135deg,#22c55e,#16a34a);
 }
 
 .payment-pending{
-background:#f59e0b;
+    background:linear-gradient(135deg,#f59e0b,#d97706);
 }
 
-
-/* BUTTON */
-
+/* ===== BUTTON ===== */
 .btn{
-margin-top:10px;
-display:inline-block;
-padding:8px 15px;
-background:#00c6ff;
-color:white;
-text-decoration:none;
-border-radius:8px;
+    display:inline-block;
+    margin-top:18px;
+    padding:10px 22px;
+    background:linear-gradient(135deg,#00c6ff,#0072ff);
+    color:white;
+    text-decoration:none;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:500;
+    transition:0.3s ease;
+    box-shadow:0 8px 22px rgba(0,114,255,0.45);
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(0,114,255,0.6);
 }
 
 .btn.disabled{
-background:gray;
-pointer-events:none;
+    background:#6b7280;
+    box-shadow:none;
+    pointer-events:none;
 }
 
 </style>
@@ -172,23 +186,7 @@ pointer-events:none;
 </head>
 
 <body>
-
-
-<div class="navbar">
-
-<div class="logo">EventHub</div>
-
-<div class="menu">
-
-<a href="../index.php">Home</a>
-<a href="my_bookings.php">My Bookings</a>
-<a href="../logout.php">Logout</a>
-
-</div>
-
-</div>
-
-
+<?php include("../navbar.php"); ?>
 
 <div class="container">
 

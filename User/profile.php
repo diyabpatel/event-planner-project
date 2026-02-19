@@ -50,19 +50,6 @@ body{
     color:white;
 }
 
-/* Navbar */
-.navbar{
-    background:#0f2027;
-    padding:15px 40px;
-    text-align:right;
-}
-.navbar a{
-    color:white;
-    margin-left:25px;
-    text-decoration:none;
-    font-weight:bold;
-}
-
 /* Container */
 .container{
     width:85%;
@@ -121,11 +108,8 @@ button{
 
 <body>
 
-<div class="navbar">
-    <a href="../index.php">Home</a>
-    <a href="my_bookings.php">My Bookings</a>
-    <a href="../logout.php">Logout</a>
-</div>
+<?php include("../navbar.php"); ?>
+
 
 <div class="container">
 
