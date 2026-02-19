@@ -186,7 +186,7 @@ echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
 <?php
 if(isset($_SESSION['user_id']))
 {
-echo '<a href="user/MyBookings.php">My Bookings</a>';
+echo '<a href="user/my_bookings.php">My Bookings</a>';
 echo '<a href="logout.php">Logout</a>';
 }
 else

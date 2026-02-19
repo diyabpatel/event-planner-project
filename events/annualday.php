@@ -182,7 +182,7 @@ text-align:center;
 <?php
 if(isset($_SESSION['user_id']))
 {
-echo '<a href="../user/MyBookings.php">My Bookings</a>';
+echo '<a href="../user/my_bookings.php">My Bookings</a>';
 echo '<a href="../user/logout.php">Logout</a>';
 }
 else
