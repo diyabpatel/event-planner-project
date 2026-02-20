@@ -1,5 +1,16 @@
 <?php
 session_start();
+include("../db.php");
+
+/* Fetch Convocation Event ID dynamically */
+$event_query = mysqli_query($conn,"SELECT event_id FROM events WHERE event_name='Convocation'");
+$event = mysqli_fetch_assoc($event_query);
+
+if(!$event){
+    die("Convocation event not found in database");
+}
+
+$convocation_id = $event['event_id'];
 ?>
 
 <!DOCTYPE html>
@@ -12,31 +23,6 @@ session_start();
 body{
     margin:0;
     font-family:Arial, Helvetica, sans-serif;
-}
-
-/* Navbar */
-.navbar{
-    background:#2c3e50;
-    padding:15px 40px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.navbar h2{
-    color:white;
-    margin:0;
-}
-
-.nav-links a{
-    color:white;
-    text-decoration:none;
-    margin-left:25px;
-    font-weight:bold;
-}
-
-.nav-links a:hover{
-    color:#00c6ff;
 }
 
 /* Hero Section */
@@ -87,28 +73,18 @@ body{
 
 <body>
 
-<!-- Navbar -->
-<div class="navbar">
-    <h2>Event Management</h2>
+<?php include("../navbar.php"); ?>
 
-    <div class="nav-links">
-        <a href="../index.php">Home</a>
-        <a href="../User/my_bookings.php">My Bookings</a>
-        <?php if(isset($_SESSION['user_id'])){ ?>
-            <a href="../logout.php">Logout</a>
-        <?php } else { ?>
-            <a href="../login.php">Login</a>
-        <?php } ?>
-    </div>
-</div>
 
-<!-- Hero Section -->
 <div class="hero">
     <div class="overlay">
         <h1>Convocation Ceremony</h1>
         <p>Celebrate achievements and honor graduates in a grand convocation ceremony.</p>
 
-        <a href="../User/book_event.php?event_id=2" class="btn">Book Now</a>
+        <!-- CORRECT LINK -->
+        <a href="../User/book_event.php?event_id=<?php echo $convocation_id; ?>" class="btn">
+            Book Now
+        </a>
     </div>
 </div>
 

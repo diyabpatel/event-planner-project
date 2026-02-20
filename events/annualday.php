@@ -26,27 +26,6 @@ font-family:Arial;
 background:#f4f6f8;
 }
 
-header{
-background:#2c3e50;
-color:white;
-padding:15px;
-}
-
-header h1{
-display:inline-block;
-margin:0;
-}
-
-nav{
-float:right;
-}
-
-nav a{
-color:white;
-margin-left:20px;
-text-decoration:none;
-}
-
 .hero{
 background-image:url("../uploads/images/annual/annualday_bg.png");
 height:700px;
@@ -170,34 +149,7 @@ text-align:center;
 
 <body>
 
-
-<header>
-
-<h1>Event Management</h1>
-
-<nav>
-
-<a href="../index.php">Home</a>
-
-<?php
-if(isset($_SESSION['user_id']))
-{
-echo '<a href="../user/my_bookings.php">My Bookings</a>';
-echo '<a href="../user/logout.php">Logout</a>';
-}
-else
-{
-echo '<a href="../login.php">Login</a>';
-}
-?>
-
-</nav>
-
-<div style="clear:both;"></div>
-
-</header>
-
-
+<?php include("../navbar.php"); ?>
 
 <div class="hero">
 

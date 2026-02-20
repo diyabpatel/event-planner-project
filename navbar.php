@@ -183,7 +183,7 @@ include("db.php");
 </style>
 
 <div class="navbar">
-    <div class="nav-logo">Event Planner</div>
+    <div class="nav-logo">EventHub</div>
 
     <div class="nav-menu">
         <a href="/event-planner-project/index.php">Home</a>
@@ -194,7 +194,7 @@ include("db.php");
                 <?php
                 $res = mysqli_query($conn,"SELECT * FROM events ORDER BY event_name");
                 while($row = mysqli_fetch_assoc($res)){
-                    echo '<a href="'.$row['page'].'">'.$row['event_name'].'</a>';
+                   echo '<a href="/event-planner-project/events/'.$row['page'].'">'.$row['event_name'].'</a>';
                 }
                 ?>
             </div>
