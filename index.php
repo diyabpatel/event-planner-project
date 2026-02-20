@@ -1,282 +1,285 @@
 <?php
 session_start();
-include("db.php");
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>College Event Management System</title>
+<title>College Event Planner</title>
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
+
 body{
-    margin:0;
-    font-family:'Segoe UI',Arial,sans-serif;
-    background:#0b0f1a;
-    color:#fff;
-    overflow-x:hidden;
+font-family:'Segoe UI',sans-serif;
+background:radial-gradient(circle at top,#1e2a5a,#0b1020 70%);
+color:#eaf0ff;
+overflow-x:hidden;
 }
 
-/* ===== HERO WITH BG SLIDESHOW ===== */
+/* NAVBAR */
+.navbar{
+position:fixed;
+top:0;left:0;width:100%;
+padding:16px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(0,0,0,0.4);
+backdrop-filter:blur(14px);
+z-index:100;
+}
+.navbar h2{
+color:#9bb6ff;
+letter-spacing:1px;
+}
+.navbar a{
+color:#fff;
+margin-left:24px;
+text-decoration:none;
+font-size:14px;
+}
+.navbar a:hover{color:#9bb6ff}
+
+/* HERO */
 .hero{
-    height:calc(100vh - 72px);
-    position:relative;
+height:100vh;
+display:flex;
+align-items:center;
+padding:0 8%;
+background:
+linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
+url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=80');
+background-size:cover;
+background-position:center;
 }
-.hero-bg{
-    position:absolute;
-    inset:0;
-    background-size:cover;
-    background-position:center;
-    animation:bgSlide 15s infinite;
+.hero-box{
+max-width:650px;
 }
-.hero-overlay{
-    position:absolute;
-    inset:0;
-    background:rgba(0,0,0,0.65);
+.hero h1{
+font-size:52px;
+line-height:1.15;
+margin-bottom:20px;
 }
-.hero-content{
-    position:relative;
-    z-index:2;
-    height:100%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:40px;
+.hero p{
+font-size:18px;
+opacity:.9;
+margin-bottom:32px;
 }
-.hero-content h1{
-    font-size:44px;
-    background:linear-gradient(90deg,#7aa2ff,#9bb6ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-.hero-content p{
-    font-size:20px;
-    margin-top:18px;
-    opacity:0.9;
+.hero button{
+padding:15px 36px;
+border:none;
+border-radius:40px;
+font-size:16px;
+cursor:pointer;
+margin-right:16px;
+background:linear-gradient(135deg,#7aa2ff,#4f7cff);
+color:white;
+box-shadow:0 18px 40px rgba(122,162,255,.6);
 }
 
-/* background animation */
-@keyframes bgSlide{
-    0%{background-image:url('uploads/images/bg1.jpg')}
-    33%{background-image:url('uploads/images/bg2.jpg')}
-    66%{background-image:url('uploads/images/bg3.jpg')}
-    100%{background-image:url('uploads/images/bg1.jpg')}
-}
-
-/* ===== SECTION ===== */
+/* SECTION */
 .section{
-    padding:90px 8%;
-    text-align:center;
+padding:95px 8%;
 }
 .section h2{
-    font-size:32px;
-    margin-bottom:50px;
-    background:linear-gradient(90deg,#7aa2ff,#9bb6ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+font-size:34px;
+margin-bottom:18px;
+background:linear-gradient(90deg,#9bb6ff,#e0e7ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+.section p{
+max-width:720px;
+line-height:1.7;
+opacity:.92;
 }
 
-/* ===== EVENTS ===== */
-.events{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:35px;
+/* EVENT CARDS */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:30px;
+margin-top:40px;
 }
-.event-card{
-    background:rgba(255,255,255,0.06);
-    border-radius:20px;
-    overflow:hidden;
-    backdrop-filter:blur(14px);
-    transform:translateY(40px);
-    opacity:0;
-    transition:0.7s ease;
+.card{
+background:rgba(255,255,255,0.14);
+backdrop-filter:blur(18px);
+border-radius:18px;
+padding:26px;
+box-shadow:0 20px 50px rgba(0,0,0,0.65);
+transition:.35s;
 }
-.event-card.show{
-    transform:translateY(0);
-    opacity:1;
+.card:hover{
+transform:translateY(-8px);
+box-shadow:0 30px 70px rgba(0,0,0,0.85);
 }
-.event-card img{
-    width:100%;
-    height:200px;
-    object-fit:cover;
+.card img{
+width:100%;
+border-radius:14px;
+margin-bottom:18px;
 }
-.event-card-content{
-    padding:22px;
-}
-.event-card a{
-    display:inline-block;
-    margin-top:15px;
-    padding:10px 22px;
-    background:linear-gradient(135deg,#7aa2ff,#4f7cff);
-    color:white;
-    text-decoration:none;
-    border-radius:30px;
-    font-size:14px;
+.card h3{
+margin-bottom:10px;
+color:#9bb6ff;
 }
 
-/* ===== FEEDBACK CAROUSEL ===== */
-.feedback-wrapper{
-    overflow:hidden;
-    position:relative;
+/* WHY US */
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:26px;
+margin-top:35px;
 }
-.feedback-track{
-    display:flex;
-    gap:25px;
-    transition:0.6s ease;
-}
-.feedback-card{
-    min-width:300px;
-    background:rgba(255,255,255,0.08);
-    padding:25px;
-    border-radius:18px;
-    backdrop-filter:blur(16px);
-    text-align:left;
-}
-.feedback-card b{
-    display:block;
-    margin-top:15px;
-    color:#9bb6ff;
-    font-weight:500;
+.feature{
+background:rgba(0,0,0,.45);
+padding:24px;
+border-radius:18px;
+text-align:center;
 }
 
-/* ===== ABOUT & CONTACT ===== */
-.about,.contact{
-    max-width:900px;
-    margin:auto;
-    font-size:17px;
-    line-height:1.7;
+/* CTA */
+.cta{
+padding:100px 8%;
+text-align:center;
+background:linear-gradient(135deg,#233a7a,#0b1020);
+}
+.cta h2{
+font-size:36px;
+margin-bottom:18px;
+}
+.cta button{
+padding:16px 42px;
+border:none;
+border-radius:40px;
+font-size:17px;
+cursor:pointer;
+background:#7aa2ff;
+color:white;
+box-shadow:0 18px 40px rgba(122,162,255,.6);
 }
 
-/* ===== FOOTER ===== */
-footer{
-    background:#070a14;
-    padding:50px 8%;
-    text-align:center;
+/* FOOTER */
+.footer{
+padding:35px 8%;
+background:#050814;
+text-align:center;
+font-size:14px;
+opacity:.85;
 }
-.socials a{
-    margin:10px;
-    font-size:20px;
-    text-decoration:none;
-    color:#9bb6ff;
+
+/* SCROLL ANIMATION */
+.reveal{
+opacity:0;
+transform:translateY(50px);
+transition:all .8s ease;
 }
-.socials a:hover{color:#fff}
+.reveal.show{
+opacity:1;
+transform:none;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.hero h1{font-size:38px}
+}
 </style>
 </head>
 
 <body>
 
-<?php include("navbar.php"); ?>
+<!-- NAVBAR -->
+<div class="navbar">
+<h2>College Events</h2>
+<div>
+<a href="#events">Events</a>
+<a href="#why">Why Us</a>
+<a href="#contact">Contact</a>
+<?php if(isset($_SESSION['user_id'])){ ?>
+<a href="User/profile.php">Profile</a>
+<?php } else { ?>
+<a href="login.php">Login</a>
+<?php } ?>
+</div>
+</div>
 
 <!-- HERO -->
 <div class="hero">
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-        <div>
-            <h1>College Event Management System</h1>
-            <p>Plan • Organize • Celebrate — all in one place</p>
-        </div>
-    </div>
+<div class="hero-box reveal show">
+<h1>Powering Unforgettable College Events</h1>
+<p>
+From cultural fests to seminars and farewell nights —  
+we plan, manage and execute college events professionally.
+</p>
+<button onclick="location.href='events.php'">Explore Events</button>
+<button onclick="location.href='login.php'">Organize Event</button>
+</div>
 </div>
 
 <!-- EVENTS -->
-<div class="section">
-<h2>Our Events</h2>
-<div class="events">
-<?php
-$ev=mysqli_query($conn,"SELECT * FROM events ORDER BY event_name");
-while($e=mysqli_fetch_assoc($ev)){
-$img=!empty($e['image'])?$e['image']:'uploads/images/default.jpg';
-echo "
-<div class='event-card animate'>
-<img src='$img'>
-<div class='event-card-content'>
-<h3>{$e['event_name']}</h3>
-<p>Complete planning with premium packages.</p>
-<a href='{$e['page']}'>Book Now</a>
+<div class="section reveal" id="events">
+<h2>College Event Categories</h2>
+
+<div class="grid">
+<div class="card">
+<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80">
+<h3>🎭 Cultural Fest</h3>
+<p>Dance, music, drama, fashion shows and competitions.</p>
 </div>
-</div>";
-}
-?>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80">
+<h3>🎤 Seminars & Workshops</h3>
+<p>Expert talks, workshops and knowledge-sharing sessions.</p>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80">
+<h3>🎓 Farewell & Freshers</h3>
+<p>Memorable farewell nights and energetic freshers parties.</p>
+</div>
+
+<div class="card">
+<img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80">
+<h3>🏆 Technical & Sports Events</h3>
+<p>Hackathons, coding events, sports meets and competitions.</p>
+</div>
 </div>
 </div>
 
-<!-- FEEDBACK -->
-<div class="section">
-<h2>Student Feedback</h2>
+<!-- WHY US -->
+<div class="section reveal" id="why">
+<h2>Why Choose Us</h2>
 
-<div class="feedback-wrapper">
-    <div class="feedback-track" id="feedbackTrack">
-        <div class="feedback-card">
-            Amazing arrangements and smooth coordination.
-            <b>— Anjali Patel</b>
-        </div>
-        <div class="feedback-card">
-            Our annual function was perfectly managed.
-            <b>— Rahul Mehta</b>
-        </div>
-        <div class="feedback-card">
-            Best event experience we ever had in college.
-            <b>— Neha Shah</b>
-        </div>
-        <div class="feedback-card">
-            Professional team and great support.
-            <b>— Karan Desai</b>
-        </div>
-    </div>
+<div class="features">
+<div class="feature">✔ Student-Friendly Planning</div>
+<div class="feature">✔ Budget-Friendly Packages</div>
+<div class="feature">✔ Faculty Approved Workflow</div>
+<div class="feature">✔ Secure Online Booking</div>
 </div>
 </div>
 
-<!-- ABOUT -->
-<div class="section">
-<h2>About Us</h2>
-<div class="about">
-We provide complete college event solutions including venue,
-food, decoration, seating, photography and videography.
-</div>
-</div>
-
-<!-- CONTACT -->
-<div class="section">
-<h2>Contact Us</h2>
-<div class="contact">
-📧 support@collegeevents.com<br>
-📞 +91 98765 43210<br>
-📍 Navsari, Gujarat
-</div>
+<!-- CTA -->
+<div class="cta reveal" id="contact">
+<h2>Ready to Organize Your College Event?</h2>
+<p>Let us handle the planning while you enjoy the celebration.</p><br>
+<button onclick="location.href='login.php'">Get Started</button>
 </div>
 
 <!-- FOOTER -->
-<footer>
-<p>© 2026 College Event Management System</p>
-<div class="socials">
-<a href="#">📘</a>
-<a href="#">📸</a>
-<a href="#">🐦</a>
-<a href="#">🌐</a>
+<div class="footer">
+© <?php echo date('Y'); ?> College Event Planner | Made for College Projects
 </div>
-</footer>
 
 <script>
-/* EVENT SCROLL ANIMATION */
-const cards=document.querySelectorAll(".event-card");
-window.addEventListener("scroll",()=>{
-cards.forEach(c=>{
-if(c.getBoundingClientRect().top < window.innerHeight-100){
-c.classList.add("show");
-}
+/* SCROLL REVEAL */
+const els=document.querySelectorAll('.reveal');
+const reveal=()=>els.forEach(el=>{
+const r=el.getBoundingClientRect();
+if(r.top<window.innerHeight-80) el.classList.add('show');
 });
-});
-
-/* FEEDBACK AUTO SWIPE */
-let index=0;
-const track=document.getElementById("feedbackTrack");
-setInterval(()=>{
-index++;
-if(index>1) index=0;
-track.style.transform=`translateX(-${index*330}px)`;
-},3000);
+window.addEventListener('scroll',reveal);
+reveal();
 </script>
 
 </body>
