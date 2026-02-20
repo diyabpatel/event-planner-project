@@ -9,31 +9,49 @@ if(!isset($_SESSION['user_id'])){
 
 $user_id = $_SESSION['user_id'];
 
-/* Fetch user */
-$user_query = mysqli_query($conn,"SELECT * FROM users WHERE user_id='$user_id'");
-$user = mysqli_fetch_assoc($user_query);
+/* USER DATA */
+$userQ = mysqli_query($conn,"SELECT * FROM users WHERE user_id='$user_id'");
+$user = mysqli_fetch_assoc($userQ);
 
-/* Booking History */
-$booking_query = mysqli_query($conn,"
-SELECT b.*, e.event_name 
-FROM bookings b
-JOIN events e ON b.event_id = e.event_id
-WHERE b.user_id='$user_id'
-ORDER BY b.booking_id DESC
-");
+/* EDIT PROFILE */
+if(isset($_POST['save_profile'])){
+    $name  = $_POST['name'];
+    $phone = $_POST['phone'];
 
-/* Change Password */
+    mysqli_query($conn,"
+        UPDATE users 
+        SET name='$name', phone='$phone' 
+        WHERE user_id='$user_id'
+    ");
+    header("Location: profile.php");
+    exit();
+}
+
+/* CHANGE PASSWORD */
 if(isset($_POST['change_pass'])){
     $old = $_POST['old_pass'];
     $new = $_POST['new_pass'];
 
     if($old == $user['password']){
         mysqli_query($conn,"UPDATE users SET password='$new' WHERE user_id='$user_id'");
-        echo "<script>alert('Password Changed Successfully');</script>";
-    } else {
-        echo "<script>alert('Old Password Incorrect');</script>";
+        echo "<script>alert('Password changed successfully');</script>";
+    }else{
+        echo "<script>alert('Old password incorrect');</script>";
     }
 }
+
+/* PAYMENT STATS */
+$stats = mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT 
+SUM(total_price) AS total_spent,
+SUM(advance_paid) AS advance_paid,
+SUM(remaining_amount) AS pending_amt
+FROM bookings WHERE user_id='$user_id'
+"));
+
+$totalSpent  = isset($stats['total_spent']) ? $stats['total_spent'] : 0;
+$advancePaid = isset($stats['advance_paid']) ? $stats['advance_paid'] : 0;
+$pendingAmt  = isset($stats['pending_amt']) ? $stats['pending_amt'] : 0;
 ?>
 
 <!DOCTYPE html>
@@ -43,154 +61,105 @@ if(isset($_POST['change_pass'])){
 <title>User Profile</title>
 
 <style>
-/* ===== BODY ===== */
 body{
-    margin:0;
-    font-family:'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background:linear-gradient(135deg,#0b0f1a,#121a2e,#1a2742);
-    color:#eaeaff;
+margin:0;
+font-family:'Segoe UI',sans-serif;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:#eaf0ff;
 }
 
-/* ===== CONTAINER ===== */
+/* layout */
 .container{
-    width:85%;
-    max-width:1200px;
-    margin:55px auto 80px;
+width:92%;
+max-width:1300px;
+margin:70px auto 90px;
 }
 
-/* ===== CARD ===== */
-.card{
-    background:rgba(255,255,255,0.06);
-    padding:30px;
-    border-radius:22px;
-    margin-bottom:35px;
-    backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
-    box-shadow:
-        0 30px 70px rgba(0,0,0,0.65),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
-    transition:0.4s ease;
+/* GLASS SQUARE CARD */
+.glass-card{
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(18px);
+border-radius:14px; /* square feel */
+padding:28px;
+margin-bottom:32px;
+box-shadow:
+0 18px 45px rgba(0,0,0,0.6),
+inset 0 0 0 1px rgba(255,255,255,0.15);
+transition:.35s ease;
+}
+.glass-card:hover{
+transform:translateY(-4px);
+box-shadow:
+0 30px 70px rgba(0,0,0,0.75),
+inset 0 0 0 1px rgba(140,180,255,0.45);
 }
 
-.card:hover{
-    transform:translateY(-6px);
-    box-shadow:
-        0 45px 90px rgba(0,0,0,0.75),
-        inset 0 0 0 1px rgba(122,162,255,0.3);
+/* headings */
+.glass-card h2{
+margin:0 0 18px;
+font-size:22px;
+background:linear-gradient(90deg,#9bb6ff,#e0e7ff);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
-/* ===== HEADINGS ===== */
-.card h2{
-    margin-top:0;
-    margin-bottom:18px;
-    font-size:24px;
-    font-weight:600;
-    letter-spacing:0.6px;
-    background:linear-gradient(90deg,#7aa2ff,#9bb6ff);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
+/* grid */
+.grid-2{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:26px;
+}
+.grid-3{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:26px;
 }
 
-/* ===== PROFILE TEXT ===== */
-.card p{
-    font-size:15px;
-    line-height:1.7;
-    margin:8px 0;
-}
-
-.card b{
-    color:#9bb6ff;
-    font-weight:500;
-}
-
-/* ===== TABLE ===== */
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:15px;
-}
-
-th,td{
-    padding:14px 12px;
-    text-align:left;
-    font-size:14px;
-}
-
-th{
-    color:#9bb6ff;
-    font-weight:500;
-    border-bottom:1px solid rgba(255,255,255,0.15);
-}
-
-td{
-    border-bottom:1px solid rgba(255,255,255,0.05);
-}
-
-tr:hover td{
-    background:rgba(122,162,255,0.08);
-}
-
-/* ===== INPUTS ===== */
+/* inputs */
 input{
-    width:100%;
-    padding:12px 14px;
-    border-radius:12px;
-    border:none;
-    margin-bottom:14px;
-    background:rgba(0,0,0,0.45);
-    color:#eaeaff;
-    font-size:14px;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.08);
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin-bottom:12px;
+background:rgba(0,0,0,0.55);
+color:white;
+box-shadow:inset 0 0 0 1px rgba(255,255,255,0.15);
 }
 
-input::placeholder{
-    color:#b7b7d6;
-}
-
-/* ===== BUTTON ===== */
+/* button */
 button{
-    background:linear-gradient(135deg,#7aa2ff,#4f7cff);
-    color:white;
-    border:none;
-    padding:12px 26px;
-    border-radius:30px;
-    cursor:pointer;
-    font-size:14px;
-    font-weight:500;
-    margin-right:12px;
-    transition:0.35s ease;
-    box-shadow:0 12px 30px rgba(122,162,255,0.5);
+background:linear-gradient(135deg,#7aa2ff,#4f7cff);
+border:none;
+padding:10px 22px;
+border-radius:22px;
+color:white;
+cursor:pointer;
+box-shadow:0 12px 30px rgba(122,162,255,0.6);
 }
 
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 18px 40px rgba(122,162,255,0.7);
+/* stats card */
+.stat-card{
+background:rgba(0,0,0,0.45);
+border-radius:14px;
+padding:26px;
+text-align:center;
+box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+.stat-card h3{
+margin:0;
+font-size:30px;
+color:#7aa2ff;
 }
 
-/* ===== MAP ===== */
+/* map */
 .map{
-    width:100%;
-    height:360px;
-    border-radius:18px;
-    border:none;
-    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+width:100%;
+height:340px;
+border-radius:14px;
+border:none;
+box-shadow:0 20px 50px rgba(0,0,0,0.8);
 }
-
-/* ===== RESPONSIVE ===== */
-@media(max-width:768px){
-    .container{
-        width:92%;
-    }
-
-    th,td{
-        font-size:13px;
-    }
-
-    .card h2{
-        font-size:22px;
-    }
-}
-
 </style>
 </head>
 
@@ -198,100 +167,111 @@ button:hover{
 
 <?php include("../navbar.php"); ?>
 
-
 <div class="container">
 
-<!-- PROFILE -->
-<div class="card">
-    <h2>👤 User Profile</h2>
-    <p><b>Name:</b> S.S. Agrawal College</p>
-    <p><b>Email:</b> <?php echo $user['email']; ?></p>
+<!-- PROFILE VIEW -->
+<div class="glass-card">
+<h2>👤 Profile</h2>
+<p><b>Email:</b> <?php echo $user['email']; ?></p>
+<p><b>Phone:</b> <?php echo isset($user['phone'])?$user['phone']:'Not Added'; ?></p>
 </div>
 
-<!-- LOCATION -->
-<div class="card">
-    <h2>📍 College Location (S.S. Agrawal – Navsari)</h2>
+<!-- EDIT PROFILE + CHANGE PASSWORD -->
+<div class="grid-2">
 
-    <!-- Default College Map -->
-    <iframe id="mapFrame" class="map"
-    src="https://www.google.com/maps?q=S.S.%20Agrawal%20College%20Navsari&output=embed">
-    </iframe>
-
-    <br><br>
-
-    <button onclick="getLocation()">📡 Show My Live Location</button>
-    <button onclick="shareLocation()">📤 Share This Location</button>
+<div class="glass-card">
+<h2>✏️ Edit Profile</h2>
+<form method="POST">
+<input type="text" name="name" value="<?php echo isset($user['name'])?$user['name']:''; ?>" placeholder="Name">
+<input type="text" name="phone" value="<?php echo isset($user['phone'])?$user['phone']:''; ?>" placeholder="Phone">
+<button name="save_profile">Save Profile</button>
+</form>
 </div>
 
-<!-- BOOKING HISTORY -->
-<div class="card">
-    <h2>📅 Booking History</h2>
-    <table>
-        <tr>
-            <th>Event</th>
-            <th>Date</th>
-            <th>Total Price</th>
-        </tr>
-        <?php while($row = mysqli_fetch_assoc($booking_query)){ ?>
-        <tr>
-            <td><?php echo $row['event_name']; ?></td>
-            <td><?php echo $row['event_date']; ?></td>
-            <td>₹<?php echo $row['total_price']; ?></td>
-        </tr>
-        <?php } ?>
-    </table>
+<div class="glass-card">
+<h2>🔐 Change Password</h2>
+<form method="POST">
+<input type="password" name="old_pass" placeholder="Old Password" required>
+<input type="password" name="new_pass" placeholder="New Password" required>
+<button name="change_pass">Change Password</button>
+</form>
 </div>
 
-<!-- CHANGE PASSWORD -->
-<div class="card">
-    <h2>🔐 Change Password</h2>
-    <form method="POST">
-        <input type="password" name="old_pass" placeholder="Enter Old Password" required>
-        <input type="password" name="new_pass" placeholder="Enter New Password" required>
-        <button type="submit" name="change_pass">Change Password</button>
-    </form>
+</div>
+
+<!-- PAYMENT SUMMARY -->
+<div class="glass-card">
+<h2>💳 Payment Summary</h2>
+<div class="grid-3">
+<div class="stat-card">
+<h3 id="spent">0</h3>
+<p>Total Spent</p>
+</div>
+<div class="stat-card">
+<h3 id="advance">0</h3>
+<p>Advance Paid</p>
+</div>
+<div class="stat-card">
+<h3 id="pending">0</h3>
+<p>Pending Amount</p>
+</div>
+</div>
+</div>
+
+<!-- MAP -->
+<div class="glass-card">
+<h2>📍 Location</h2>
+<iframe id="mapFrame" class="map"
+src="https://www.google.com/maps?q=S.S.%20Agrawal%20College%20Navsari&output=embed"></iframe>
+<br><br>
+<button onclick="getLocation()">View Location</button>
+<button onclick="shareLocation()">Share Location</button>
 </div>
 
 </div>
 
 <script>
-let currentLat = null;
-let currentLon = null;
-
-function getLocation(){
-    if(navigator.geolocation){
-        navigator.geolocation.getCurrentPosition(function(position){
-
-            currentLat = position.coords.latitude;
-            currentLon = position.coords.longitude;
-
-            document.getElementById("mapFrame").src =
-            "https://www.google.com/maps?q=" + currentLat + "," + currentLon + "&output=embed";
-
-        });
-    } else {
-        alert("Geolocation not supported");
-    }
+/* animated counters */
+function animate(id,target){
+let el=document.getElementById(id);
+let count=0;
+let step=Math.ceil(target/40);
+let i=setInterval(()=>{
+count+=step;
+if(count>=target){
+count=target;
+clearInterval(i);
 }
+el.innerText="₹"+count;
+},25);
+}
+animate("spent",<?php echo (int)$totalSpent; ?>);
+animate("advance",<?php echo (int)$advancePaid; ?>);
+animate("pending",<?php echo (int)$pendingAmt; ?>);
 
+/* location */
+let lat=null,lon=null;
+function getLocation(){
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(function(pos){
+lat=pos.coords.latitude;
+lon=pos.coords.longitude;
+document.getElementById("mapFrame").src =
+"https://www.google.com/maps?q="+lat+","+lon+"&output=embed";
+});
+}
+}
 function shareLocation(){
-
-    if(currentLat === null || currentLon === null){
-        alert("First click 'Show My Live Location'");
-        return;
-    }
-
-    let locationURL = "https://www.google.com/maps?q=" + currentLat + "," + currentLon;
-
-    if(navigator.share){
-        navigator.share({
-            title:"My Live Location",
-            text:"Here is my location:",
-            url:locationURL
-        });
-    }else{
-        prompt("Copy this link:", locationURL);
-    }
+if(lat==null){
+alert("Click View Location first");
+return;
+}
+let url="https://www.google.com/maps?q="+lat+","+lon;
+if(navigator.share){
+navigator.share({title:"My Location",url:url});
+}else{
+prompt("Copy this link:",url);
+}
 }
 </script>
 

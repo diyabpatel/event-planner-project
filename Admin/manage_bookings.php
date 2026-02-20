@@ -1,92 +1,171 @@
 <?php
+session_start();
 include("../db.php");
+
+// Protect page
+if(!isset($_SESSION['user_id'])){
+    header("Location: ../login.php");
+    exit();
+}
+
+/* FETCH BOOKINGS */
+$query = mysqli_query($conn,"
+SELECT b.*, 
+       u.college_name, 
+       e.event_name, 
+       p.package_name
+FROM bookings b
+JOIN users u ON b.user_id = u.user_id
+JOIN events e ON b.event_id = e.event_id
+JOIN packages p ON b.package_id = p.package_id
+ORDER BY b.booking_id DESC
+");
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
 <title>Manage Bookings</title>
 
 <style>
 body{
-    font-family: Arial, sans-serif;
+    font-family:'Segoe UI', Arial;
+    margin:0;
     background:#f4f7fb;
-    padding:20px;
 }
-h2{
-    color:#1f4fd8;
+
+/* HEADER */
+.header{
+    background:#1e40af;
+    color:#fff;
+    padding:18px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
+
+.header h2{
+    margin:0;
+}
+
+.back-btn{
+    background:#ef4444;
+    padding:8px 15px;
+    border-radius:6px;
+    text-decoration:none;
+    color:white;
+    font-size:14px;
+}
+
+/* CONTAINER */
+.container{
+    padding:30px;
+}
+
+/* TABLE */
 table{
     width:100%;
     border-collapse:collapse;
-    background:#ffffff;
-    margin-top:20px;
+    background:#fff;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
-th, td{
-    padding:10px;
-    border:1px solid #ddd;
-    text-align:left;
-}
+
 th{
-    background:#1f4fd8;
-    color:white;
+    background:#2563eb;
+    color:#fff;
+    padding:12px;
+    font-size:14px;
 }
+
+td{
+    padding:12px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+    font-size:14px;
+}
+
 tr:hover{
-    background:#f1f1f1;
+    background:#f1f5ff;
+}
+
+/* AMOUNT COLORS */
+.total{
+    font-weight:bold;
+    color:#1e3a8a;
+}
+
+.advance{
+    color:green;
+    font-weight:bold;
+}
+
+.remaining{
+    color:#dc2626;
+    font-weight:bold;
+}
+
+.paid{
+    color:green;
+    font-weight:bold;
+}
+
+.pending{
+    color:orange;
+    font-weight:bold;
 }
 </style>
 
 </head>
 <body>
 
-<h2>Manage Bookings</h2>
+<div class="header">
+    <h2>Manage Bookings</h2>
+    <a href="AdminDashboard.php" class="back-btn">Back</a>
+</div>
+
+<div class="container">
 
 <table>
 <tr>
-    <th>Booking ID</th>
-    <th>College Name</th>
-    <th>Event Name</th>
-    <th>Package Name</th>
+    <th>ID</th>
+    <th>College</th>
+    <th>Event</th>
+    <th>Package</th>
     <th>Event Date</th>
-    <th>Booking Date</th>
-    <th>Total Price</th>
+    <th>Total</th>
+    <th>Advance (25%)</th>
+    <th>Remaining</th>
+    <th>Status</th>
 </tr>
 
-<?php
-$query = mysqli_query($conn,"
-SELECT 
-    bookings.booking_id,
-    users.college_name,
-    events.event_name,
-    packages.package_name,
-    bookings.event_date,
-    bookings.booking_date,
-    bookings.total_price
-FROM bookings
-JOIN users ON bookings.user_id = users.user_id
-JOIN events ON bookings.event_id = events.event_id
-JOIN packages ON bookings.package_id = packages.package_id
-ORDER BY bookings.booking_id DESC
-");
-
-while($row = mysqli_fetch_assoc($query)){
-?>
+<?php while($row = mysqli_fetch_assoc($query)) { ?>
 <tr>
     <td><?php echo $row['booking_id']; ?></td>
     <td><?php echo $row['college_name']; ?></td>
     <td><?php echo $row['event_name']; ?></td>
     <td><?php echo $row['package_name']; ?></td>
     <td><?php echo $row['event_date']; ?></td>
-    <td><?php echo $row['booking_date']; ?></td>
-    <td>₹ <?php echo $row['total_price']; ?></td>
+
+    <td class="total">₹ <?php echo $row['total_price']; ?></td>
+    <td class="advance">₹ <?php echo $row['advance_paid']; ?></td>
+    <td class="remaining">₹ <?php echo $row['remaining_amount']; ?></td>
+
+    <td>
+        <?php 
+        if($row['remaining_amount'] == 0){
+            echo "<span class='paid'>Paid</span>";
+        } else {
+            echo "<span class='pending'>Pending</span>";
+        }
+        ?>
+    </td>
 </tr>
 <?php } ?>
 
 </table>
+
+</div>
 
 </body>
 </html>
