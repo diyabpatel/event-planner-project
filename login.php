@@ -34,38 +34,52 @@ if(isset($_POST['login']))
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Login</title>
+<title>College Event Login</title>
 
 <style>
+*{box-sizing:border-box}
+
 body{
     margin:0;
-    padding:0;
-    font-family: "Segoe UI", sans-serif;
-    background:linear-gradient(135deg,#eaf1ff,#f8fbff);
-}
-
-.login-wrapper{
+    font-family:'Segoe UI',sans-serif;
     min-height:100vh;
+    background:
+    radial-gradient(circle at top,#1e2a5a,#0b1020 70%);
     display:flex;
     justify-content:center;
     align-items:center;
 }
 
+/* GLASS CARD */
 .login-card{
     width:380px;
-    background:#ffffff;
-    padding:35px 30px;
-    border-radius:14px;
-    box-shadow:0 18px 40px rgba(0,0,0,0.12);
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(18px);
+    border-radius:18px;
+    padding:38px 32px;
+    box-shadow:
+    0 25px 60px rgba(0,0,0,0.7),
+    inset 0 0 0 1px rgba(255,255,255,0.15);
+    animation:fadeIn 0.9s ease;
 }
 
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:none}
+}
+
+/* TITLE */
 .login-card h2{
     text-align:center;
-    margin-bottom:25px;
-    color:#1f4fd8;
-    letter-spacing:0.5px;
+    margin-bottom:26px;
+    font-weight:600;
+    letter-spacing:0.6px;
+    background:linear-gradient(90deg,#9bb6ff,#e0e7ff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
+/* INPUTS */
 .form-group{
     margin-bottom:18px;
 }
@@ -74,48 +88,59 @@ body{
     display:block;
     margin-bottom:6px;
     font-size:14px;
-    color:#444;
+    color:#eaf0ff;
+    opacity:.9;
 }
 
 .form-group input{
     width:100%;
-    padding:11px;
-    border:1px solid #d6e2ff;
-    border-radius:8px;
+    padding:12px;
+    border-radius:10px;
+    border:none;
     font-size:14px;
+    background:rgba(0,0,0,0.45);
+    color:white;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.2);
     transition:0.3s;
 }
 
 .form-group input:focus{
     outline:none;
-    border-color:#1f4fd8;
-    box-shadow:0 0 0 3px rgba(31,79,216,0.15);
+    box-shadow:
+    inset 0 0 0 1px #7aa2ff,
+    0 0 0 3px rgba(122,162,255,0.25);
 }
 
+/* BUTTON */
 .login-btn{
     width:100%;
-    padding:12px;
-    background:#1f4fd8;
-    color:white;
+    padding:13px;
     border:none;
-    border-radius:8px;
+    border-radius:30px;
     font-size:15px;
     cursor:pointer;
-    transition:0.3s;
+    margin-top:10px;
+    background:linear-gradient(135deg,#7aa2ff,#4f7cff);
+    color:white;
+    box-shadow:0 15px 35px rgba(122,162,255,0.6);
+    transition:.35s;
 }
 
 .login-btn:hover{
-    background:#163bb0;
+    transform:translateY(-2px);
+    box-shadow:0 22px 45px rgba(122,162,255,0.8);
 }
 
+/* EXTRA LINKS */
 .extra-links{
-    margin-top:18px;
+    margin-top:20px;
     text-align:center;
     font-size:14px;
+    color:#eaf0ff;
 }
 
 .extra-links a{
-    color:#1f4fd8;
+    color:#9bb6ff;
     text-decoration:none;
     font-weight:500;
 }
@@ -123,40 +148,43 @@ body{
 .extra-links a:hover{
     text-decoration:underline;
 }
+
+/* RESPONSIVE */
+@media(max-width:480px){
+    .login-card{
+        width:92%;
+    }
+}
 </style>
 
 </head>
 <body>
 
-<div class="login-wrapper">
+<div class="login-card">
 
-    <div class="login-card">
+    <h2>College Event Login</h2>
 
-        <h2>Login</h2>
+    <form method="post">
 
-        <form method="post">
-
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="email" required>
-            </div>
-
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" required>
-            </div>
-
-            <button type="submit" name="login" class="login-btn">
-                Login
-            </button>
-
-        </form>
-
-        <div class="extra-links">
-            Don’t have an account?
-            <a href="register.php">Create Account</a>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="college@email.com" required>
         </div>
 
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" name="login" class="login-btn">
+            Login
+        </button>
+
+    </form>
+
+    <div class="extra-links">
+        Don’t have an account?
+        <a href="register.php">Create Account</a>
     </div>
 
 </div>

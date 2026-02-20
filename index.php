@@ -17,30 +17,6 @@ color:#eaf0ff;
 overflow-x:hidden;
 }
 
-/* NAVBAR */
-.navbar{
-position:fixed;
-top:0;left:0;width:100%;
-padding:16px 8%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(0,0,0,0.4);
-backdrop-filter:blur(14px);
-z-index:100;
-}
-.navbar h2{
-color:#9bb6ff;
-letter-spacing:1px;
-}
-.navbar a{
-color:#fff;
-margin-left:24px;
-text-decoration:none;
-font-size:14px;
-}
-.navbar a:hover{color:#9bb6ff}
-
 /* HERO */
 .hero{
 height:100vh;
@@ -187,22 +163,7 @@ transform:none;
 </head>
 
 <body>
-
-<!-- NAVBAR -->
-<div class="navbar">
-<h2>College Events</h2>
-<div>
-<a href="#events">Events</a>
-<a href="#why">Why Us</a>
-<a href="#contact">Contact</a>
-<?php if(isset($_SESSION['user_id'])){ ?>
-<a href="User/profile.php">Profile</a>
-<?php } else { ?>
-<a href="login.php">Login</a>
-<?php } ?>
-</div>
-</div>
-
+<?php include("navbar.php"); ?>
 <!-- HERO -->
 <div class="hero">
 <div class="hero-box reveal show">
