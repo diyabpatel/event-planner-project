@@ -38,14 +38,23 @@ $revenue = mysqli_fetch_assoc($revenue_q);
 body{
     margin:0;
     font-family:'Segoe UI', Arial, sans-serif;
-    background:linear-gradient(135deg,#eef4ff,#f8fbff);
+    background:
+        radial-gradient(circle at top left,#dbeafe,transparent 40%),
+        radial-gradient(circle at bottom right,#bfdbfe,transparent 40%),
+        linear-gradient(135deg,#eef4ff,#f8fbff);
+    min-height:100vh;
 }
 
 /* HEADER */
 .header{
-    background:linear-gradient(90deg,#2563eb,#1e40af);
+    backdrop-filter: blur(14px);
+    background:rgba(37,99,235,0.85);
+    box-shadow:0 10px 30px rgba(0,0,0,0.25);
     padding:20px 30px;
     color:#fff;
+    position:sticky;
+    top:0;
+    z-index:10;
 }
 
 .header-container{
@@ -58,21 +67,22 @@ body{
     font-size:26px;
     font-weight:600;
     letter-spacing:1px;
+    text-shadow:0 3px 10px rgba(0,0,0,0.25);
 }
 
 .logout-btn{
-    background:#ef4444;
+    background:linear-gradient(135deg,#ef4444,#dc2626);
     color:#fff;
-    padding:8px 18px;
-    border-radius:8px;
+    padding:10px 22px;
+    border-radius:30px;
     text-decoration:none;
     font-size:14px;
-    font-weight:500;
-    transition:0.25s;
+    font-weight:600;
+    box-shadow:0 6px 20px rgba(239,68,68,0.5);
+    transition:all 0.3s ease;
 }
-
 .logout-btn:hover{
-    background:#dc2626;
+    transform:translateY(-2px) scale(1.05);
 }
 
 /* CONTAINER */
@@ -84,63 +94,95 @@ body{
 
 /* SECTION TITLE */
 .section-title{
-    margin:25px 10px 15px;
-    font-size:20px;
+    margin:35px 10px 20px;
+    font-size:22px;
     color:#1e3a8a;
-    font-weight:600;
+    font-weight:700;
+    letter-spacing:0.5px;
 }
 
-/* CARDS GRID */
+/* GRID */
 .cards{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:20px;
+    gap:25px;
 }
 
-/* COMMON CARD */
+/* GLASS CARD */
 .card{
-    background:#ffffff;
-    border-radius:14px;
-    padding:25px 20px;
+    position:relative;
+    background:rgba(255,255,255,0.6);
+    backdrop-filter:blur(18px);
+    border-radius:18px;
+    padding:28px 22px;
     text-align:center;
-    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+    box-shadow:
+        0 10px 30px rgba(0,0,0,0.12),
+        inset 0 1px 1px rgba(255,255,255,0.6);
+    overflow:hidden;
+}
+
+/* SHINE EFFECT */
+.card::before{
+    content:"";
+    position:absolute;
+    top:-50%;
+    left:-60%;
+    width:200%;
+    height:200%;
+    background:linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255,255,255,0.6),
+        transparent 70%
+    );
+    transform:rotate(25deg);
+    transition:0.6s;
+}
+.card:hover::before{
+    left:120%;
 }
 
 /* STAT CARDS */
 .card.stat{
-    border-top:6px solid #3b82f6;
+    border:1px solid rgba(59,130,246,0.35);
 }
 .card.stat h2{
     margin:0;
-    font-size:34px;
+    font-size:38px;
     color:#1e40af;
+    font-weight:700;
 }
 .card.stat p{
     margin-top:10px;
     font-size:15px;
-    color:#475569;
+    color:#334155;
+    font-weight:500;
 }
 
-/* MANAGE CARDS */
+/* MANAGEMENT CARDS */
 .card.manage{
-    border-top:6px solid #22c55e;
     cursor:pointer;
     text-decoration:none;
     color:#0f172a;
-    transition:all 0.25s ease;
+    border:1px solid rgba(34,197,94,0.35);
+    transition:all 0.35s ease;
 }
 .card.manage:hover{
-    transform:translateY(-6px);
-    box-shadow:0 12px 30px rgba(0,0,0,0.15);
+    transform:translateY(-10px) scale(1.03);
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.25),
+        inset 0 1px 2px rgba(255,255,255,0.7);
 }
 .card.manage h2{
     margin:0;
-    font-size:36px;
+    font-size:42px;
 }
 .card.manage p{
-    margin-top:10px;
-    font-size:15px;
-    font-weight:500;
+    margin-top:12px;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:0.3px;
 }
 </style>
 
@@ -189,11 +231,6 @@ body{
         <a href="manage_events.php" class="card manage">
             <h2>📅</h2>
             <p>Manage Events</p>
-        </a>
-
-        <a href="manage_packages.php" class="card manage">
-            <h2>📦</h2>
-            <p>Manage Packages</p>
         </a>
 
         <a href="manage_food.php" class="card manage">

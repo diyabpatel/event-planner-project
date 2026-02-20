@@ -49,23 +49,139 @@ if(isset($_POST['save'])){
 <title>Manage Events</title>
 
 <style>
-body{font-family:Arial;background:#f4f7fb;padding:20px;}
-form{background:#fff;padding:15px;border-radius:8px;}
-input,textarea{width:100%;padding:8px;margin:5px 0;}
-button{padding:8px 15px;}
-table{width:100%;border-collapse:collapse;margin-top:20px;background:#fff;}
-th,td{padding:10px;border:1px solid #ddd;text-align:left;}
-th{background:#1f4fd8;color:white;}
-img{width:80px;border-radius:6px;}
-.btn{
-    padding:6px 10px;
-    border-radius:5px;
-    text-decoration:none;
-    color:white;
-    margin-right:5px;
+*{
+    box-sizing:border-box;
 }
-.edit{background:#f0ad4e;}
-.delete{background:#d9534f;}
+body{
+    margin:0;
+    font-family:'Segoe UI', Arial, sans-serif;
+    background:
+        radial-gradient(circle at top left,#dbeafe,transparent 40%),
+        radial-gradient(circle at bottom right,#bfdbfe,transparent 40%),
+        linear-gradient(135deg,#eef4ff,#f8fbff);
+    padding:30px;
+}
+
+/* PAGE TITLE */
+h2{
+    font-size:28px;
+    color:#1e3a8a;
+    margin-bottom:15px;
+}
+h3{
+    margin-top:0;
+    color:#1e40af;
+}
+
+/* FORM */
+form{
+    background:rgba(255,255,255,0.65);
+    backdrop-filter:blur(18px);
+    padding:25px;
+    border-radius:18px;
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.15),
+        inset 0 1px 1px rgba(255,255,255,0.6);
+    max-width:650px;
+}
+
+input,textarea{
+    width:100%;
+    padding:12px 14px;
+    margin:10px 0;
+    border-radius:12px;
+    border:1px solid rgba(0,0,0,0.15);
+    font-size:14px;
+    outline:none;
+    background:rgba(255,255,255,0.9);
+}
+
+input:focus, textarea:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 2px rgba(37,99,235,0.25);
+}
+
+/* BUTTON */
+button{
+    margin-top:10px;
+    padding:12px 26px;
+    border:none;
+    border-radius:30px;
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    color:#fff;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(37,99,235,0.45);
+    transition:all 0.3s ease;
+}
+button:hover{
+    transform:translateY(-2px) scale(1.05);
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:40px;
+    background:rgba(255,255,255,0.65);
+    backdrop-filter:blur(18px);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+th,td{
+    padding:14px 15px;
+    text-align:left;
+}
+
+th{
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    color:#fff;
+    font-weight:600;
+    letter-spacing:0.4px;
+}
+
+tr{
+    transition:0.25s;
+}
+tr:hover{
+    background:rgba(37,99,235,0.08);
+}
+
+/* IMAGE */
+img{
+    width:80px;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* ACTION BUTTONS */
+.btn{
+    display:inline-block;
+    padding:8px 14px;
+    border-radius:20px;
+    text-decoration:none;
+    color:#fff;
+    font-size:13px;
+    font-weight:600;
+    margin-right:6px;
+    transition:all 0.3s ease;
+}
+
+.edit{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    box-shadow:0 6px 20px rgba(245,158,11,0.5);
+}
+.delete{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    box-shadow:0 6px 20px rgba(239,68,68,0.5);
+}
+
+.btn:hover{
+    transform:translateY(-2px) scale(1.05);
+}
 </style>
 
 </head>
