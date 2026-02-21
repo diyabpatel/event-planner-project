@@ -61,105 +61,135 @@ $pendingAmt  = isset($stats['pending_amt']) ? $stats['pending_amt'] : 0;
 <title>User Profile</title>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+*{
+box-sizing:border-box;
+}
+
 body{
 margin:0;
-font-family:'Segoe UI',sans-serif;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:#eaf0ff;
+font-family:'Poppins', sans-serif;
+background:
+linear-gradient(135deg,#1e3c72,#2a5298);
+color:#f1f5ff;
 }
 
 /* layout */
 .container{
 width:92%;
-max-width:1300px;
+max-width:1250px;
 margin:70px auto 90px;
 }
 
-/* GLASS SQUARE CARD */
+/* GLASS CARD */
 .glass-card{
 background:rgba(255,255,255,0.12);
-backdrop-filter:blur(18px);
-border-radius:14px; /* square feel */
-padding:28px;
-margin-bottom:32px;
+backdrop-filter:blur(20px);
+border-radius:18px;
+padding:30px;
+margin-bottom:30px;
 box-shadow:
-0 18px 45px rgba(0,0,0,0.6),
-inset 0 0 0 1px rgba(255,255,255,0.15);
-transition:.35s ease;
+0 20px 60px rgba(0,0,0,0.4);
+transition:0.35s ease;
 }
+
 .glass-card:hover{
-transform:translateY(-4px);
+transform:translateY(-6px);
 box-shadow:
-0 30px 70px rgba(0,0,0,0.75),
-inset 0 0 0 1px rgba(140,180,255,0.45);
+0 30px 80px rgba(0,0,0,0.55);
 }
 
 /* headings */
 .glass-card h2{
-margin:0 0 18px;
+margin:0 0 20px;
 font-size:22px;
-background:linear-gradient(90deg,#9bb6ff,#e0e7ff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+font-weight:500;
+color:#e0e7ff;
 }
 
-/* grid */
+/* grids */
 .grid-2{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:26px;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
 }
+
 .grid-3{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:26px;
+gap:30px;
 }
 
 /* inputs */
 input{
 width:100%;
-padding:12px;
-border-radius:10px;
-border:none;
-margin-bottom:12px;
-background:rgba(0,0,0,0.55);
-color:white;
-box-shadow:inset 0 0 0 1px rgba(255,255,255,0.15);
-}
-
-/* button */
-button{
-background:linear-gradient(135deg,#7aa2ff,#4f7cff);
-border:none;
-padding:10px 22px;
-border-radius:22px;
-color:white;
-cursor:pointer;
-box-shadow:0 12px 30px rgba(122,162,255,0.6);
-}
-
-/* stats card */
-.stat-card{
-background:rgba(0,0,0,0.45);
+padding:14px;
 border-radius:14px;
-padding:26px;
-text-align:center;
-box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);
+border:1px solid rgba(255,255,255,0.25);
+margin-bottom:14px;
+background:rgba(255,255,255,0.15);
+color:white;
+font-size:14px;
+font-family:'Poppins', sans-serif;
 }
+
+input:focus{
+outline:none;
+border-color:#93c5fd;
+box-shadow:0 0 0 2px rgba(147,197,253,0.4);
+}
+
+/* buttons */
+button{
+background:linear-gradient(135deg,#3b82f6,#2563eb);
+border:none;
+padding:12px 26px;
+border-radius:30px;
+color:white;
+font-weight:500;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 12px 35px rgba(37,99,235,0.5);
+}
+
+button:hover{
+transform:translateY(-4px);
+box-shadow:0 20px 50px rgba(37,99,235,0.7);
+}
+
+/* stats */
+.stat-card{
+background:rgba(255,255,255,0.15);
+border-radius:18px;
+padding:30px;
+text-align:center;
+transition:0.3s;
+}
+
+.stat-card:hover{
+background:rgba(147,197,253,0.25);
+transform:translateY(-5px);
+}
+
 .stat-card h3{
 margin:0;
-font-size:30px;
-color:#7aa2ff;
+font-size:34px;
+font-weight:600;
+color:#93c5fd;
 }
 
 /* map */
 .map{
 width:100%;
 height:340px;
-border-radius:14px;
+border-radius:18px;
 border:none;
-box-shadow:0 20px 50px rgba(0,0,0,0.8);
+box-shadow:0 20px 60px rgba(0,0,0,0.6);
+margin-top:10px;
 }
+
 </style>
 </head>
 
