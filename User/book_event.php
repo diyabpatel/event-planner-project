@@ -392,7 +392,7 @@ onclick='selectPackage(".$row['package_id'].")'>
 <option value="">Select Venue</option>
 
 <?php
-$q=mysqli_query($conn,"SELECT * FROM venues WHERE package_id=$package_id");
+$q=mysqli_query($conn,"SELECT * FROM venues WHERE package_id=$package_id AND event_id=$event_id");
 while($row=mysqli_fetch_assoc($q))
 {
 echo "<option value='".$row['venue_id']."' data-price='".$row['price']."'>
@@ -408,7 +408,7 @@ echo "<option value='".$row['venue_id']."' data-price='".$row['price']."'>
 <option value="">Select Decoration</option>
 
 <?php
-$q=mysqli_query($conn,"SELECT * FROM decorations WHERE package_id=$package_id");
+$q=mysqli_query($conn,"SELECT * FROM decorations WHERE package_id=$package_id AND event_id=$event_id");
 while($row=mysqli_fetch_assoc($q))
 {
 echo "<option value='".$row['decoration_id']."' data-price='".$row['price']."'>
