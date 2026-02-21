@@ -2,15 +2,9 @@
 session_start();
 include("../db.php");
 
-/* Fetch Convocation Event ID dynamically */
-$event_query = mysqli_query($conn,"SELECT event_id FROM events WHERE event_name='Convocation'");
-$event = mysqli_fetch_assoc($event_query);
-
-if(!$event){
-    die("Convocation event not found in database");
-}
-
-$convocation_id = $event['event_id'];
+$event = mysqli_fetch_assoc(
+    mysqli_query($conn,"SELECT * FROM events WHERE event_name='Convocation'")
+);
 ?>
 
 <!DOCTYPE html>
@@ -19,91 +13,140 @@ $convocation_id = $event['event_id'];
 <meta charset="UTF-8">
 <title>Convocation Ceremony</title>
 
-<!-- Stylish font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
 <style>
-*{box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+*{
+    box-sizing:border-box;
+}
 
 body{
-margin:0;
-font-family:'Poppins','Segoe UI',sans-serif;
-background:#0b1020;
-color:white;
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background:
+        linear-gradient(rgba(10,25,60,0.75), rgba(10,25,60,0.85)),
+        url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=80')
+        center/cover no-repeat;
+    color:white;
 }
 
-/* HERO SECTION */
+/* HERO */
 .hero{
-height:100vh;
-background:
-linear-gradient(rgba(11,16,32,0.75),rgba(11,16,32,0.85)),
-url('../uploads/images/bg.jpg') no-repeat center center/cover;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:0 8%;
+    text-align:center;
+    padding:110px 20px 90px;
 }
 
-/* GLASS CONTENT */
-.overlay{
-max-width:650px;
-background:rgba(255,255,255,0.12);
-backdrop-filter:blur(18px);
-padding:55px 45px;
-border-radius:22px;
-text-align:center;
-box-shadow:
-0 30px 70px rgba(0,0,0,0.75),
-inset 0 0 0 1px rgba(255,255,255,0.15);
-animation:fadeUp 1s ease;
+.hero h1{
+    font-size:48px;
+    font-weight:600;
+    margin-bottom:15px;
 }
 
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(40px)}
-to{opacity:1;transform:none}
+.hero p{
+    font-size:16px;
+    max-width:650px;
+    margin:auto;
+    color:#e2e8f0;
 }
 
-.overlay h1{
-font-size:52px;
-font-weight:600;
-margin-bottom:18px;
-letter-spacing:.5px;
-background:linear-gradient(90deg,#ffeaa7,#ffffff);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+/* SECTION */
+.section{
+    max-width:1150px;
+    margin:60px auto;
+    padding:45px;
+    border-radius:25px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(20px);
+    box-shadow:0 25px 70px rgba(0,0,0,0.5);
 }
 
-.overlay p{
-font-size:17px;
-line-height:1.7;
-opacity:.9;
-margin-bottom:34px;
+.section h2{
+    margin-bottom:35px;
+    font-size:30px;
+    font-weight:500;
+    color:#dbeafe;
+    text-align:center;
+}
+
+/* IMAGE GRID */
+.details{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:30px;
+}
+
+/* IMAGE CARD */
+.card{
+    position:relative;
+    border-radius:20px;
+    overflow:hidden;
+    cursor:pointer;
+    transition:0.4s ease;
+}
+
+.card img{
+    width:100%;
+    height:260px;
+    object-fit:cover;
+    transition:0.5s ease;
+}
+
+.card-content{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:100%;
+    padding:20px;
+    background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);
+}
+
+.card h3{
+    margin:0;
+    font-size:18px;
+}
+
+.card p{
+    margin-top:6px;
+    font-size:13px;
+    color:#e5e7eb;
+}
+
+.card:hover img{
+    transform:scale(1.1);
+}
+
+.card:hover{
+    transform:translateY(-8px);
 }
 
 /* BUTTON */
-.btn{
-display:inline-block;
-padding:15px 42px;
-border-radius:40px;
-font-size:16px;
-font-weight:500;
-text-decoration:none;
-cursor:pointer;
-background:linear-gradient(135deg,#ff7675,#ff4757);
-color:white;
-box-shadow:0 18px 40px rgba(255,118,117,0.6);
-transition:.35s;
+.book-btn{
+    display:inline-block;
+    margin-top:50px;
+    padding:16px 45px;
+    background:linear-gradient(135deg,#3b82f6,#2563eb);
+    border-radius:30px;
+    text-decoration:none;
+    color:white;
+    font-weight:500;
+    font-size:16px;
+    box-shadow:0 15px 45px rgba(37,99,235,0.5);
+    transition:0.3s;
 }
 
-.btn:hover{
-transform:translateY(-2px);
-box-shadow:0 24px 50px rgba(255,118,117,0.8);
+.book-btn:hover{
+    transform:translateY(-5px);
+    box-shadow:0 25px 60px rgba(37,99,235,0.7);
 }
 
 /* RESPONSIVE */
-@media(max-width:768px){
-.overlay h1{font-size:38px}
-.overlay{padding:40px 28px}
+@media(max-width:900px){
+    .details{
+        grid-template-columns:1fr;
+    }
+    .hero h1{
+        font-size:34px;
+    }
 }
 </style>
 </head>
@@ -112,18 +155,53 @@ box-shadow:0 24px 50px rgba(255,118,117,0.8);
 
 <?php include("../navbar.php"); ?>
 
+<!-- HERO -->
 <div class="hero">
-    <div class="overlay">
-        <h1>Convocation Ceremony</h1>
-        <p>
-            Celebrate academic excellence and honor graduates in a prestigious
-            convocation ceremony filled with pride, tradition, and memorable moments.
-        </p>
+    <h1>Convocation Ceremony 2025</h1>
+    <p>
+        Celebrate achievements, honor excellence, and create unforgettable memories 
+        with a grand and elegant convocation event tailored perfectly for your institution.
+    </p>
+</div>
 
-        <a href="../User/book_event.php?event_id=<?php echo $convocation_id; ?>" class="btn">
-            Book Convocation Event
+<!-- HIGHLIGHTS -->
+<div class="section">
+    <h2>Event Highlights</h2>
+
+    <div class="details">
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80">
+            <div class="card-content">
+                <h3>🎓 Grand Stage Setup</h3>
+                <p>Elegant stage design with professional lighting and branding.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?auto=format&fit=crop&w=900&q=80">
+            <div class="card-content">
+                <h3>🏅 Degree Distribution</h3>
+                <p>Memorable certificate and medal presentation ceremony.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80">
+            <div class="card-content">
+                <h3>📸 Celebration Moments</h3>
+                <p>Professional photography and joyful group captures.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="text-align:center;">
+        <a href="../User/book_event.php?event_id=<?= $event['event_id'] ?>" class="book-btn">
+            Book Convocation Now
         </a>
     </div>
+
 </div>
 
 </body>
