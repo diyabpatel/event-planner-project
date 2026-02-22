@@ -300,7 +300,7 @@ while($row=mysqli_fetch_assoc($packages)){
 
 <label>Select Venue</label>
 <select name="venue_id" required>
-    <option value="">Select Seat</option>
+    <option value="">Select Venue</option>
 <?php
 $q=mysqli_query($conn,"SELECT * FROM venues WHERE event_id=$event_id AND package_id=$package_id");
 while($r=mysqli_fetch_assoc($q))
@@ -310,7 +310,7 @@ echo "<option value='{$r['venue_id']}' data-price='{$r['price']}'>{$r['venue_nam
 
 <label>Select Decoration</label>
 <select name="decoration_id" required>
-    <option value="">Select Seat</option>
+    <option value="">Select Decoration</option>
 <?php
 $q=mysqli_query($conn,"SELECT * FROM decorations WHERE event_id=$event_id AND package_id=$package_id");
 while($r=mysqli_fetch_assoc($q))
