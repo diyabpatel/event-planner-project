@@ -5,280 +5,339 @@ ini_set('display_errors', 1);
 session_start();
 include("../db.php");
 
-
-/* ================= CHECK EXTRA PAYMENT ================= */
-
-$isExtraPayment = false;
-
-if(isset($_SESSION['extra_payment']))
-{
-    $extra = $_SESSION['extra_payment'];
-
-    $booking_id = $extra['booking_id'];
-
-    $total = $extra['new_total'];
-
-    $advance = $extra['extra_advance']; // only extra advance
-
-    $remaining = $extra['remaining_after'];
-
-    $isExtraPayment = true;
-}
-
-
-/* ================= SUCCESS FLOW ================= */
-
-if(isset($_SESSION['payment_success']))
-{
-    $showSuccess = true;
-}
-
-
-/* ================= NORMAL BOOKING FLOW ================= */
-
-else if(!$isExtraPayment && !isset($_SESSION['booking_data']))
-{
-    echo "No booking found";
+if(!isset($_SESSION['user_id'])){
+    header("Location: ../login.php");
     exit();
 }
 
-else if(!$isExtraPayment)
+/* ================= VARIABLES ================= */
+
+$isExtraPayment = false;
+$isNewBooking = false;
+
+$previous_total = 0;
+$previous_advance = 0;
+$previous_remaining = 0;
+
+$new_total = 0;
+$new_advance = 0;
+$new_remaining = 0;
+
+$extra_amount = 0;
+
+/* ================= EXTRA PAYMENT FLOW ================= */
+
+if(isset($_SESSION['extra_payment']))
 {
-    $showSuccess = false;
+    $isExtraPayment = true;
+
+    $data = $_SESSION['extra_payment'];
+
+    $booking_id = $data['booking_id'];
+
+    $q = mysqli_query($conn,"SELECT * FROM bookings WHERE booking_id=$booking_id");
+    $booking = mysqli_fetch_assoc($q);
+
+    $previous_total = $booking['total_price'];
+    $previous_advance = $booking['advance_paid'];
+    $previous_remaining = $booking['remaining_amount'];
+
+    $new_total = $data['new_total'];
+    $new_advance = round($new_total * 0.25, 2);
+    $new_remaining = $new_total - $new_advance;
+
+    $extra_amount = $new_advance - $previous_advance;
+}
+
+/* ================= NEW BOOKING FLOW ================= */
+
+else if(isset($_SESSION['booking_data']))
+{
+    $isNewBooking = true;
 
     $data = $_SESSION['booking_data'];
 
-    $total = $data['total_price'];
+    $new_total = $data['total_price'];
+    $new_advance = round($new_total * 0.25, 2);
+    $new_remaining = $new_total - $new_advance;
 
-    $advance = round($total * 0.25, 2);
-
-    $remaining = $total - $advance;
+    $extra_amount = $new_advance;
 }
-
-
-/* ================= PAYMENT SUBMIT ================= */
-
-if(isset($_POST['pay']))
-{
-
-$method = $_POST['payment_method'];
-
-$upi_id = isset($_POST['upi_id']) ? $_POST['upi_id'] : "";
-
-$card_number = isset($_POST['card_number']) ? $_POST['card_number'] : "";
-
-$cvv = isset($_POST['cvv']) ? $_POST['cvv'] : "";
-
-
-/* VALIDATION */
-
-if($method=="UPI")
-{
-    if(empty($upi_id) || !preg_match("/^[a-zA-Z0-9._-]+@[a-zA-Z]+$/",$upi_id))
-    {
-        $error="Invalid UPI ID";
-    }
-    else
-    {
-        processPayment($conn,$method);
-    }
-}
-
-if($method=="Card")
-{
-    if(strlen($card_number)!=16 || strlen($cvv)!=3)
-    {
-        $error="Invalid Card Details";
-    }
-    else
-    {
-        processPayment($conn,$method);
-    }
-}
-
-}
-
-
-/* ================= PROCESS PAYMENT ================= */
-
-function processPayment($conn,$method)
-{
-
-global $isExtraPayment,$booking_id,$advance,$remaining,$total;
-
-
-/* EXTRA PAYMENT */
-
-if($isExtraPayment)
-{
-
-$q=mysqli_query($conn,"SELECT advance_paid FROM bookings WHERE booking_id='$booking_id'");
-
-$row=mysqli_fetch_assoc($q);
-
-$newAdvance=$row['advance_paid']+$advance;
-
-
-mysqli_query($conn,"
-UPDATE bookings SET
-
-advance_paid='$newAdvance',
-remaining_amount='$remaining',
-payment_method='$method'
-
-WHERE booking_id='$booking_id'
-");
-
-
-unset($_SESSION['extra_payment']);
-
-}
-
-
-/* NORMAL BOOKING */
 
 else
 {
-
-$data=$_SESSION['booking_data'];
-
-
-mysqli_query($conn,"
-INSERT INTO bookings
-(user_id,event_id,package_id,capacity,event_date,total_price,
-advance_paid,remaining_amount,payment_status,payment_method,
-food_ids,coverage_ids)
-
-VALUES
-
-('".$data['user_id']."',
-'".$data['event_id']."',
-'".$data['package_id']."',
-'".$data['capacity']."',
-'".$data['event_date']."',
-'$total',
-'$advance',
-'$remaining',
-'Advance Paid',
-'$method',
-'".$data['food_ids']."',
-'".$data['coverage_ids']."')
-");
+    echo "<h2 style='color:white;text-align:center;margin-top:50px'>No payment found</h2>";
+    exit();
+}
 
 
-$bookingId=mysqli_insert_id($conn);
+/* ================= PAYMENT PROCESS ================= */
 
-
-/* EMAIL SAFE */
-
-try{
-
-require 'send_mail.php';
-
-$u=mysqli_query($conn,"SELECT email FROM users WHERE user_id='".$data['user_id']."'");
-
-if($u && mysqli_num_rows($u))
+if(isset($_POST['pay']))
 {
-$user=mysqli_fetch_assoc($u);
+    $method = $_POST['payment_method'];
 
-@sendBookingMail($user['email'],$bookingId,$advance);
+    $upi = isset($_POST['upi_id']) ? $_POST['upi_id'] : "";
+    $card = isset($_POST['card_number']) ? $_POST['card_number'] : "";
+    $cvv = isset($_POST['cvv']) ? $_POST['cvv'] : "";
+
+    if($method=="UPI")
+    {
+        if(!preg_match("/^[a-zA-Z0-9._-]+@[a-zA-Z]+$/",$upi))
+        {
+            $error="Invalid UPI ID";
+        }
+        else
+        {
+            processPayment($conn,$method);
+        }
+    }
+
+    if($method=="Card")
+    {
+        if(strlen($card)!=16 || strlen($cvv)!=3)
+        {
+            $error="Invalid card details";
+        }
+        else
+        {
+            processPayment($conn,$method);
+        }
+    }
 }
 
-}catch(Exception $e){}
 
+/* ================= FUNCTION ================= */
 
-unset($_SESSION['booking_data']);
+function processPayment($conn,$method)
+{
+    global $isExtraPayment,$isNewBooking,$new_total,$new_advance,$new_remaining;
 
+    if($isExtraPayment)
+    {
+        $data=$_SESSION['extra_payment'];
+
+        mysqli_query($conn,"
+        UPDATE bookings SET
+        total_price='$new_total',
+        advance_paid='$new_advance',
+        remaining_amount='$new_remaining',
+        payment_method='$method'
+        WHERE booking_id='".$data['booking_id']."'
+        ");
+
+        unset($_SESSION['extra_payment']);
+    }
+
+    if($isNewBooking)
+    {
+        $data=$_SESSION['booking_data'];
+
+        mysqli_query($conn,"
+        INSERT INTO bookings
+        (user_id,event_id,package_id,capacity,event_date,total_price,
+        advance_paid,remaining_amount,payment_status,payment_method,
+        food_ids,coverage_ids)
+
+        VALUES
+        (
+        '".$data['user_id']."',
+        '".$data['event_id']."',
+        '".$data['package_id']."',
+        '".$data['capacity']."',
+        '".$data['event_date']."',
+        '$new_total',
+        '$new_advance',
+        '$new_remaining',
+        'Advance Paid',
+        '$method',
+        '".$data['food_ids']."',
+        '".$data['coverage_ids']."'
+        )
+        ");
+
+        unset($_SESSION['booking_data']);
+    }
+
+    $_SESSION['payment_success']=true;
+
+    header("Location: payment.php");
+    exit();
 }
-
-
-/* SUCCESS */
-
-$_SESSION['payment_success']=true;
-
-header("Location: payment.php");
-
-exit();
-
-}
-
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>Payment</title>
+<title>Secure Payment</title>
 
 <style>
 
-body{
-font-family:Segoe UI;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-height:100vh;
+body
+{
+margin:0;
+font-family:"Segoe UI",Roboto,Arial,sans-serif;
+
+background:
+linear-gradient(rgba(8,20,50,0.75), rgba(8,20,50,0.75)),
+url('../uploads/images/annual/stage_bg.jpg') center/cover no-repeat;
+
 display:flex;
 justify-content:center;
 align-items:center;
-margin:0;
+min-height:100vh;
 color:white;
 }
 
-.container{
-width:420px;
-background:rgba(255,255,255,0.12);
+/* CARD */
+
+.card
+{
+width:480px;
+background:rgba(255,255,255,0.08);
 backdrop-filter:blur(18px);
-padding:30px;
+
+padding:35px;
 border-radius:18px;
-box-shadow:0 20px 40px rgba(0,0,0,0.4);
+
+box-shadow:
+0 8px 32px rgba(0,0,0,0.45),
+inset 0 0 0 1px rgba(255,255,255,0.08);
+
+animation:fadeIn 0.5s ease;
 }
 
-.amount-box{
-background:rgba(0,0,0,0.25);
-padding:12px;
-border-radius:10px;
-margin-bottom:10px;
+@keyframes fadeIn
+{
+from {opacity:0; transform:translateY(20px);}
+to {opacity:1; transform:translateY(0);}
+}
+
+h2
+{
+text-align:center;
+margin-bottom:25px;
+font-weight:600;
+}
+
+/* SECTIONS */
+
+.section
+{
+background:rgba(255,255,255,0.06);
+padding:16px;
+border-radius:12px;
+margin-bottom:18px;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.row
+{
 display:flex;
 justify-content:space-between;
+margin:10px 0;
+font-size:15px;
 }
 
-.option{
-background:white;
-color:black;
-padding:12px;
-border-radius:10px;
-margin-top:10px;
-display:flex;
-gap:10px;
-cursor:pointer;
+.row span:last-child
+{
+font-weight:600;
 }
 
-input{
-width:100%;
-padding:10px;
-margin-top:10px;
-border-radius:8px;
-border:none;
-}
+/* EXTRA PAYMENT */
 
-.hidden{
-display:none;
-}
-
-button{
-width:100%;
+.extra
+{
+background:linear-gradient(135deg,#ff4e50,#f00000);
 padding:14px;
-margin-top:20px;
-border:none;
-border-radius:14px;
-background:#00c6ff;
-color:white;
+border-radius:10px;
+text-align:center;
+margin-bottom:18px;
+font-weight:600;
 font-size:16px;
 }
 
-.note{
-text-align:center;
-color:#ffd166;
+/* METHODS */
+
+.method
+{
+background:white;
+color:black;
+padding:14px;
+border-radius:10px;
 margin-top:10px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+cursor:pointer;
+transition:0.25s;
+}
+
+.method:hover
+{
+transform:scale(1.02);
+}
+
+/* INPUT */
+
+input[type=text],
+input[type=password]
+{
+width:100%;
+padding:12px;
+margin-top:10px;
+
+border-radius:8px;
+border:none;
+outline:none;
+
+font-size:14px;
+}
+
+/* BUTTON */
+
+button
+{
+width:100%;
+padding:15px;
+margin-top:20px;
+
+background:linear-gradient(135deg,#00c6ff,#0072ff);
+
+border:none;
+border-radius:10px;
+
+color:white;
+font-size:16px;
+font-weight:600;
+
+cursor:pointer;
+transition:0.25s;
+}
+
+button:hover
+{
+transform:translateY(-2px);
+}
+
+/* ERROR */
+
+.error
+{
+background:#ff4444;
+padding:10px;
+border-radius:8px;
+margin-bottom:15px;
+text-align:center;
+}
+
+.hidden
+{
+display:none;
 }
 
 </style>
@@ -287,130 +346,114 @@ margin-top:10px;
 
 <body>
 
+<div class="card">
 
-<div class="container" <?php if(isset($_SESSION['payment_success'])) echo 'style="display:none"'; ?>>
-
-<h2 align="center">Secure Payment</h2>
+<h2>Secure Payment</h2>
 
 
-<div class="amount-box">
+<?php if($isExtraPayment){ ?>
+
+<div class="section">
+
+<b>Previous Payment</b>
+
+<div class="row">
 <span>Total</span>
-<span>Rs. <?php echo number_format($total,2); ?></span>
+<span>₹ <?php echo number_format($previous_total,2); ?></span>
 </div>
 
-
-<div class="amount-box">
-<span><?php echo $isExtraPayment ? "Extra Advance" : "Advance"; ?></span>
-<span>Rs. <?php echo number_format($advance,2); ?></span>
+<div class="row">
+<span>Advance Paid</span>
+<span>₹ <?php echo number_format($previous_advance,2); ?></span>
 </div>
 
-
-<div class="amount-box">
+<div class="row">
 <span>Remaining</span>
-<span>Rs. <?php echo number_format($remaining,2); ?></span>
+<span>₹ <?php echo number_format($previous_remaining,2); ?></span>
+</div>
+
+</div>
+
+<?php } ?>
+
+
+<div class="section">
+
+<b>New Payment</b>
+
+<div class="row">
+<span>Total</span>
+<span>₹ <?php echo number_format($new_total,2); ?></span>
+</div>
+
+<div class="row">
+<span>Advance (25%)</span>
+<span>₹ <?php echo number_format($new_advance,2); ?></span>
+</div>
+
+<div class="row">
+<span>Remaining</span>
+<span>₹ <?php echo number_format($new_remaining,2); ?></span>
+</div>
+
 </div>
 
 
-<?php if(isset($error)) echo "<p style='color:#ffb3b3;text-align:center'>$error</p>"; ?>
+<div class="extra">
+Extra Payment Required: ₹ <?php echo number_format($extra_amount,2); ?>
+</div>
+
+
+<?php if(isset($error)) echo "<div class='error'>$error</div>"; ?>
 
 
 <form method="POST">
 
-<label class="option">
-<input type="radio" name="payment_method" value="UPI" required>
+<label class="method">
 UPI
+<input type="radio" name="payment_method" value="UPI" required onclick="showUPI()">
 </label>
-
-<label class="option">
-<input type="radio" name="payment_method" value="Card">
-Card
-</label>
-
 
 <div id="upiBox" class="hidden">
 <input type="text" name="upi_id" placeholder="example@upi">
 </div>
 
 
+<label class="method">
+Card
+<input type="radio" name="payment_method" value="Card" onclick="showCard()">
+</label>
+
 <div id="cardBox" class="hidden">
-<input type="text" name="card_number" maxlength="16" placeholder="Card Number">
-<input type="password" name="cvv" maxlength="3" placeholder="CVV">
+<input type="text" name="card_number" placeholder="Card Number">
+<input type="password" name="cvv" placeholder="CVV">
 </div>
 
 
 <button name="pay">
-
-<?php echo $isExtraPayment ? "Pay Extra Rs. " : "Pay Rs. "; ?>
-
-<?php echo number_format($advance,2); ?>
-
+Pay ₹ <?php echo number_format($extra_amount,2); ?>
 </button>
 
 </form>
 
-
-<div class="note">
-
-<?php echo $isExtraPayment ? "Pay extra advance amount" : "Pay 25% advance now"; ?>
-
 </div>
-
-
-</div>
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
-<?php if(isset($_SESSION['payment_success'])): ?>
-
-<script>
-
-Swal.fire({
-
-title:'Payment Successful',
-
-text:'Booking confirmed',
-
-icon:'success',
-
-showCancelButton:true,
-
-confirmButtonText:'Download Receipt',
-
-cancelButtonText:'My Bookings'
-
-}).then((r)=>{
-
-if(r.isConfirmed)
-location='receipt.php';
-
-else
-location='my_bookings.php';
-
-});
-
-</script>
-
-<?php unset($_SESSION['payment_success']); endif; ?>
 
 
 <script>
 
-document.querySelectorAll("input[name=payment_method]").forEach(function(el){
+function showUPI()
+{
+document.getElementById("upiBox").style.display="block";
+document.getElementById("cardBox").style.display="none";
+}
 
-el.onclick=function(){
-
-document.getElementById("upiBox").style.display=(el.value=="UPI")?"block":"none";
-
-document.getElementById("cardBox").style.display=(el.value=="Card")?"block":"none";
-
-};
-
-});
+function showCard()
+{
+document.getElementById("upiBox").style.display="none";
+document.getElementById("cardBox").style.display="block";
+}
 
 </script>
-
 
 </body>
 </html>
