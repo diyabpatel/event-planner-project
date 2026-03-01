@@ -75,8 +75,8 @@ if(isset($_POST['pay']))
     $method = $_POST['payment_method'];
 
     $upi = isset($_POST['upi_id']) ? $_POST['upi_id'] : "";
-$card = isset($_POST['card_number']) ? $_POST['card_number'] : "";
-$cvv = isset($_POST['cvv']) ? $_POST['cvv'] : "";
+    $card = isset($_POST['card_number']) ? $_POST['card_number'] : "";
+    $cvv = isset($_POST['cvv']) ? $_POST['cvv'] : "";
 
     if($method=="UPI")
     {
