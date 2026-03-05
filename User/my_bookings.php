@@ -164,13 +164,6 @@ h2{
     background:linear-gradient(135deg,#f59e0b,#d97706);
 }
 
-/* ===== CHANGE DATE TEXT ===== */
-.card div[style]{
-    margin-top:15px !important;
-    color:#ffd166 !important;
-    font-size:14px;
-}
-
 /* ===== BUTTON ===== */
 .btn{
     display:inline-block;
@@ -197,11 +190,17 @@ h2{
     pointer-events:none;
 }
 
+.btn.receipt{
+    background:linear-gradient(135deg,#16a34a,#22c55e);
+    margin-left:10px;
+}
+
 </style>
 
 </head>
 
 <body>
+
 <?php include("../navbar.php"); ?>
 
 <div class="container">
@@ -225,17 +224,17 @@ $today = date("Y-m-d");
 $is_edit_allowed = ($today <= $change_last_date);
 
 
-// event status
+/* ===== EVENT STATUS ===== */
+
 $event_status = ($today <= $event_date)
 ? "<span class='status upcoming'>Upcoming</span>"
 : "<span class='status completed'>Completed</span>";
 
+/* ===== PAYMENT STATUS ===== */
 
-// payment status
 $payment_status = ($row['payment_status']=="Advance Paid")
 ? "<span class='status payment-pending'>Advance Paid</span>"
 : "<span class='status payment-paid'>Fully Paid</span>";
-
 
 echo "
 
@@ -251,6 +250,11 @@ echo "
 
 
 <div class='details'>
+
+<div class='detail-box'>
+<b>Receipt No:</b><br>
+".$row['receipt_no']."
+</div>
 
 <div class='detail-box'>
 <b>Booking ID:</b><br>
@@ -305,12 +309,14 @@ echo "
 </div>
 
 
-<div style='margin-top:10px;color:#ffd166;'>
+<div style='margin-top:12px;color:#ffd166;'>
 Changes allowed until: <b>".$change_last_date."</b>
 </div>
 
 ";
 
+
+/* ===== BUTTONS ===== */
 
 if($is_edit_allowed)
 {
@@ -320,6 +326,8 @@ else
 {
 echo "<a class='btn disabled'>Edit Closed</a>";
 }
+
+echo "<a href='receipt.php?booking_id=".$row['booking_id']."' class='btn receipt'>Receipt</a>";
 
 echo "</div>";
 

@@ -70,24 +70,34 @@ echo "<script>alert('Date cannot be earlier than current event date');</script>"
 else
 {
 
-/* CALCULATE TOTAL */
+/* ================= CALCULATE TOTAL ================= */
 
 $total = 0;
+
+/* venue */
 
 $r=mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM venues WHERE venue_id=$venue"));
 $total += $r['price'];
 
+/* decoration */
+
 $r=mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM decorations WHERE decoration_id=$dec"));
 $total += $r['price'];
 
+/* seat */
+
 $r=mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM seats WHERE seat_id=$seat"));
 $total += $r['price'] * $new_capacity;
+
+/* food */
 
 foreach($food as $f)
 {
 $r=mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM food WHERE food_id=$f"));
 $total += $r['price'] * $new_capacity;
 }
+
+/* coverage */
 
 foreach($cover as $c)
 {
@@ -96,68 +106,47 @@ $total += $r['price'];
 }
 
 
-/* NEW ADVANCE */
+/* ================= NEW ADVANCE ================= */
 
 $new_advance = round($total * 0.25, 2);
 
 
-/* ================= EXTRA PAYMENT ================= */
+/* ================= ADVANCE DIFFERENCE ================= */
 
-if($new_advance > $current_advance)
+$advance_difference = $new_advance - $current_advance;
+
+
+/* ================= EXTRA PAYMENT OR REFUND ================= */
+
+if($advance_difference != 0)
 {
-
-$extra = $new_advance - $current_advance;
-
-
-/* SAVE DATA FOR PAYMENT PAGE */
 
 $_SESSION['extra_payment'] = [
 
 "booking_id"=>$booking_id,
 
+"previous_total"=>$current_total,
+"previous_advance"=>$current_advance,
+
 "new_total"=>$total,
-
-"extra_advance"=>$extra,
-
 "new_advance"=>$new_advance,
 
-"remaining_after"=>$total - $new_advance,
+"advance_difference"=>$advance_difference,
 
 "capacity"=>$new_capacity,
-
 "event_date"=>$new_date,
 
 "venue_id"=>$venue,
-
 "decoration_id"=>$dec,
-
 "seat_id"=>$seat,
 
 "food_ids"=>implode(",",$food),
-
 "coverage_ids"=>implode(",",$cover)
 
 ];
 
-
-echo "<script>
-alert('Extra advance payment required: ₹$extra');
-window.location='payment.php';
-</script>";
-
+echo "<script>window.location='payment_edit.php';</script>";
 exit();
-
-}
-
-
-/* ================= REFUND ================= */
-
-else if($new_advance < $current_advance)
-{
-
-$refund = $current_advance - $new_advance;
-
-echo "<script>alert('Refund amount: ₹$refund');</script>";
 
 }
 
@@ -241,7 +230,6 @@ border-radius:10px;
 margin-bottom:10px;
 }
 
-
 select,input{
 width:100%;
 padding:14px;
@@ -255,7 +243,6 @@ select option{
 background:#0f172a;
 color:white;
 }
-
 
 .checkbox-group{
 background:rgba(15,23,42,0.6);
