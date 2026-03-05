@@ -28,7 +28,6 @@ ORDER BY b.booking_date DESC
 ";
 
 $result = mysqli_query($conn,$query);
-
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +39,6 @@ $result = mysqli_query($conn,$query);
 
 <style>
 
-/* ===== BODY ===== */
 body{
     margin:0;
     font-family:'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -48,14 +46,12 @@ body{
     color:#eaeaff;
 }
 
-/* ===== CONTAINER ===== */
 .container{
     max-width:1150px;
     margin:50px auto 70px;
     padding:25px;
 }
 
-/* ===== HEADING ===== */
 h2{
     font-size:32px;
     font-weight:600;
@@ -67,28 +63,20 @@ h2{
     -webkit-text-fill-color:transparent;
 }
 
-/* ===== CARD ===== */
 .card{
     background:rgba(255,255,255,0.06);
     backdrop-filter:blur(18px);
-    -webkit-backdrop-filter:blur(18px);
     border-radius:22px;
     padding:30px;
     margin-bottom:35px;
-    box-shadow:
-        0 30px 70px rgba(0,0,0,0.65),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
+    box-shadow:0 30px 70px rgba(0,0,0,0.65);
     transition:0.4s ease;
 }
 
 .card:hover{
     transform:translateY(-8px);
-    box-shadow:
-        0 45px 90px rgba(0,0,0,0.75),
-        inset 0 0 0 1px rgba(122,162,255,0.25);
 }
 
-/* ===== CARD HEADER ===== */
 .card-header{
     display:flex;
     justify-content:space-between;
@@ -99,7 +87,6 @@ h2{
 .event-name{
     font-size:26px;
     font-weight:600;
-    letter-spacing:0.5px;
 }
 
 .package{
@@ -107,11 +94,8 @@ h2{
     padding:8px 18px;
     border-radius:40px;
     font-size:13px;
-    font-weight:500;
-    box-shadow:0 10px 25px rgba(122,162,255,0.4);
 }
 
-/* ===== DETAILS GRID ===== */
 .details{
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
@@ -123,29 +107,17 @@ h2{
     padding:16px 18px;
     border-radius:16px;
     font-size:14px;
-    line-height:1.7;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.05);
-    transition:0.3s ease;
-}
-
-.detail-box:hover{
-    background:rgba(122,162,255,0.12);
-    box-shadow:inset 0 0 0 1px rgba(122,162,255,0.35);
 }
 
 .detail-box b{
-    font-weight:500;
     color:#9bb6ff;
 }
 
-/* ===== STATUS BADGES ===== */
 .status{
     display:inline-block;
     padding:7px 16px;
     border-radius:30px;
     font-size:12px;
-    font-weight:500;
-    letter-spacing:0.5px;
 }
 
 .upcoming{
@@ -164,7 +136,6 @@ h2{
     background:linear-gradient(135deg,#f59e0b,#d97706);
 }
 
-/* ===== BUTTON ===== */
 .btn{
     display:inline-block;
     margin-top:22px;
@@ -174,25 +145,29 @@ h2{
     text-decoration:none;
     border-radius:40px;
     font-size:14px;
-    font-weight:500;
-    transition:0.35s ease;
-    box-shadow:0 12px 30px rgba(122,162,255,0.5);
-}
-
-.btn:hover{
-    transform:translateY(-3px);
-    box-shadow:0 18px 40px rgba(122,162,255,0.7);
 }
 
 .btn.disabled{
     background:#4b5563;
-    box-shadow:none;
     pointer-events:none;
 }
 
 .btn.receipt{
     background:linear-gradient(135deg,#16a34a,#22c55e);
     margin-left:10px;
+}
+
+.btn.feedback{
+    background:linear-gradient(135deg,#f59e0b,#d97706);
+    margin-left:10px;
+}
+
+.feedback-done{
+    margin-left:10px;
+    padding:10px 18px;
+    border-radius:40px;
+    font-size:13px;
+    background:#374151;
 }
 
 </style>
@@ -223,14 +198,13 @@ $today = date("Y-m-d");
 
 $is_edit_allowed = ($today <= $change_last_date);
 
-
-/* ===== EVENT STATUS ===== */
+/* EVENT STATUS */
 
 $event_status = ($today <= $event_date)
 ? "<span class='status upcoming'>Upcoming</span>"
 : "<span class='status completed'>Completed</span>";
 
-/* ===== PAYMENT STATUS ===== */
+/* PAYMENT STATUS */
 
 $payment_status = ($row['payment_status']=="Advance Paid")
 ? "<span class='status payment-pending'>Advance Paid</span>"
@@ -247,7 +221,6 @@ echo "
 <div class='package'>".$row['package_name']."</div>
 
 </div>
-
 
 <div class='details'>
 
@@ -308,15 +281,13 @@ echo "
 
 </div>
 
-
 <div style='margin-top:12px;color:#ffd166;'>
 Changes allowed until: <b>".$change_last_date."</b>
 </div>
 
 ";
 
-
-/* ===== BUTTONS ===== */
+/* BUTTONS */
 
 if($is_edit_allowed)
 {
@@ -328,6 +299,28 @@ echo "<a class='btn disabled'>Edit Closed</a>";
 }
 
 echo "<a href='receipt.php?booking_id=".$row['booking_id']."' class='btn receipt'>Receipt</a>";
+
+/* FEEDBACK BUTTON */
+
+if($today > $event_date)
+{
+
+$check=mysqli_query($conn,"
+SELECT * FROM feedback 
+WHERE booking_id='".$row['booking_id']."' 
+AND user_id='$user_id'
+");
+
+if(mysqli_num_rows($check)==0)
+{
+echo "<a href='feedback.php?booking_id=".$row['booking_id']."' class='btn feedback'>Give Feedback</a>";
+}
+else
+{
+echo "<span class='feedback-done'>Feedback Submitted</span>";
+}
+
+}
 
 echo "</div>";
 

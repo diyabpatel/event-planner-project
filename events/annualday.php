@@ -2,12 +2,31 @@
 session_start();
 include("../db.php");
 
-// fetch Annual Day event
+/* ===== FETCH EVENT ===== */
+
 $query = "SELECT * FROM events WHERE event_name='Annual Day'";
 $result = mysqli_query($conn,$query);
 $event = mysqli_fetch_assoc($result);
 
 $event_id = $event['event_id'];
+
+
+/* ===== FETCH FEEDBACK ===== */
+
+$feedback_query = mysqli_query($conn,"
+SELECT f.rating,f.comment,u.college_name
+FROM feedback f
+JOIN bookings b ON f.booking_id=b.booking_id
+JOIN users u ON f.user_id=u.user_id
+WHERE b.event_id='$event_id'
+ORDER BY f.created_at DESC
+LIMIT 6
+");
+
+if(!$feedback_query){
+$feedback_error = mysqli_error($conn);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -15,7 +34,6 @@ $event_id = $event['event_id'];
 <head>
 
 <meta charset="UTF-8">
-
 <title>Annual Day Event</title>
 
 <style>
@@ -25,6 +43,8 @@ margin:0;
 font-family:Arial;
 background:#f4f6f8;
 }
+
+/* HERO */
 
 .hero{
 background-image:url("../uploads/images/annual/annualday_bg.png");
@@ -57,6 +77,8 @@ cursor:pointer;
 padding:60px;
 }
 
+/* ABOUT */
+
 .about{
 display:flex;
 gap:40px;
@@ -67,6 +89,8 @@ align-items:center;
 width:500px;
 border-radius:10px;
 }
+
+/* SERVICES */
 
 .services{
 margin-top:60px;
@@ -92,6 +116,8 @@ height:200px;
 object-fit:cover;
 }
 
+/* GALLERY */
+
 .gallery{
 margin-top:60px;
 }
@@ -108,32 +134,51 @@ height:200px;
 object-fit:cover;
 }
 
-.packages{
-margin-top:60px;
+
+/* FEEDBACK */
+
+.feedback-section{
+margin-top:80px;
+text-align:center;
 }
 
-.package-grid{
-display:flex;
+.feedback-grid{
+margin-top:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:30px;
 }
 
-.package-card{
+.feedback-card{
 background:white;
-padding:20px;
-border-radius:10px;
-width:250px;
-box-shadow:0px 0px 10px gray;
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+position:relative;
 }
 
-.package-card button{
-margin-top:10px;
-padding:10px;
-width:100%;
-background:#3498db;
-color:white;
-border:none;
-cursor:pointer;
+.feedback-card:before{
+content:"“";
+font-size:60px;
+color:#3498db;
+position:absolute;
+top:-10px;
+left:15px;
 }
+
+.feedback-stars{
+color:#facc15;
+font-size:18px;
+margin:10px 0;
+}
+
+.feedback-user{
+margin-top:15px;
+font-weight:bold;
+color:#333;
+}
+
+/* FOOTER */
 
 footer{
 background:black;
@@ -150,6 +195,9 @@ text-align:center;
 <body>
 
 <?php include("../navbar.php"); ?>
+
+
+<!-- HERO -->
 
 <div class="hero">
 
@@ -179,6 +227,8 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 <div class="container">
 
 
+<!-- ABOUT -->
+
 <div class="about">
 
 <img src="../uploads/images/annual/annualday_about.jpg">
@@ -200,6 +250,8 @@ We provide complete event management including venue, catering, decoration, phot
 </div>
 
 
+
+<!-- SERVICES -->
 
 <div class="services">
 
@@ -243,6 +295,8 @@ We provide complete event management including venue, catering, decoration, phot
 
 
 
+<!-- GALLERY -->
+
 <div class="gallery">
 
 <h2>Our Previous Works</h2>
@@ -262,14 +316,59 @@ We provide complete event management including venue, catering, decoration, phot
 
 
 
+<!-- FEEDBACK -->
+
+<div class="feedback-section">
+
+<h2>What Our Customers Say</h2>
+
+<div class="feedback-grid">
+
+<?php
+
+if(isset($feedback_error)){
+echo "<p>Feedback Error: $feedback_error</p>";
+}
+else if(mysqli_num_rows($feedback_query)>0){
+
+while($f=mysqli_fetch_assoc($feedback_query)){
+
+$stars = str_repeat("⭐",$f['rating']);
+
+echo "
+
+<div class='feedback-card'>
+
+<div class='feedback-stars'>$stars</div>
+
+<p>".$f['comment']."</p>
+
+<div class='feedback-user'>- ".$f['college_name']."</div>
+
+</div>
+
+";
+
+}
+
+}
+else{
+
+echo "<p>No feedback available yet.</p>";
+
+}
+
+?>
+
+</div>
+
+</div>
+
 </div>
 
 
-
 <footer>
-
 Event Management System
-
 </footer>
 
 
