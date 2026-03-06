@@ -260,7 +260,12 @@ body{
 
         <a href="manage_bookings.php" class="card manage">
             <h2>📑</h2>
-            <p>Manage Bookings</p>
+            <p>View Bookings</p>
+        </a>
+
+        <a href="manage_colleges.php" class="card manage">
+        <h2>🏫</h2>
+        <p>View Colleges</p>
         </a>
 
     </div>
