@@ -343,6 +343,11 @@ Our event management team provides full services including venue setup, decorati
 </div>
 
 <div class="service-card">
+<img src="../uploads/images/freshers/catering.jpg">
+<h3>Catering</h3>
+</div>
+
+<div class="service-card">
 <img src="../uploads/images/freshers/sound.jpg">
 <h3>DJ Night</h3>
 </div>
