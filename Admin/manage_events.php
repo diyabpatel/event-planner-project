@@ -2,30 +2,35 @@
 include("../db.php");
 
 /* DELETE EVENT */
+
 if(isset($_GET['delete'])){
 $id = $_GET['delete'];
 
 $res = mysqli_query($conn,"SELECT image FROM events WHERE event_id=$id");
 $row = mysqli_fetch_assoc($res);
 
-if($row){
-unlink("../".$row['image']);
+if($row && $row['image']!=""){
+$path = "../uploads/images/events_images/".$row['image'];
+if(file_exists($path)){
+unlink($path);
+}
 }
 
 mysqli_query($conn,"DELETE FROM events WHERE event_id=$id");
 
 header("Location: manage_events.php");
+exit();
 }
 
 
 /* FETCH FOR EDIT */
+
 $edit = null;
 
 if(isset($_GET['edit'])){
 $id = $_GET['edit'];
 
 $res = mysqli_query($conn,"SELECT * FROM events WHERE event_id=$id");
-
 $edit = mysqli_fetch_assoc($res);
 }
 
@@ -37,39 +42,51 @@ if(isset($_POST['save'])){
 $event_name = $_POST['event_name'];
 $description = $_POST['description'];
 
-$image_path = "";
+$image_name = "";
 
 /* IMAGE UPLOAD */
 
 if($_FILES['image']['name']!=""){
 
-$image_name = $_FILES['image']['name'];
 $tmp = $_FILES['image']['tmp_name'];
 
-$folder = "../uploads/event_images/";
+$image_name = time()."_".$_FILES['image']['name'];
+
+$folder = "../uploads/images/events_images/";
 
 if(!file_exists($folder)){
 mkdir($folder,0777,true);
 }
 
-$image_path = "uploads/event_images/".$image_name;
-
 move_uploaded_file($tmp,$folder.$image_name);
 
 }
 
-/* UPDATE */
+
+/* UPDATE EVENT */
 
 if($_POST['event_id']!=""){
 
 $id = $_POST['event_id'];
 
-if($image_path!=""){
+if($image_name!=""){
+
+/* DELETE OLD IMAGE */
+
+$res = mysqli_query($conn,"SELECT image FROM events WHERE event_id=$id");
+$row = mysqli_fetch_assoc($res);
+
+if($row && $row['image']!=""){
+$old = "../uploads/images/events_images/".$row['image'];
+if(file_exists($old)){
+unlink($old);
+}
+}
 
 mysqli_query($conn,"UPDATE events SET
 event_name='$event_name',
 description='$description',
-image='$image_path'
+image='$image_name'
 WHERE event_id=$id");
 
 }
@@ -84,16 +101,18 @@ WHERE event_id=$id");
 
 }
 
-/* INSERT */
+
+/* INSERT EVENT */
 
 else{
 
 mysqli_query($conn,"INSERT INTO events(event_name,description,image)
-VALUES('$event_name','$description','$image_path')");
+VALUES('$event_name','$description','$image_name')");
 
 }
 
 header("Location: manage_events.php");
+exit();
 }
 ?>
 
@@ -204,19 +223,24 @@ background:#ef4444;
 value="<?php echo isset($edit['event_id']) ? $edit['event_id'] : ''; ?>">
 
 <label>Event Name</label>
+
 <input type="text" name="event_name"
 value="<?php echo isset($edit['event_name']) ? $edit['event_name'] : ''; ?>" required>
 
 <label>Description</label>
+
 <textarea name="description"><?php
 echo isset($edit['description']) ? $edit['description'] : '';
 ?></textarea>
 
 <label>Event Image</label>
+
 <input type="file" name="image">
 
 <button type="submit" name="save">
+
 <?php echo isset($edit) ? "Update Event" : "Add Event"; ?>
+
 </button>
 
 </form>
@@ -256,7 +280,7 @@ while($row = mysqli_fetch_assoc($q)){
 if($row['image']!=""){
 ?>
 
-<img src="../<?php echo $row['image']; ?>">
+<img src="../uploads/images/events_images/<?php echo $row['image']; ?>">
 
 <?php
 }
