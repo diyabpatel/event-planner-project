@@ -2,152 +2,192 @@
 session_start();
 include("../db.php");
 
-$event = mysqli_fetch_assoc(
-    mysqli_query($conn,"SELECT * FROM events WHERE event_name='Convocation'")
-);
+/* ===== FETCH EVENT ===== */
+
+$query = "SELECT * FROM events WHERE event_name='Convocation'";
+$result = mysqli_query($conn,$query);
+$event = mysqli_fetch_assoc($result);
+
+$event_id = $event['event_id'];
+
+/* ===== FETCH FEEDBACK ===== */
+
+$feedback_query = mysqli_query($conn,"
+SELECT f.rating,f.comment,u.college_name
+FROM feedback f
+JOIN bookings b ON f.booking_id=b.booking_id
+JOIN users u ON f.user_id=u.user_id
+WHERE b.event_id='$event_id'
+ORDER BY f.created_at DESC
+LIMIT 6
+");
+
+if(!$feedback_query){
+$feedback_error = mysqli_error($conn);
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <title>Convocation Ceremony</title>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
-
-*{
-    box-sizing:border-box;
-}
 
 body{
-    margin:0;
-    font-family:'Poppins', sans-serif;
-    background:
-        linear-gradient(rgba(10,25,60,0.75), rgba(10,25,60,0.85)),
-        url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=80')
-        center/cover no-repeat;
-    color:white;
+margin:0;
+font-family:Arial;
+background:#f4f6f8;
 }
 
 /* HERO */
+
 .hero{
-    text-align:center;
-    padding:110px 20px 90px;
+background-image:url("../uploads/images/convocation/c1.jpg");
+height:700px;
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
 }
 
-.hero h1{
-    font-size:48px;
-    font-weight:600;
-    margin-bottom:15px;
+.hero-content{
+color:white;
+font-size:50px;
+font-weight:bold;
 }
 
-.hero p{
-    font-size:16px;
-    max-width:650px;
-    margin:auto;
-    color:#e2e8f0;
+.hero button{
+margin-top:20px;
+padding:15px 30px;
+font-size:18px;
+background:#2563eb;
+border:none;
+color:white;
+cursor:pointer;
 }
 
-/* SECTION */
-.section{
-    max-width:1150px;
-    margin:60px auto;
-    padding:45px;
-    border-radius:25px;
-    background:rgba(255,255,255,0.12);
-    backdrop-filter:blur(20px);
-    box-shadow:0 25px 70px rgba(0,0,0,0.5);
+/* CONTAINER */
+
+.container{
+padding:60px;
 }
 
-.section h2{
-    margin-bottom:35px;
-    font-size:30px;
-    font-weight:500;
-    color:#dbeafe;
-    text-align:center;
+/* ABOUT */
+
+.about{
+display:flex;
+gap:40px;
+align-items:center;
 }
 
-/* IMAGE GRID */
-.details{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:30px;
+.about img{
+width:500px;
+border-radius:10px;
 }
 
-/* IMAGE CARD */
-.card{
-    position:relative;
-    border-radius:20px;
-    overflow:hidden;
-    cursor:pointer;
-    transition:0.4s ease;
+/* SERVICES */
+
+.services{
+margin-top:60px;
 }
 
-.card img{
-    width:100%;
-    height:260px;
-    object-fit:cover;
-    transition:0.5s ease;
+.service-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:30px;
 }
 
-.card-content{
-    position:absolute;
-    bottom:0;
-    left:0;
-    width:100%;
-    padding:20px;
-    background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);
+.service-card{
+background:white;
+padding:20px;
+border-radius:10px;
+text-align:center;
+box-shadow:0px 0px 10px gray;
 }
 
-.card h3{
-    margin:0;
-    font-size:18px;
+.service-card img{
+width:100%;
+height:200px;
+object-fit:cover;
 }
 
-.card p{
-    margin-top:6px;
-    font-size:13px;
-    color:#e5e7eb;
+/* GALLERY */
+
+.gallery{
+margin-top:60px;
 }
 
-.card:hover img{
-    transform:scale(1.1);
+.gallery-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
 }
 
-.card:hover{
-    transform:translateY(-8px);
+.gallery-grid img{
+width:100%;
+height:200px;
+object-fit:cover;
 }
 
-/* BUTTON */
-.book-btn{
-    display:inline-block;
-    margin-top:50px;
-    padding:16px 45px;
-    background:linear-gradient(135deg,#3b82f6,#2563eb);
-    border-radius:30px;
-    text-decoration:none;
-    color:white;
-    font-weight:500;
-    font-size:16px;
-    box-shadow:0 15px 45px rgba(37,99,235,0.5);
-    transition:0.3s;
+/* FEEDBACK */
+
+.feedback-section{
+margin-top:80px;
+text-align:center;
 }
 
-.book-btn:hover{
-    transform:translateY(-5px);
-    box-shadow:0 25px 60px rgba(37,99,235,0.7);
+.feedback-grid{
+margin-top:40px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:30px;
 }
 
-/* RESPONSIVE */
-@media(max-width:900px){
-    .details{
-        grid-template-columns:1fr;
-    }
-    .hero h1{
-        font-size:34px;
-    }
+.feedback-card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+position:relative;
 }
+
+.feedback-card:before{
+content:"“";
+font-size:60px;
+color:#3498db;
+position:absolute;
+top:-10px;
+left:15px;
+}
+
+.feedback-stars{
+color:#facc15;
+font-size:18px;
+margin:10px 0;
+}
+
+.feedback-user{
+margin-top:15px;
+font-weight:bold;
+color:#333;
+}
+
+/* FOOTER */
+
+footer{
+background:black;
+color:white;
+padding:40px;
+margin-top:60px;
+text-align:center;
+}
+
 </style>
 </head>
 
@@ -156,53 +196,181 @@ body{
 <?php include("../navbar.php"); ?>
 
 <!-- HERO -->
+
 <div class="hero">
-    <h1>Convocation Ceremony 2025</h1>
-    <p>
-        Celebrate achievements, honor excellence, and create unforgettable memories 
-        with a grand and elegant convocation event tailored perfectly for your institution.
-    </p>
-</div>
 
-<!-- HIGHLIGHTS -->
-<div class="section">
-    <h2>Event Highlights</h2>
+<div class="hero-content">
 
-    <div class="details">
+Convocation Ceremony
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=900&q=80">
-            <div class="card-content">
-                <h3>🎓 Grand Stage Setup</h3>
-                <p>Elegant stage design with professional lighting and branding.</p>
-            </div>
-        </div>
+<br>
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1596495578065-6e0763fa1178?auto=format&fit=crop&w=900&q=80">
-            <div class="card-content">
-                <h3>🏅 Degree Distribution</h3>
-                <p>Memorable certificate and medal presentation ceremony.</p>
-            </div>
-        </div>
+<?php
 
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80">
-            <div class="card-content">
-                <h3>📸 Celebration Moments</h3>
-                <p>Professional photography and joyful group captures.</p>
-            </div>
-        </div>
+if(isset($_SESSION['user_id']))
+{
+echo "<button onclick=\"location.href='../user/book_event.php?event_id=$event_id'\">Book Now</button>";
+}
+else
+{
+echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
+}
 
-    </div>
-
-    <div style="text-align:center;">
-        <a href="../User/book_event.php?event_id=<?= $event['event_id'] ?>" class="book-btn">
-            Book Convocation Now
-        </a>
-    </div>
+?>
 
 </div>
+
+</div>
+
+
+
+<div class="container">
+
+
+<!-- ABOUT -->
+
+<div class="about">
+
+<img src="../uploads/images/convocation/convocation1.jpg">
+
+<div>
+
+<h2>About Convocation</h2>
+
+<p>
+Convocation Ceremony is the most prestigious academic event where graduates receive
+their degrees and celebrate their achievements.
+
+We provide complete convocation event management including stage setup,
+degree distribution, guest management, photography, catering, and sound system.
+</p>
+
+</div>
+
+</div>
+
+
+
+<!-- SERVICES -->
+
+<div class="services">
+
+<h2>Services Provided</h2>
+
+<div class="service-grid">
+
+<div class="service-card">
+<img src="../uploads/images/convocation/venue.jpg">
+<h3>Venue Setup</h3>
+</div>
+
+<div class="service-card">
+<img src="../uploads/images/convocation/decoration.jpg">
+<h3>Decoration</h3>
+</div>
+
+<div class="service-card">
+<img src="../uploads/images/convocation/food.jpg">
+<h3>Catering</h3>
+</div>
+
+<div class="service-card">
+<img src="../uploads/images/convocation/convocation4.jpg">
+<h3>Degree Distribution</h3>
+</div>
+
+<div class="service-card">
+<img src="../uploads/images/convocation/convocation5.jpg">
+<h3>Photography</h3>
+</div>
+
+<div class="service-card">
+<img src="../uploads/images/convocation/sound.jpg">
+<h3>Sound & Lighting</h3>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- GALLERY -->
+
+<div class="gallery">
+
+<h2>Convocation Moments</h2>
+
+<div class="gallery-grid">
+
+<img src="../uploads/images/convocation/convocation1.jpg">
+<img src="../uploads/images/convocation/convocation2.jpg">
+<img src="../uploads/images/convocation/convocation3.jpg">
+<img src="../uploads/images/convocation/convocation4.jpg">
+<img src="../uploads/images/convocation/convocation5.jpg">
+<img src="../uploads/images/convocation/convocation6.jpg">
+
+</div>
+
+</div>
+
+
+
+<!-- FEEDBACK -->
+
+<div class="feedback-section">
+
+<h2>What Our Customers Say</h2>
+
+<div class="feedback-grid">
+
+<?php
+
+if(isset($feedback_error)){
+echo "<p>Feedback Error: $feedback_error</p>";
+}
+
+else if(mysqli_num_rows($feedback_query)>0){
+
+while($f=mysqli_fetch_assoc($feedback_query)){
+
+$stars = str_repeat("⭐",$f['rating']);
+
+echo "
+
+<div class='feedback-card'>
+
+<div class='feedback-stars'>$stars</div>
+
+<p>".$f['comment']."</p>
+
+<div class='feedback-user'>- ".$f['college_name']."</div>
+
+</div>
+
+";
+
+}
+
+}
+
+else{
+echo "<p>No feedback available yet.</p>";
+}
+
+?>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<footer>
+Event Management System
+</footer>
 
 </body>
 </html>

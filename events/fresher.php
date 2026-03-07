@@ -70,32 +70,27 @@ background:rgba(0,0,0,0.55);
 .hero-content{
 position:relative;
 color:white;
-font-size:65px;
+font-size:60px;
 font-weight:bold;
-letter-spacing:2px;
-text-shadow:0 8px 30px rgba(0,0,0,0.9);
 }
 
 .hero button{
-margin-top:25px;
+margin-top:20px;
 padding:15px 35px;
 font-size:18px;
 background:#ff4b2b;
 border:none;
 color:white;
 cursor:pointer;
-border-radius:5px;
-transition:0.3s;
 }
 
-.hero button:hover{
-background:#ff2e00;
-transform:scale(1.05);
-}
+/* CONTAINER */
 
 .container{
 padding:70px;
 }
+
+/* ABOUT */
 
 .about{
 display:flex;
@@ -107,6 +102,8 @@ align-items:center;
 width:500px;
 border-radius:10px;
 }
+
+/* SERVICES */
 
 .services{
 margin-top:70px;
@@ -135,8 +132,9 @@ box-shadow:0 10px 25px rgba(0,0,0,0.15);
 width:100%;
 height:200px;
 object-fit:cover;
-border-radius:6px;
 }
+
+/* GALLERY */
 
 .gallery{
 margin-top:80px;
@@ -152,8 +150,9 @@ gap:20px;
 width:100%;
 height:220px;
 object-fit:cover;
-border-radius:10px;
 }
+
+/* FEEDBACK */
 
 .feedback-section{
 margin-top:100px;
@@ -245,7 +244,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="about">
 
-<img src="../uploads/images/freshers/freshers_about.jpg">
+<img src="../uploads/images/freshers/fresher.webp">
 
 <div>
 
@@ -253,10 +252,11 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <p>
 
-Freshers Party is a welcoming event organized to greet the new students in college.  
-The event includes DJ night, dance performances, fun games, fashion shows, and entertainment activities.
+Freshers Party is organized to welcome new students to the college.  
+It includes DJ nights, dance performances, fashion shows, and fun activities.
 
-Our event management team provides full services including venue setup, decoration, lighting, sound system, and photography.
+Our event management team provides full services including venue setup,
+decoration, sound system, photography, and lighting.
 
 </p>
 
@@ -299,8 +299,8 @@ Our event management team provides full services including venue setup, decorati
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/freshers/sound.jpg">
-<h3>Sound & Lighting</h3>
+<img src="../uploads/images/freshers/videography.jpg">
+<h3>Videography</h3>
 </div>
 
 </div>
@@ -312,7 +312,7 @@ Our event management team provides full services including venue setup, decorati
 
 <div class="gallery">
 
-<h2>Our Previous Works</h2>
+<h2>Freshers Party Moments</h2>
 
 <div class="gallery-grid">
 
@@ -365,9 +365,7 @@ echo "
 
 }
 else{
-
 echo "<p>No feedback available yet.</p>";
-
 }
 
 ?>

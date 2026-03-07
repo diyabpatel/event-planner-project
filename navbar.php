@@ -109,7 +109,7 @@ include("db.php");
 
 .dropdown-menu{
     position:absolute;
-    top:72px;           /* navbar height */
+    top:72px;
     left:-30px;
     width:250px;
     background:linear-gradient(180deg,#11162a,#0b0f1a);
@@ -203,7 +203,6 @@ include("db.php");
         <a href="/event-planner-project/gallery.php">Gallery</a>
 
         <?php if(isset($_SESSION['user_id'])){ ?>
-            <a href="/event-planner-project/User/profile.php">Profile</a>
             <a href="/event-planner-project/User/my_bookings.php">My Bookings</a>
             <a href="/event-planner-project/logout.php">Logout</a>
         <?php } else { ?>
