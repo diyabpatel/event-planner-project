@@ -57,8 +57,6 @@ align-items:center;
 text-align:center;
 }
 
-/* DARK OVERLAY */
-
 .hero::before{
 content:"";
 position:absolute;
@@ -77,8 +75,6 @@ font-weight:bold;
 letter-spacing:2px;
 text-shadow:0 8px 30px rgba(0,0,0,0.9);
 }
-
-/* BUTTON */
 
 .hero button{
 margin-top:25px;
@@ -101,8 +97,6 @@ transform:scale(1.05);
 padding:70px;
 }
 
-/* ABOUT */
-
 .about{
 display:flex;
 gap:40px;
@@ -113,13 +107,6 @@ align-items:center;
 width:500px;
 border-radius:10px;
 }
-
-.about p{
-line-height:1.6;
-color:#444;
-}
-
-/* SERVICES */
 
 .services{
 margin-top:70px;
@@ -142,11 +129,6 @@ padding:20px;
 border-radius:10px;
 text-align:center;
 box-shadow:0 10px 25px rgba(0,0,0,0.15);
-transition:0.3s;
-}
-
-.service-card:hover{
-transform:translateY(-8px);
 }
 
 .service-card img{
@@ -156,15 +138,8 @@ object-fit:cover;
 border-radius:6px;
 }
 
-/* GALLERY */
-
 .gallery{
 margin-top:80px;
-}
-
-.gallery h2{
-text-align:center;
-margin-bottom:40px;
 }
 
 .gallery-grid{
@@ -178,14 +153,7 @@ width:100%;
 height:220px;
 object-fit:cover;
 border-radius:10px;
-transition:0.4s;
 }
-
-.gallery-grid img:hover{
-transform:scale(1.05);
-}
-
-/* FEEDBACK */
 
 .feedback-section{
 margin-top:100px;
@@ -228,41 +196,12 @@ font-weight:bold;
 color:#333;
 }
 
-/* FOOTER */
-
 footer{
 background:black;
 color:white;
 padding:40px;
 margin-top:80px;
 text-align:center;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:900px){
-
-.about{
-flex-direction:column;
-text-align:center;
-}
-
-.about img{
-width:100%;
-}
-
-.service-grid{
-grid-template-columns:1fr;
-}
-
-.gallery-grid{
-grid-template-columns:1fr;
-}
-
-.hero-content{
-font-size:40px;
-}
-
 }
 
 </style>
@@ -272,7 +211,6 @@ font-size:40px;
 <body>
 
 <?php include("../navbar.php"); ?>
-
 
 <!-- HERO -->
 
@@ -303,7 +241,6 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="container">
 
-
 <!-- ABOUT -->
 
 <div class="about">
@@ -326,7 +263,6 @@ Our event management team provides full services including venue setup, decorati
 </div>
 
 </div>
-
 
 
 <!-- SERVICES -->
@@ -372,7 +308,6 @@ Our event management team provides full services including venue setup, decorati
 </div>
 
 
-
 <!-- GALLERY -->
 
 <div class="gallery">
@@ -391,7 +326,6 @@ Our event management team provides full services including venue setup, decorati
 </div>
 
 </div>
-
 
 
 <!-- FEEDBACK -->
@@ -448,7 +382,6 @@ echo "<p>No feedback available yet.</p>";
 <footer>
 Event Management System
 </footer>
-
 
 </body>
 </html>
