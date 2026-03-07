@@ -4,7 +4,7 @@ include("../db.php");
 
 /* ===== FETCH EVENT ===== */
 
-$query = "SELECT * FROM events WHERE event_name='Farewell'";
+$query = "SELECT * FROM events WHERE event_name='Farewell Party'";
 $result = mysqli_query($conn,$query);
 $event = mysqli_fetch_assoc($result);
 
