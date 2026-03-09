@@ -47,7 +47,7 @@ background:#f4f6f8;
 /* HERO */
 
 .hero{
-background-image:url("../uploads/images/annual/annualday_bg.png");
+background-image:url("../uploads/images/annual/annualday_bg2.jpg");
 height:700px;
 background-size:cover;
 background-position:center;
@@ -67,7 +67,7 @@ font-weight:bold;
 margin-top:20px;
 padding:15px 30px;
 font-size:18px;
-background:#e74c3c;
+background:black;
 border:none;
 color:white;
 cursor:pointer;

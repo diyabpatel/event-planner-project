@@ -130,7 +130,7 @@ border:2px solid #ffb6e6;
 
 <!-- ANNUAL DAY -->
 <div class="card">
-<a href="annualday.php">
+<a href="events/annualday.php">
 <img src="uploads/images/annual/image1.webp">
 <img src="uploads/images/annual/image2.jpg">
 <img src="uploads/images/annual/image3.jpg">
@@ -143,7 +143,7 @@ border:2px solid #ffb6e6;
 
 <!-- CONVOCATION -->
 <div class="card">
-<a href="convocation.php">
+<a href="events/convocation.php">
 <img src="uploads/images/convocation/convocation1.jpg">
 <img src="uploads/images/convocation/convocation2.jpg">
 <img src="uploads/images/convocation/convocation3.jpg">
@@ -156,7 +156,7 @@ border:2px solid #ffb6e6;
 
 <!-- FAREWELL -->
 <div class="card">
-<a href="farewell.php">
+<a href="events/farewell.php">
 <img src="uploads/images/farewell/farewell1.jpg">
 <img src="uploads/images/farewell/farewell2.jpg">
 <img src="uploads/images/farewell/farewell3.jpg">
@@ -169,7 +169,7 @@ border:2px solid #ffb6e6;
 
 <!-- FRESHERS -->
 <div class="card">
-<a href="fresher.php">
+<a href="events/fresher.php">
 <img src="uploads/images/freshers/fresher1.jpg">
 <img src="uploads/images/freshers/fresher2.jpg">
 <img src="uploads/images/freshers/fresher3.jpg">
@@ -182,7 +182,7 @@ border:2px solid #ffb6e6;
 
 <!-- SEMINAR -->
 <div class="card">
-<a href="seminar.php">
+<a href="events/seminar.php">
 <img src="uploads/images/seminar/s1.jpg">
 <img src="uploads/images/seminar/s2.jpeg">
 <img src="uploads/images/seminar/s3.jpeg">
@@ -195,7 +195,7 @@ border:2px solid #ffb6e6;
 
 <!-- SPORTS DAY -->
 <div class="card">
-<a href="sportsday.php">
+<a href="events/sportsday.php">
 <img src="uploads/images/sports day/sports day1.jpg">
 <img src="uploads/images/sports day/sports day2.jpg">
 <img src="uploads/images/sports day/sports day3.jpg">
