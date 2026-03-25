@@ -69,54 +69,142 @@ WHERE p.payment_id=$id
 <title>Payment Details</title>
 
 <style>
+
 body{
-    font-family:Segoe UI;
-    background:#0f172a;
-    color:white;
-    padding:30px;
+margin:0;
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#0f172a,#020617);
+color:#e5e7eb;
 }
 
+/* CONTAINER */
 .container{
-    max-width:900px;
-    margin:auto;
+max-width:1100px;
+margin:auto;
+padding:30px;
 }
 
+/* HEADER */
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
+}
+
+.header h2{
+font-size:24px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:20px;
+}
+
+/* CARD */
 .card{
-    background:#1e293b;
-    padding:25px;
-    border-radius:12px;
-    margin-bottom:20px;
-    text-align:center;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:16px;
+padding:20px;
+backdrop-filter:blur(10px);
+transition:0.3s;
 }
 
-img{
-    width:100%;
-    max-width:400px;
-    border-radius:10px;
-    margin-top:10px;
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* IMAGE */
+.preview{
+width:100%;
+height:220px;
+border-radius:12px;
+overflow:hidden;
+margin-top:10px;
+}
+
+.preview img{
+width:100%;
+height:100%;
+object-fit:cover;
+cursor:pointer;
+}
+
+/* BUTTONS */
+.actions{
+margin-top:15px;
+display:flex;
+gap:10px;
 }
 
 .btn{
-    padding:8px 14px;
-    margin:5px;
-    background:#3b82f6;
-    color:white;
-    text-decoration:none;
-    border-radius:6px;
+padding:8px 14px;
+border-radius:20px;
+text-decoration:none;
+font-size:13px;
+font-weight:500;
+transition:0.3s;
 }
 
-.reject{background:#ef4444;}
-.final{background:#16a34a;}
-.warn{background:#f59e0b;}
+.approve{ background:#22c55e; color:white; }
+.reject{ background:#ef4444; color:white; }
+.final{ background:#6366f1; color:white; }
+.warn{ background:#f59e0b; color:white; }
 
+.btn:hover{
+transform:scale(1.05);
+}
+
+/* STATUS */
 .status{
-    margin-top:10px;
-    font-weight:bold;
-    font-size:16px;
+margin-top:12px;
+font-size:14px;
+font-weight:600;
 }
 
 .approved{color:#22c55e;}
 .rejected{color:#ef4444;}
+
+/* FINAL */
+.final-box{
+margin-top:30px;
+text-align:center;
+}
+
+/* MODAL */
+.modal{
+display:none;
+position:fixed;
+z-index:999;
+padding-top:50px;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+}
+
+.modal-content{
+margin:auto;
+display:block;
+max-width:90%;
+max-height:85%;
+border-radius:10px;
+}
+
+.close{
+position:absolute;
+top:20px;
+right:40px;
+color:white;
+font-size:35px;
+cursor:pointer;
+}
+
 </style>
 
 </head>
@@ -125,91 +213,80 @@ img{
 
 <div class="container">
 
+<div class="header">
 <h2><?php echo $row['college_name']; ?></h2>
+</div>
 
-<!-- SCREENSHOT -->
+<div class="grid">
+
+<!-- PAYMENT -->
 <div class="card">
 <h3>Payment Screenshot</h3>
-<img src="../<?php echo $row['proof_image']; ?>">
+<div class="preview">
+<img src="../<?php echo $row['proof_image']; ?>" onclick="openImage(this.src)">
+</div>
 
-<?php
-if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){
-    if($row['proof_status']==0){
-?>
-<a href="?id=<?php echo $id ?>&action=proofA" class="btn">Approve</a>
+<?php if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){ ?>
+<div class="actions">
+<a href="?id=<?php echo $id ?>&action=proofA" class="btn approve">Approve</a>
 <a href="?id=<?php echo $id ?>&action=proofR" class="btn reject">Reject</a>
-<?php
-    } else if($row['proof_status']==1){
-        echo "<div class='status approved'>&#10004; Approved</div>";
-    } else{
-        echo "<div class='status rejected'>&#10008; Rejected</div>";
-    }
-}else{
-    echo ($row['proof_status']==1) 
-    ? "<div class='status approved'>&#10004; Approved</div>" 
-    : "<div class='status rejected'>&#10008; Rejected</div>";
-}
-?>
+</div>
+<?php } ?>
+
+<div class="status <?php echo ($row['proof_status']==1?'approved':'rejected'); ?>">
+<?php echo ($row['proof_status']==1?'✔ Approved':'✖ Rejected'); ?>
+</div>
 </div>
 
 <!-- AADHAAR -->
 <div class="card">
 <h3>Aadhaar</h3>
-<img src="../<?php echo $row['aadhaar']; ?>">
+<div class="preview">
+<img src="../<?php echo $row['aadhaar']; ?>" onclick="openImage(this.src)">
+</div>
 
-<?php
-if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){
-    if($row['aadhaar_status']==0){
-?>
-<a href="?id=<?php echo $id ?>&action=aadhaarA" class="btn">Approve</a>
+<?php if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){ ?>
+<div class="actions">
+<a href="?id=<?php echo $id ?>&action=aadhaarA" class="btn approve">Approve</a>
 <a href="?id=<?php echo $id ?>&action=aadhaarR" class="btn reject">Reject</a>
-<?php
-    } else if($row['aadhaar_status']==1){
-        echo "<div class='status approved'>&#10004; Approved</div>";
-    } else{
-        echo "<div class='status rejected'>&#10008; Rejected</div>";
-    }
-}else{
-    echo ($row['aadhaar_status']==1) 
-    ? "<div class='status approved'>&#10004; Approved</div>" 
-    : "<div class='status rejected'>&#10008; Rejected</div>";
-}
-?>
+</div>
+<?php } ?>
+
+<div class="status <?php echo ($row['aadhaar_status']==1?'approved':'rejected'); ?>">
+<?php echo ($row['aadhaar_status']==1?'✔ Approved':'✖ Rejected'); ?>
+</div>
 </div>
 
 <!-- PAN -->
 <div class="card">
-<h3>PAN</h3>
-<img src="../<?php echo $row['pan']; ?>">
-
-<?php
-if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){
-    if($row['pan_status']==0){
-?>
-<a href="?id=<?php echo $id ?>&action=panA" class="btn">Approve</a>
-<a href="?id=<?php echo $id ?>&action=panR" class="btn reject">Reject</a>
-<?php
-    } else if($row['pan_status']==1){
-        echo "<div class='status approved'>&#10004; Approved</div>";
-    } else{
-        echo "<div class='status rejected'>&#10008; Rejected</div>";
-    }
-}else{
-    echo ($row['pan_status']==1) 
-    ? "<div class='status approved'>&#10004; Approved</div>" 
-    : "<div class='status rejected'>&#10008; Rejected</div>";
-}
-?>
+<h3>PAN Card</h3>
+<div class="preview">
+<img src="../<?php echo $row['pan']; ?>" onclick="openImage(this.src)">
 </div>
 
-<hr>
+<?php if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){ ?>
+<div class="actions">
+<a href="?id=<?php echo $id ?>&action=panA" class="btn approve">Approve</a>
+<a href="?id=<?php echo $id ?>&action=panR" class="btn reject">Reject</a>
+</div>
+<?php } ?>
+
+<div class="status <?php echo ($row['pan_status']==1?'approved':'rejected'); ?>">
+<?php echo ($row['pan_status']==1?'✔ Approved':'✖ Rejected'); ?>
+</div>
+</div>
+
+</div>
+
+<!-- FINAL -->
+<div class="final-box">
 
 <?php
 if($row['payment_status'] == 'Advance Paid'){
-    echo "<div class='status approved'>&#10004; Booking Confirmed</div>";
+    echo "<div class='status approved'>✔ Booking Confirmed</div>";
 }
 else if($row['payment_status'] == 'Rejected'){
-    echo "<div class='status rejected'>&#10008; Re-upload Requested</div>";
+    echo "<div class='status rejected'>✖ Re-upload Requested</div>";
 }
 else{
     if(
@@ -222,17 +299,9 @@ else{
             $row['aadhaar_status']==1 &&
             $row['pan_status']==1
         ){
-?>
-<a href="?id=<?php echo $id ?>&final=confirm" class="btn final">
-Confirm Booking
-</a>
-<?php
+            echo "<a href='?id=$id&final=confirm' class='btn final'>Confirm Booking</a>";
         } else{
-?>
-<a href="?id=<?php echo $id ?>&final=reject" class="btn warn">
-Request Re-upload
-</a>
-<?php
+            echo "<a href='?id=$id&final=reject' class='btn warn'>Request Re-upload</a>";
         }
     }
 }
@@ -240,24 +309,22 @@ Request Re-upload
 
 </div>
 
-<!-- ✅ SCROLL FIX SCRIPT -->
+</div>
+
+<!-- IMAGE MODAL -->
+<div id="imageModal" class="modal" onclick="closeImage()">
+<span class="close">&times;</span>
+<img class="modal-content" id="modalImg">
+</div>
+
 <script>
-// Save scroll before reload
-window.addEventListener("beforeunload", function () {
-    localStorage.setItem("scrollPosition", window.scrollY);
-});
+function openImage(src){
+document.getElementById("imageModal").style.display="block";
+document.getElementById("modalImg").src=src;
+}
 
-// Restore scroll after reload
-window.addEventListener("load", function () {
-    const scrollPos = localStorage.getItem("scrollPosition");
-    if (scrollPos !== null) {
-        window.scrollTo(0, parseInt(scrollPos));
-    }
-});
-
-// Clear scroll if final action done
-if(window.location.href.includes("final_done")){
-    localStorage.removeItem("scrollPosition");
+function closeImage(){
+document.getElementById("imageModal").style.display="none";
 }
 </script>
 

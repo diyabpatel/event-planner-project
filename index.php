@@ -19,99 +19,135 @@ overflow-x:hidden;
 
 /* HERO */
 .hero{
+position:relative;
 height:100vh;
 display:flex;
 align-items:center;
 padding:0 8%;
-background:
-linear-gradient(rgba(0,0,0,.5),rgba(0,0,0,.5)),
-url('https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?auto=format&fit=crop&w=1600&q=80');
+overflow:hidden;
+}
+
+.slides{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100%;
 background-size:cover;
 background-position:center;
+opacity:0;
+animation:slideShow 30s infinite;
 }
+
+.slide:nth-child(1){background-image:url('uploads/images/annual/image2.jpg'); animation-delay:0s;}
+.slide:nth-child(2){background-image:url('uploads/images/convocation/convocation1.jpg'); animation-delay:5s;}
+.slide:nth-child(3){background-image:url('uploads/images/farewell/farewell2.jpg'); animation-delay:10s;}
+.slide:nth-child(4){background-image:url('uploads/images/freshers/fresher1.jpg'); animation-delay:15s;}
+.slide:nth-child(5){background-image:url('uploads/images/seminar/s2.jpeg'); animation-delay:20s;}
+.slide:nth-child(6){background-image:url('uploads/images/sports day/sports day2.jpg'); animation-delay:25s;}
+
+@keyframes slideShow{
+0%{opacity:0}
+5%{opacity:1}
+20%{opacity:1}
+25%{opacity:0}
+100%{opacity:0}
+}
+
+.hero::after{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+z-index:1;
+}
+
 .hero-box{
 max-width:650px;
+position:relative;
+z-index:2;
 }
+
 .hero h1{
 font-size:52px;
-line-height:1.15;
 margin-bottom:20px;
 }
+
 .hero p{
 font-size:18px;
-opacity:.9;
 margin-bottom:32px;
-}
-.hero button{
-padding:15px 36px;
-border:none;
-border-radius:40px;
-font-size:16px;
-cursor:pointer;
-margin-right:16px;
-background:linear-gradient(135deg,#7aa2ff,#4f7cff);
-color:white;
-box-shadow:0 18px 40px rgba(122,162,255,.6);
 }
 
 /* SECTION */
 .section{
-padding:95px 8%;
+padding:90px 8%;
 }
+
 .section h2{
 font-size:34px;
-margin-bottom:18px;
+margin-bottom:20px;
 background:linear-gradient(90deg,#9bb6ff,#e0e7ff);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
-.section p{
-max-width:720px;
-line-height:1.7;
-opacity:.92;
-}
 
-/* EVENT CARDS */
+/* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
 gap:30px;
 margin-top:40px;
 }
+
+/* CARD */
 .card{
-background:rgba(255,255,255,0.14);
-backdrop-filter:blur(18px);
-border-radius:18px;
-padding:26px;
-box-shadow:0 20px 50px rgba(0,0,0,0.65);
-transition:.35s;
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(15px);
+border-radius:16px;
+padding:20px;
+transition:.3s;
 }
 .card:hover{
-transform:translateY(-8px);
-box-shadow:0 30px 70px rgba(0,0,0,0.85);
-}
-.card img{
-width:100%;
-border-radius:14px;
-margin-bottom:18px;
-}
-.card h3{
-margin-bottom:10px;
-color:#9bb6ff;
+transform:translateY(-6px);
 }
 
-/* WHY US */
+/* FEATURES */
 .features{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:26px;
-margin-top:35px;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-top:30px;
 }
+
 .feature{
-background:rgba(0,0,0,.45);
-padding:24px;
-border-radius:18px;
+background:rgba(0,0,0,.4);
+padding:20px;
+border-radius:14px;
 text-align:center;
+}
+
+/* GALLERY */
+.gallery img{
+width:100%;
+height:200px;
+object-fit:cover;
+border-radius:12px;
+}
+
+/* STATS */
+.stats h3{
+font-size:28px;
+color:#7aa2ff;
 }
 
 /* CTA */
@@ -120,34 +156,26 @@ padding:100px 8%;
 text-align:center;
 background:linear-gradient(135deg,#233a7a,#0b1020);
 }
-.cta h2{
-font-size:36px;
-margin-bottom:18px;
-}
 .cta button{
-padding:16px 42px;
+padding:15px 35px;
 border:none;
 border-radius:40px;
-font-size:17px;
-cursor:pointer;
 background:#7aa2ff;
 color:white;
-box-shadow:0 18px 40px rgba(122,162,255,.6);
+cursor:pointer;
 }
 
 /* FOOTER */
 .footer{
-padding:35px 8%;
-background:#050814;
+padding:30px;
 text-align:center;
-font-size:14px;
-opacity:.85;
+background:#050814;
 }
 
 /* SCROLL ANIMATION */
 .reveal{
 opacity:0;
-transform:translateY(50px);
+transform:translateY(40px);
 transition:all .8s ease;
 }
 .reveal.show{
@@ -155,89 +183,115 @@ opacity:1;
 transform:none;
 }
 
-/* RESPONSIVE */
-@media(max-width:768px){
-.hero h1{font-size:38px}
-}
 </style>
 </head>
 
 <body>
 <?php include("navbar.php"); ?>
+
 <!-- HERO -->
 <div class="hero">
+<div class="slides">
+<div class="slide"></div>
+<div class="slide"></div>
+<div class="slide"></div>
+<div class="slide"></div>
+<div class="slide"></div>
+<div class="slide"></div>
+</div>
+
 <div class="hero-box reveal show">
 <h1>Powering Unforgettable College Events</h1>
-<p>
-From cultural fests to seminars and farewell nights —  
-we plan, manage and execute college events professionally.
-</p>
-
+<p>Plan, manage and execute college events professionally.</p>
 </div>
 </div>
 
-<!-- EVENTS -->
-<div class="section reveal" id="events">
-<h2>College Event Categories</h2>
+<!-- HOW IT WORKS -->
+<div class="section reveal">
+<h2>How It Works</h2>
+<div class="features">
+<div class="feature">1️⃣ Choose Event</div>
+<div class="feature">2️⃣ Select Package</div>
+<div class="feature">3️⃣ Book Date</div>
+<div class="feature">4️⃣ Pay Advance</div>
+</div>
+</div>
 
+<!-- EVENT CATEGORIES -->
+<div class="section reveal">
+<h2>Event Categories</h2>
 <div class="grid">
-<div class="card">
-<img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80">
-<h3>🎭 Cultural Fest</h3>
-<p>Dance, music, drama, fashion shows and competitions.</p>
+<div class="card">🎭 Cultural Fest</div>
+<div class="card">🎤 Seminars</div>
+<div class="card">🎓 Farewell</div>
+<div class="card">🏆 Sports</div>
+</div>
 </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=600&q=80">
-<h3>🎤 Seminars & Workshops</h3>
-<p>Expert talks, workshops and knowledge-sharing sessions.</p>
+<!-- GALLERY -->
+<div class="section reveal">
+<h2>Event Highlights</h2>
+<div class="grid gallery">
+<img src="uploads/images/annual/image2.jpg">
+<img src="uploads/images/farewell/farewell2.jpg">
+<img src="uploads/images/freshers/fresher1.jpg">
+<img src="uploads/images/sports day/sports day2.jpg">
+</div>
 </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=600&q=80">
-<h3>🎓 Farewell & Freshers</h3>
-<p>Memorable farewell nights and energetic freshers parties.</p>
+<!-- TESTIMONIALS -->
+<div class="section reveal">
+<h2>What Students Say</h2>
+<div class="features">
+<div class="feature">⭐ Amazing experience! - BCA Student</div>
+<div class="feature">⭐ Smooth booking! - MBA Student</div>
+<div class="feature">⭐ Best farewell ever! - Engineering</div>
+</div>
 </div>
 
-<div class="card">
-<img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80">
-<h3>🏆 Technical & Sports Events</h3>
-<p>Hackathons, coding events, sports meets and competitions.</p>
-</div>
+<!-- STATS -->
+<div class="section reveal stats">
+<h2>Our Impact</h2>
+<div class="features">
+<div class="feature"><h3>50+</h3>Events</div>
+<div class="feature"><h3>1000+</h3>Students</div>
+<div class="feature"><h3>20+</h3>Colleges</div>
+<div class="feature"><h3>4.8★</h3>Rating</div>
 </div>
 </div>
 
 <!-- WHY US -->
-<div class="section reveal" id="why">
+<div class="section reveal">
 <h2>Why Choose Us</h2>
-
 <div class="features">
-<div class="feature">✔ Student-Friendly Planning</div>
-<div class="feature">✔ Budget-Friendly Packages</div>
-<div class="feature">✔ Faculty Approved Workflow</div>
-<div class="feature">✔ Secure Online Booking</div>
+<div class="feature">✔ Budget Friendly</div>
+<div class="feature">✔ Easy Booking</div>
+<div class="feature">✔ Secure Payments</div>
+<div class="feature">✔ Faculty Approved</div>
 </div>
 </div>
 
 <!-- CTA -->
-<div class="cta reveal" id="contact">
-<h2>Ready to Organize Your College Event?</h2>
-<p>Let us handle the planning while you enjoy the celebration.</p><br>
+<div class="cta reveal">
+<h2>Ready to Organize Your Event?</h2>
 <button onclick="location.href='login.php'">Get Started</button>
 </div>
 
 <!-- FOOTER -->
 <div class="footer">
-© <?php echo date('Y'); ?> College Event Planner | Made for College Projects
+© <?php echo date('Y'); ?> College Event Planner
 </div>
 
 <script>
-/* SCROLL REVEAL */
 const els=document.querySelectorAll('.reveal');
-const reveal=()=>els.forEach(el=>{
+const reveal=()=>{
+els.forEach(el=>{
 const r=el.getBoundingClientRect();
-if(r.top<window.innerHeight-80) el.classList.add('show');
+if(r.top<window.innerHeight-80){
+el.classList.add('show');
+}
 });
+};
 window.addEventListener('scroll',reveal);
 reveal();
 </script>

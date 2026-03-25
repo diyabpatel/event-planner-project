@@ -8,18 +8,21 @@ if(!isset($_SESSION['user_id'])){
 
 include("../db.php");
 
+/* ✅ FORCE UTF-8 */
+header('Content-Type: text/html; charset=utf-8');
+
 $user_id = $_SESSION['user_id'];
 
+/* ✅ FIXED QUERY (LEFT JOIN + NO FILTER) */
 $query = "
 SELECT 
 b.*,
 e.event_name,
 p.package_name
 FROM bookings b
-JOIN events e ON b.event_id = e.event_id
-JOIN packages p ON b.package_id = p.package_id
+LEFT JOIN events e ON b.event_id = e.event_id
+LEFT JOIN packages p ON b.package_id = p.package_id
 WHERE b.user_id = $user_id 
-AND b.payment_status = 'Advance Paid'
 ORDER BY b.booking_date DESC
 ";
 
@@ -179,14 +182,14 @@ while($row=mysqli_fetch_assoc($result)){
 
 $booking_id = $row['booking_id'];
 
-/* PAYMENT CALCULATION */
+/* ✅ SAFE PAYMENT CALCULATION */
 $paidData = mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT SUM(amount) as total 
 FROM payments 
 WHERE booking_id = $booking_id
 "));
 
-$totalPaid = isset($paidData['total']) ? $paidData['total'] : 0;
+$totalPaid = ($paidData && $paidData['total']) ? $paidData['total'] : 0;
 $remaining = $row['total_price'] - $totalPaid;
 
 /* STATUS */
@@ -204,28 +207,32 @@ $payment_status = ($remaining <= 0)
 $change_last_date = date("Y-m-d", strtotime($event_date . " -2 days"));
 $is_edit_allowed = ($today <= $change_last_date);
 
+/* ✅ HANDLE NULL EVENT / PACKAGE */
+$event_name = $row['event_name'] ? htmlspecialchars($row['event_name']) : "Event Deleted";
+$package_name = $row['package_name'] ? htmlspecialchars($row['package_name']) : "Package Deleted";
+
 echo "
 
 <div class='card'>
 
 <div class='card-header'>
-<div class='event-name'>".$row['event_name']."</div>
-<div class='package'>".$row['package_name']."</div>
+<div class='event-name'>".$event_name."</div>
+<div class='package'>".$package_name."</div>
 </div>
 
 <div class='details'>
 
-<div class='detail-box'><b>Booking ID</b><br>".$booking_id."</div>
-<div class='detail-box'><b>Capacity</b><br>".$row['capacity']."</div>
-<div class='detail-box'><b>Event Date</b><br>".$event_date."</div>
+<div class='detail-box'><b>Booking ID</b><br>".htmlspecialchars($booking_id)."</div>
+<div class='detail-box'><b>Capacity</b><br>".htmlspecialchars($row['capacity'])."</div>
+<div class='detail-box'><b>Event Date</b><br>".htmlspecialchars($event_date)."</div>
 
-<div class='detail-box'><b>Total Price</b><br>₹ ".$row['total_price']."</div>
-<div class='detail-box'><b>Paid</b><br>₹ ".$totalPaid."</div>
-<div class='detail-box'><b>Remaining</b><br>₹ ".$remaining."</div>
+<div class='detail-box'><b>Total Price</b><br>&#8377; ".number_format($row['total_price'],2)."</div>
+<div class='detail-box'><b>Paid</b><br>&#8377; ".number_format($totalPaid,2)."</div>
+<div class='detail-box'><b>Remaining</b><br>&#8377; ".number_format($remaining,2)."</div>
 
 <div class='detail-box'><b>Payment</b><br>".$payment_status."</div>
 <div class='detail-box'><b>Status</b><br>".$event_status."</div>
-<div class='detail-box'><b>Booked On</b><br>".$row['booking_date']."</div>
+<div class='detail-box'><b>Booked On</b><br>".htmlspecialchars($row['booking_date'])."</div>
 
 </div>
 
@@ -271,7 +278,7 @@ echo "
 }
 
 }else{
-    echo "<div class='card'>No confirmed bookings found</div>";
+    echo "<div class='card'>No bookings found</div>";
 }
 
 ?>
