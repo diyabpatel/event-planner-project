@@ -2,157 +2,202 @@
 session_start();
 include("../db.php");
 
+/* ✅ FORCE UTF-8 */
+header('Content-Type: text/html; charset=utf-8');
+
+/* ✅ LOGIN CHECK */
+if(!isset($_SESSION['user_id'])){
+    header("Location: ../login.php");
+    exit();
+}
+
 if(!isset($_SESSION['booking_data']))
 {
-echo "No booking data";
-exit();
+    echo "No booking data";
+    exit();
 }
 
 $data = $_SESSION['booking_data'];
+$user_id = $_SESSION['user_id'];
 
 $total = $data['total_price'];
-$advance = round($total*0.25,2);
-$remaining = $total-$advance;
+
+/* ✅ NEW ADVANCE CALCULATION FUNCTION */
+function calculateAdvance($total)
+{
+    if($total <= 50000){
+        $advance = 0.5 * $total; // 50%
+    }
+    elseif($total <= 200000){
+        $advance = 0.3 * $total; // 30%
+    }
+    elseif($total <= 500000){
+        $advance = 0.2 * $total; // 20%
+    }
+    else{
+        $advance = 0.1 * $total; // 10%
+    }
+
+    // ✅ MAX CAP ₹1,00,000
+    if($advance > 100000){
+        $advance = 100000;
+    }
+
+    return round($advance, 2);
+}
+
+/* ✅ APPLY NEW LOGIC */
+$advance = calculateAdvance($total);
+$remaining = $total - $advance;
 
 if(isset($_POST['pay']))
 {
+    $payer_name = trim($_POST['payer_name']);
 
-$method = $_POST['payment_method'];
+    if($payer_name == "")
+    {
+        echo "<script>alert('Enter name');</script>";
+    }
+    else
+    {
+        $folder = "../uploads/payment_docs/";
+        if(!file_exists($folder)) mkdir($folder,0777,true);
 
-$receipt_no = "RCPT".date("Y").rand(1000,9999);
+        $proof_image="";
+        if($_FILES['proof_image']['name']!=""){
+            $file=time()."_".$_FILES['proof_image']['name'];
+            move_uploaded_file($_FILES['proof_image']['tmp_name'],$folder.$file);
+            $proof_image="uploads/payment_docs/".$file;
+        }
 
-mysqli_query($conn,"
-INSERT INTO bookings
-(user_id,event_id,package_id,capacity,event_date,total_price,
-advance_paid,remaining_amount,payment_status,payment_method,
-food_ids,coverage_ids,receipt_no)
+        $aadhaar="";
+        if($_FILES['aadhaar']['name']!=""){
+            $file="aadhaar_".time()."_".$_FILES['aadhaar']['name'];
+            move_uploaded_file($_FILES['aadhaar']['tmp_name'],$folder.$file);
+            $aadhaar="uploads/payment_docs/".$file;
+        }
 
-VALUES
-(
-'".$data['user_id']."',
-'".$data['event_id']."',
-'".$data['package_id']."',
-'".$data['capacity']."',
-'".$data['event_date']."',
-'$total',
-'$advance',
-'$remaining',
-'Advance Paid',
-'$method',
-'".$data['food_ids']."',
-'".$data['coverage_ids']."',
-'$receipt_no'
-)
-");
+        $pan="";
+        if($_FILES['pan']['name']!=""){
+            $file="pan_".time()."_".$_FILES['pan']['name'];
+            move_uploaded_file($_FILES['pan']['tmp_name'],$folder.$file);
+            $pan="uploads/payment_docs/".$file;
+        }
 
-$booking_id=mysqli_insert_id($conn);
+        /* ✅ BOOKINGS INSERT */
+        mysqli_query($conn,"
+        INSERT INTO bookings
+        (user_id,event_id,package_id,capacity,event_date,total_price,
+        payment_status,food_ids,coverage_ids)
+        VALUES
+        (
+        '$user_id',
+        '".$data['event_id']."',
+        '".$data['package_id']."',
+        '".$data['capacity']."',
+        '".$data['event_date']."',
+        '$total',
+        'Verification Pending',
+        '".$data['food_ids']."',
+        '".$data['coverage_ids']."'
+        )
+        ");
 
-unset($_SESSION['booking_data']);
+        $booking_id=mysqli_insert_id($conn);
 
-echo "<script>
-alert('Booking Confirmed');
-window.location='receipt.php?booking_id=$booking_id';
-</script>";
-exit();
+        /* ✅ PAYMENTS INSERT */
+        mysqli_query($conn,"
+        INSERT INTO payments
+        (booking_id,user_id,payment_type,payment_method,payer_name,
+        amount,proof_image,aadhaar,pan,
+        proof_status,aadhaar_status,pan_status,payment_status)
+        VALUES
+        (
+        '$booking_id',
+        '$user_id',
+        'Advance',
+        'UPI',
+        '$payer_name',
+        '$advance',
+        '$proof_image',
+        '$aadhaar',
+        '$pan',
+        0,0,0,
+        'Verification Pending'
+        )
+        ");
+
+        unset($_SESSION['booking_data']);
+
+        echo "<script>
+        alert('Payment submitted');
+        window.location='receipt.php?booking_id=$booking_id';
+        </script>";
+        exit();
+    }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-
+<meta charset="UTF-8">
 <title>Advance Payment</title>
 
-<meta charset="UTF-8">
-
 <style>
-
-*{
-box-sizing:border-box;
-}
-
 body{
 margin:0;
-font-family:Segoe UI,Arial;
-background:linear-gradient(135deg,#0f172a,#1e293b);
+font-family:Segoe UI;
+background:#0f172a;
 display:flex;
 justify-content:center;
-align-items:center;
-height:100vh;
+align-items:flex-start;
+padding:30px;
 color:white;
 }
 
 .card{
-width:430px;
+width:100%;
+max-width:500px;
 background:#1e293b;
-padding:30px;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,0.5);
-}
-
-h2{
-text-align:center;
-margin-bottom:25px;
+padding:25px;
+border-radius:10px;
 }
 
 .section{
 background:#020617;
 padding:15px;
-border-radius:8px;
-margin-bottom:20px;
+margin-bottom:15px;
+border-radius:6px;
 }
 
 .row{
 display:flex;
 justify-content:space-between;
-padding:8px 0;
-border-bottom:1px solid #1e293b;
+margin:8px 0;
 }
 
-.row:last-child{
-border-bottom:none;
-}
-
-.amount{
-font-weight:600;
-color:#38bdf8;
-}
-
-select,input{
+input{
 width:100%;
-padding:12px;
-border-radius:8px;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
 border:none;
-margin-top:12px;
-font-size:14px;
-background:#0f172a;
-color:white;
 }
 
 button{
 width:100%;
-padding:14px;
-border:none;
-border-radius:8px;
+padding:12px;
 background:#3b82f6;
+border:none;
 color:white;
-font-size:15px;
-font-weight:600;
 margin-top:20px;
 cursor:pointer;
-transition:0.2s;
 }
 
-button:hover{
-background:#2563eb;
-}
-
-.hidden{
-display:none;
-}
-
+.qr{text-align:center;}
+.small{font-size:12px;color:#94a3b8;text-align:center;}
 </style>
-
 </head>
 
 <body>
@@ -162,102 +207,42 @@ display:none;
 <h2>Advance Payment</h2>
 
 <div class="section">
-
-<div class="row">
-<span>Total Event Cost</span>
-<span class="amount">₹ <?php echo number_format($total,2) ?></span>
+<div class="row"><span>Total</span><span>&#8377; <?php echo htmlspecialchars($total); ?></span></div>
+<div class="row"><span>Advance</span><span>&#8377; <?php echo htmlspecialchars($advance); ?></span></div>
+<div class="row"><span>Remaining</span><span>&#8377; <?php echo htmlspecialchars($remaining); ?></span></div>
 </div>
 
-<div class="row">
-<span>Advance (25%)</span>
-<span class="amount">₹ <?php echo number_format($advance,2) ?></span>
+<div class="section">
+<b>Pay Using UPI</b>
+
+<div class="row"><span>UPI</span><span>eventhub@upi</span></div>
+<div class="row"><span>Amount</span><span>&#8377; <?php echo htmlspecialchars($advance); ?></span></div>
+
+<div class="qr">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=eventhub@upi&pn=EventHub&am=<?php echo $advance; ?>">
 </div>
 
+<p class="small">Pay and upload documents</p>
 </div>
 
-<form method="POST">
+<form method="POST" enctype="multipart/form-data">
 
-<select name="payment_method" id="method" required onchange="togglePayment()">
-<option value="">Select Payment Method</option>
-<option value="UPI">UPI</option>
-<option value="Card">Card</option>
-</select>
+<input type="text" name="payer_name" placeholder="Your Name" required>
 
-<input type="text" id="upiField" placeholder="Enter UPI ID (example@upi)" class="hidden">
+<label>Screenshot</label>
+<input type="file" name="proof_image" required>
 
-<input type="text" id="cardField" placeholder="Enter 16 Digit Card Number" maxlength="16" class="hidden">
+<label>Aadhaar</label>
+<input type="file" name="aadhaar" required>
 
-<button name="pay">
-Pay Advance ₹ <?php echo number_format($advance,2) ?>
-</button>
+<label>PAN</label>
+<input type="file" name="pan" required>
+
+<button name="pay">Submit</button>
 
 </form>
 
 </div>
-
-<script>
-
-function togglePayment()
-{
-
-let method=document.getElementById("method").value;
-
-let upi=document.getElementById("upiField");
-let card=document.getElementById("cardField");
-
-upi.classList.add("hidden");
-card.classList.add("hidden");
-
-upi.removeAttribute("required");
-card.removeAttribute("required");
-
-if(method=="UPI")
-{
-upi.classList.remove("hidden");
-upi.setAttribute("required","required");
-}
-
-if(method=="Card")
-{
-card.classList.remove("hidden");
-card.setAttribute("required","required");
-}
-
-}
-
-document.querySelector("form").addEventListener("submit",function(e){
-
-let method=document.getElementById("method").value;
-
-if(method=="UPI")
-{
-let upi=document.getElementById("upiField").value;
-
-let regex=/^[\w.-]+@[\w.-]+$/;
-
-if(!regex.test(upi))
-{
-alert("Enter valid UPI ID");
-e.preventDefault();
-}
-}
-
-if(method=="Card")
-{
-let card=document.getElementById("cardField").value;
-
-let regex=/^[0-9]{16}$/;
-
-if(!regex.test(card))
-{
-alert("Enter valid 16 digit card number");
-e.preventDefault();
-}
-}
-
-});
-
-</script>
 
 </body>
 </html>

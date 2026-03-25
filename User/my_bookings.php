@@ -1,8 +1,7 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['user_id']))
-{
+if(!isset($_SESSION['user_id'])){
     header("Location: ../login.php");
     exit();
 }
@@ -16,14 +15,11 @@ SELECT
 b.*,
 e.event_name,
 p.package_name
-
 FROM bookings b
-
 JOIN events e ON b.event_id = e.event_id
 JOIN packages p ON b.package_id = p.package_id
-
-WHERE b.user_id = $user_id
-
+WHERE b.user_id = $user_id 
+AND b.payment_status = 'Advance Paid'
 ORDER BY b.booking_date DESC
 ";
 
@@ -33,7 +29,6 @@ $result = mysqli_query($conn,$query);
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <title>My Bookings</title>
 
@@ -41,110 +36,114 @@ $result = mysqli_query($conn,$query);
 
 body{
     margin:0;
-    font-family:'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family:'Segoe UI', system-ui;
     background:linear-gradient(135deg,#0b0f1a,#121a2e,#1a2742);
     color:#eaeaff;
 }
 
 .container{
-    max-width:1150px;
-    margin:50px auto 70px;
-    padding:25px;
+    max-width:1100px;
+    margin:50px auto;
+    padding:20px;
 }
 
 h2{
-    font-size:32px;
-    font-weight:600;
-    letter-spacing:0.8px;
-    margin-bottom:40px;
     text-align:center;
+    margin-bottom:40px;
+    font-size:30px;
     background:linear-gradient(90deg,#7aa2ff,#9bb6ff);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 }
 
 .card{
-    background:rgba(255,255,255,0.06);
-    backdrop-filter:blur(18px);
-    border-radius:22px;
-    padding:30px;
-    margin-bottom:35px;
-    box-shadow:0 30px 70px rgba(0,0,0,0.65);
-    transition:0.4s ease;
+    background:rgba(255,255,255,0.05);
+    border-radius:18px;
+    padding:25px;
+    margin-bottom:30px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    transition:0.3s;
 }
 
 .card:hover{
-    transform:translateY(-8px);
+    transform:translateY(-5px);
 }
 
 .card-header{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:25px;
+    margin-bottom:20px;
 }
 
 .event-name{
-    font-size:26px;
+    font-size:22px;
     font-weight:600;
 }
 
 .package{
-    background:linear-gradient(135deg,#7aa2ff,#4f7cff);
-    padding:8px 18px;
-    border-radius:40px;
-    font-size:13px;
-}
-
-.details{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:18px;
-}
-
-.detail-box{
-    background:rgba(0,0,0,0.45);
-    padding:16px 18px;
-    border-radius:16px;
-    font-size:14px;
-}
-
-.detail-box b{
-    color:#9bb6ff;
-}
-
-.status{
-    display:inline-block;
-    padding:7px 16px;
+    background:#4f7cff;
+    padding:6px 16px;
     border-radius:30px;
     font-size:12px;
 }
 
-.upcoming{
-    background:linear-gradient(135deg,#22c55e,#16a34a);
+.details{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
 }
 
-.completed{
-    background:linear-gradient(135deg,#ef4444,#b91c1c);
+.detail-box{
+    background:#0b1220;
+    padding:14px;
+    border-radius:12px;
+    font-size:13px;
 }
 
-.payment-paid{
-    background:linear-gradient(135deg,#22c55e,#16a34a);
+.detail-box b{
+    color:#9bb6ff;
+    font-size:12px;
 }
 
-.payment-pending{
-    background:linear-gradient(135deg,#f59e0b,#d97706);
+.status{
+    display:inline-block;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:11px;
+    margin-top:5px;
+}
+
+.upcoming{background:#16a34a;}
+.completed{background:#ef4444;}
+.payment-paid{background:#16a34a;}
+.payment-pending{background:#f59e0b;}
+
+.bottom{
+    margin-top:20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.change-date{
+    font-size:13px;
+    color:#facc15;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
 }
 
 .btn{
-    display:inline-block;
-    margin-top:22px;
-    padding:11px 26px;
-    background:linear-gradient(135deg,#7aa2ff,#4f7cff);
-    color:white;
+    padding:8px 18px;
+    border-radius:25px;
     text-decoration:none;
-    border-radius:40px;
-    font-size:14px;
+    color:white;
+    font-size:13px;
+    background:#4f7cff;
 }
 
 .btn.disabled{
@@ -153,21 +152,11 @@ h2{
 }
 
 .btn.receipt{
-    background:linear-gradient(135deg,#16a34a,#22c55e);
-    margin-left:10px;
+    background:#16a34a;
 }
 
 .btn.feedback{
-    background:linear-gradient(135deg,#f59e0b,#d97706);
-    margin-left:10px;
-}
-
-.feedback-done{
-    margin-left:10px;
-    padding:10px 18px;
-    border-radius:40px;
-    font-size:13px;
-    background:#374151;
+    background:#f59e0b;
 }
 
 </style>
@@ -184,152 +173,105 @@ h2{
 
 <?php
 
-if(mysqli_num_rows($result)>0)
-{
+if(mysqli_num_rows($result)>0){
 
-while($row=mysqli_fetch_assoc($result))
-{
+while($row=mysqli_fetch_assoc($result)){
 
+$booking_id = $row['booking_id'];
+
+/* PAYMENT CALCULATION */
+$paidData = mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT SUM(amount) as total 
+FROM payments 
+WHERE booking_id = $booking_id
+"));
+
+$totalPaid = isset($paidData['total']) ? $paidData['total'] : 0;
+$remaining = $row['total_price'] - $totalPaid;
+
+/* STATUS */
 $event_date = $row['event_date'];
-
-$change_last_date = date("Y-m-d", strtotime($event_date . " -5 days"));
-
 $today = date("Y-m-d");
-
-$is_edit_allowed = ($today <= $change_last_date);
-
-/* EVENT STATUS */
 
 $event_status = ($today <= $event_date)
 ? "<span class='status upcoming'>Upcoming</span>"
 : "<span class='status completed'>Completed</span>";
 
-/* PAYMENT STATUS */
+$payment_status = ($remaining <= 0)
+? "<span class='status payment-paid'>Fully Paid</span>"
+: "<span class='status payment-pending'>Advance Paid</span>";
 
-$payment_status = ($row['payment_status']=="Advance Paid")
-? "<span class='status payment-pending'>Advance Paid</span>"
-: "<span class='status payment-paid'>Fully Paid</span>";
+$change_last_date = date("Y-m-d", strtotime($event_date . " -2 days"));
+$is_edit_allowed = ($today <= $change_last_date);
 
 echo "
 
 <div class='card'>
 
 <div class='card-header'>
-
 <div class='event-name'>".$row['event_name']."</div>
-
 <div class='package'>".$row['package_name']."</div>
-
 </div>
 
 <div class='details'>
 
-<div class='detail-box'>
-<b>Receipt No:</b><br>
-".$row['receipt_no']."
-</div>
+<div class='detail-box'><b>Booking ID</b><br>".$booking_id."</div>
+<div class='detail-box'><b>Capacity</b><br>".$row['capacity']."</div>
+<div class='detail-box'><b>Event Date</b><br>".$event_date."</div>
 
-<div class='detail-box'>
-<b>Booking ID:</b><br>
-".$row['booking_id']."
-</div>
+<div class='detail-box'><b>Total Price</b><br>₹ ".$row['total_price']."</div>
+<div class='detail-box'><b>Paid</b><br>₹ ".$totalPaid."</div>
+<div class='detail-box'><b>Remaining</b><br>₹ ".$remaining."</div>
 
-<div class='detail-box'>
-<b>Capacity:</b><br>
-".$row['capacity']."
-</div>
-
-<div class='detail-box'>
-<b>Event Date:</b><br>
-".$event_date."
-</div>
-
-<div class='detail-box'>
-<b>Total Price:</b><br>
-₹ ".$row['total_price']."
-</div>
-
-<div class='detail-box'>
-<b>Advance Paid:</b><br>
-₹ ".$row['advance_paid']."
-</div>
-
-<div class='detail-box'>
-<b>Remaining Amount:</b><br>
-₹ ".$row['remaining_amount']."
-</div>
-
-<div class='detail-box'>
-<b>Payment Method:</b><br>
-".$row['payment_method']."
-</div>
-
-<div class='detail-box'>
-<b>Payment Status:</b><br>
-".$payment_status."
-</div>
-
-<div class='detail-box'>
-<b>Event Status:</b><br>
-".$event_status."
-</div>
-
-<div class='detail-box'>
-<b>Booked On:</b><br>
-".$row['booking_date']."
-</div>
+<div class='detail-box'><b>Payment</b><br>".$payment_status."</div>
+<div class='detail-box'><b>Status</b><br>".$event_status."</div>
+<div class='detail-box'><b>Booked On</b><br>".$row['booking_date']."</div>
 
 </div>
 
-<div style='margin-top:12px;color:#ffd166;'>
+<div class='bottom'>
+
+<div class='change-date'>
 Changes allowed until: <b>".$change_last_date."</b>
 </div>
 
+<div class='actions'>
 ";
 
-/* BUTTONS */
-
-if($is_edit_allowed)
-{
-echo "<a href='edit_booking.php?id=".$row['booking_id']."' class='btn'>Edit Booking</a>";
-}
-else
-{
-echo "<a class='btn disabled'>Edit Closed</a>";
+if($is_edit_allowed){
+    echo "<a href='edit_booking.php?id=".$booking_id."' class='btn'>Edit</a>";
+}else{
+    echo "<a class='btn disabled'>Edit Closed</a>";
 }
 
-echo "<a href='receipt.php?booking_id=".$row['booking_id']."' class='btn receipt'>Receipt</a>";
+echo "<a href='receipt.php?booking_id=".$booking_id."' class='btn receipt'>Receipt</a>";
 
-/* FEEDBACK BUTTON */
-
-if($today > $event_date)
-{
+if($today > $event_date){
 
 $check=mysqli_query($conn,"
 SELECT * FROM feedback 
-WHERE booking_id='".$row['booking_id']."' 
+WHERE booking_id='$booking_id' 
 AND user_id='$user_id'
 ");
 
-if(mysqli_num_rows($check)==0)
-{
-echo "<a href='feedback.php?booking_id=".$row['booking_id']."' class='btn feedback'>Give Feedback</a>";
-}
-else
-{
-echo "<span class='feedback-done'>Feedback Submitted</span>";
+if(mysqli_num_rows($check)==0){
+    echo "<a href='feedback.php?booking_id=".$booking_id."' class='btn feedback'>Feedback</a>";
+}else{
+    echo "<a class='btn disabled'>Feedback Done</a>";
 }
 
 }
 
-echo "</div>";
+echo "
+</div>
+</div>
+</div>
+";
 
 }
 
-}
-else
-{
-echo "<div class='card'>No bookings found</div>";
+}else{
+    echo "<div class='card'>No confirmed bookings found</div>";
 }
 
 ?>

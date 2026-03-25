@@ -267,6 +267,10 @@ body{
         <h2>🏫</h2>
         <p>View Colleges</p>
         </a>
+        <a href="manage_payments.php" class="card manage">
+        <h2>🏫</h2>
+        <p>Manage Payments</p>
+        </a>
 
     </div>
 

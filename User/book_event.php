@@ -45,6 +45,20 @@ if($package_id){
 
 }
 
+/* ================= MAX CAPACITY BASED ON PACKAGE ================= */
+
+$max_capacity = 0;
+
+if($package_id){
+    $pkg = mysqli_fetch_assoc(mysqli_query($conn,"SELECT package_name FROM packages WHERE package_id=$package_id"));
+
+    if($pkg){
+        if($pkg['package_name']=="Basic")    $max_capacity = 200;
+        if($pkg['package_name']=="Standard") $max_capacity = 400;
+        if($pkg['package_name']=="Premium")  $max_capacity = 600;
+    }
+}
+
 /* ================= BOOK EVENT ================= */
 
 if(isset($_POST['book'])){
@@ -59,8 +73,13 @@ if(isset($_POST['book'])){
     $food_ids     = isset($_POST['food_id']) ? $_POST['food_id'] : [];
     $coverage_ids = isset($_POST['coverage_id']) ? $_POST['coverage_id'] : [];
 
-    if($event_date < date("Y-m-d",strtotime("+5 days"))){
-        echo "<script>alert('Booking allowed only after 5 days');history.back();</script>";
+    if($event_date < date("Y-m-d",strtotime("+2 days"))){
+        echo "<script>alert('Booking allowed only after 2 days');history.back();</script>";
+        exit();
+    }
+
+    if($capacity > $max_capacity){
+        echo "<script>alert('Maximum capacity allowed is $max_capacity');history.back();</script>";
         exit();
     }
 
@@ -76,21 +95,16 @@ if(isset($_POST['book'])){
     $total += $seat['price'] * $capacity;
 
     foreach($food_ids as $fid){
-
         $food = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM food WHERE food_id=".(int)$fid));
         $total += $food['price'] * $capacity;
-
     }
 
     foreach($coverage_ids as $cid){
-
         $cover = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM coverage WHERE coverage_id=".(int)$cid));
         $total += $cover['price'];
-
     }
 
     $_SESSION['booking_data'] = [
-
         "user_id"=>$user_id,
         "event_id"=>$event_id,
         "package_id"=>$package_id,
@@ -99,12 +113,10 @@ if(isset($_POST['book'])){
         "food_ids"=>implode(",",$food_ids),
         "coverage_ids"=>implode(",",$coverage_ids),
         "capacity"=>$capacity
-
     ];
 
     header("Location: payment_new.php");
     exit();
-
 }
 
 ?>
@@ -298,87 +310,66 @@ onclick=\"location='?event_id=$event_id&package_id={$row['package_id']}'\">
 <input type="hidden" name="package_id" value="<?= $package_id ?>">
 
 <label class="section-title">Capacity</label>
-<input type="number" name="capacity" min="1" required>
+<input type="number" name="capacity" min="1" max="<?= $max_capacity ?>" required>
 
 <label class="section-title">Select Venue</label>
 <select name="venue_id" required>
-
 <option value="">Select Venue</option>
-
 <?php
 $q=mysqli_query($conn,"SELECT * FROM venues WHERE event_id=$event_id AND package_id=$package_id");
-
 while($r=mysqli_fetch_assoc($q)){
 echo "<option value='{$r['venue_id']}'>{$r['venue_name']} ₹{$r['price']}</option>";
 }
 ?>
-
 </select>
 
 <label class="section-title">Select Decoration</label>
-
 <select name="decoration_id" required>
-
 <option value="">Select Decoration</option>
-
 <?php
 $q=mysqli_query($conn,"SELECT * FROM decorations WHERE event_id=$event_id AND package_id=$package_id");
-
 while($r=mysqli_fetch_assoc($q)){
 echo "<option value='{$r['decoration_id']}'>{$r['decoration_name']} ₹{$r['price']}</option>";
 }
 ?>
-
 </select>
 
 <label class="section-title">Select Seat</label>
-
 <select name="seat_id" required>
-
 <option value="">Select Seat</option>
-
 <?php
 $q=mysqli_query($conn,"SELECT * FROM seats WHERE event_id=$event_id AND package_id=$package_id");
-
 while($r=mysqli_fetch_assoc($q)){
 echo "<option value='{$r['seat_id']}'>{$r['seat_type']} ₹{$r['price']}</option>";
 }
 ?>
-
 </select>
 
 <label class="section-title">Select Food</label>
-
 <div class="checkbox-group">
-
 <?php
 $q=mysqli_query($conn,"SELECT * FROM food WHERE event_id=$event_id AND package_id=$package_id");
-
 while($r=mysqli_fetch_assoc($q)){
 echo "<label><input type='checkbox' name='food_id[]' value='{$r['food_id']}'> {$r['menu']} ₹{$r['price']}</label>";
 }
 ?>
-
 </div>
 
 <label class="section-title">Select Coverage</label>
-
 <div class="checkbox-group">
-
 <?php
 $q=mysqli_query($conn,"SELECT * FROM coverage WHERE event_id=$event_id AND package_id=$package_id");
-
 while($r=mysqli_fetch_assoc($q)){
 echo "<label><input type='checkbox' name='coverage_id[]' value='{$r['coverage_id']}'> {$r['coverage_type']} ₹{$r['price']}</label>";
 }
 ?>
-
 </div>
 
 <label class="section-title">Event Date</label>
-
-<input type="date" name="event_date" min="<?= date('Y-m-d',strtotime('+5 days')) ?>" required>
-
+<input type="date" name="event_date" 
+min="<?= date('Y-m-d',strtotime('+2 days')) ?>" 
+max="<?= date('Y-m-d',strtotime('+30 days')) ?>" 
+required>
 <button type="submit" name="book">Book Now</button>
 
 </form>
@@ -386,6 +377,73 @@ echo "<label><input type='checkbox' name='coverage_id[]' value='{$r['coverage_id
 <?php } ?>
 
 </div>
+
+<!-- ✅ ONLY ADDITION (REAL-TIME MESSAGE) -->
+<script>
+const capacityInput = document.querySelector("[name='capacity']");
+
+if(capacityInput){
+
+    const maxCapacity = <?= $max_capacity ?>;
+
+    // Create message element
+    let msg = document.createElement("div");
+    msg.style.color = "#ef4444";
+    msg.style.fontSize = "12px";
+    msg.style.marginTop = "5px";
+
+    // ✅ INSERT RIGHT AFTER INPUT (NOT AT END)
+    capacityInput.insertAdjacentElement("afterend", msg);
+
+    capacityInput.addEventListener("input", function(){
+
+        let value = parseInt(this.value);
+
+        if(value > maxCapacity){
+            msg.innerText = "Maximum capacity allowed is " + maxCapacity;
+        } else {
+            msg.innerText = "";
+        }
+
+    });
+}
+const dateInput = document.querySelector("[name='event_date']");
+
+if(dateInput){
+
+    let msg = document.createElement("div");
+    msg.style.color = "#ef4444";
+    msg.style.fontSize = "12px";
+    msg.style.marginTop = "5px";
+
+    // place message just below date input
+    dateInput.insertAdjacentElement("afterend", msg);
+
+    let minDate = new Date();
+    minDate.setDate(minDate.getDate() + 2);
+
+    let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+
+    dateInput.addEventListener("input", function(){
+
+        if(!this.value) return;
+
+        let selectedDate = new Date(this.value);
+
+        if(selectedDate < minDate){
+            msg.innerText = "Booking must be at least 2 days from today";
+        }
+        else if(selectedDate > maxDate){
+            msg.innerText = "Booking allowed only within 30 days from today";
+        }
+        else{
+            msg.innerText = "";
+        }
+
+    });
+}
+</script>
 
 </body>
 </html>

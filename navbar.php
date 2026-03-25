@@ -3,10 +3,25 @@ if(session_status() === PHP_SESSION_NONE){
     session_start();
 }
 include("db.php");
+
+/* ===== NOTIFICATION COUNT ===== */
+$noti_count = 0;
+
+if(isset($_SESSION['user_id'])){
+    $uid = $_SESSION['user_id'];
+
+    $q = mysqli_query($conn,"
+    SELECT COUNT(*) AS total 
+    FROM bookings 
+    WHERE user_id='$uid' AND is_read=0 AND notification!=''
+    ");
+
+    $data = mysqli_fetch_assoc($q);
+    $noti_count = $data['total'];
+}
 ?>
 
 <style>
-/* ================= ROOT ================= */
 :root{
     --bg-dark:#0b0f1a;
     --accent:#7aa2ff;
@@ -15,7 +30,7 @@ include("db.php");
     --text-muted:#b7b7d6;
 }
 
-/* ================= NAVBAR ================= */
+/* NAVBAR */
 .navbar{
     height:72px;
     background:linear-gradient(135deg,#0b0f1a,#12172a);
@@ -31,7 +46,7 @@ include("db.php");
         inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
-/* SHIMMER LINE */
+/* shimmer */
 .navbar::after{
     content:"";
     position:absolute;
@@ -39,31 +54,25 @@ include("db.php");
     left:-100%;
     width:100%;
     height:2px;
-    background:linear-gradient(
-        90deg,
-        transparent,
-        var(--accent-glow),
-        transparent
-    );
+    background:linear-gradient(90deg,transparent,var(--accent-glow),transparent);
     animation:shimmer 6s linear infinite;
 }
 
-/* ================= LOGO ================= */
+/* LOGO */
 .nav-logo{
     color:var(--text-light);
     font-size:22px;
     font-weight:700;
-    letter-spacing:1px;
-    text-shadow:0 0 10px rgba(122,162,255,0.4);
 }
 
-/* ================= MENU ================= */
+/* MENU */
 .nav-menu{
     display:flex;
     align-items:center;
-    gap:32px;
+    gap:28px;
 }
 
+/* LINKS */
 .nav-menu a,
 .dropdown-toggle{
     color:var(--text-muted);
@@ -71,121 +80,63 @@ include("db.php");
     font-size:15px;
     font-weight:500;
     position:relative;
-    padding:6px 2px;
-    cursor:pointer;
-    transition:all 0.35s ease;
 }
 
-/* underline glow */
-.nav-menu a::after,
-.dropdown-toggle::after{
-    content:"";
-    position:absolute;
-    left:50%;
-    bottom:-8px;
-    width:0;
-    height:2px;
-    background:linear-gradient(90deg,var(--accent),var(--accent-glow));
-    box-shadow:0 0 12px var(--accent-glow);
-    transition:all 0.35s ease;
-}
-
-.nav-menu a:hover::after,
-.dropdown-toggle:hover::after{
-    width:100%;
-    left:0;
-}
-
-.nav-menu a:hover,
-.dropdown-toggle:hover{
-    color:var(--text-light);
-    text-shadow:0 0 10px rgba(155,182,255,0.6);
-}
-
-/* ================= DROPDOWN ================= */
-.dropdown{
-    position:relative;
-}
+/* DROPDOWN */
+.dropdown{ position:relative; }
 
 .dropdown-menu{
     position:absolute;
     top:72px;
     left:-30px;
     width:250px;
-    background:linear-gradient(180deg,#11162a,#0b0f1a);
-    border-radius:16px;
-    padding:12px 0;
-    display:none;
-    z-index:2000;
-
-    box-shadow:
-        0 40px 80px rgba(0,0,0,0.85),
-        inset 0 0 0 1px rgba(255,255,255,0.06);
-
-    backdrop-filter:blur(18px);
-    animation:dropdownFade 0.4s ease forwards;
-}
-
-/* arrow */
-.dropdown-menu::before{
-    content:"";
-    position:absolute;
-    top:-10px;
-    left:45px;
-    width:18px;
-    height:18px;
     background:#11162a;
-    transform:rotate(45deg);
+    border-radius:16px;
+    padding:10px 0;
+    display:none;
 }
 
-/* dropdown items */
 .dropdown-menu a{
     display:block;
-    padding:14px 24px;
-    color:var(--text-muted);
-    font-size:14px;
-    font-weight:500;
-    transition:all 0.35s ease;
+    padding:12px 20px;
 }
 
-.dropdown-menu a:hover{
-    color:var(--text-light);
-    background:linear-gradient(
-        90deg,
-        rgba(122,162,255,0.15),
-        transparent
-    );
-    padding-left:30px;
-    text-shadow:0 0 8px rgba(155,182,255,0.6);
+.dropdown-menu.show{ display:block; }
+
+/* 🔔 NOTIFICATION ICON */
+.noti{
+    position:relative;
+    font-size:22px;
+    cursor:pointer;
+    color:white;
 }
 
-.dropdown-menu.show{
-    display:block;
+/* 🔴 BADGE */
+.badge{
+    position:absolute;
+    top:-6px;
+    right:-10px;
+    background:red;
+    color:white;
+    font-size:11px;
+    padding:2px 6px;
+    border-radius:50%;
 }
 
-/* ================= ANIMATIONS ================= */
+/* ANIM */
 @keyframes shimmer{
     0%{left:-100%}
     50%{left:100%}
     100%{left:100%}
 }
-
-@keyframes dropdownFade{
-    from{
-        opacity:0;
-        transform:translateY(-12px) scale(0.96);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0) scale(1);
-    }
-}
 </style>
 
 <div class="navbar">
+
     <div class="nav-logo">EventHub</div>
 
     <div class="nav-menu">
+
         <a href="/event-planner-project/index.php">Home</a>
 
         <div class="dropdown">
@@ -203,12 +154,27 @@ include("db.php");
         <a href="/event-planner-project/gallery.php">Gallery</a>
 
         <?php if(isset($_SESSION['user_id'])){ ?>
+
             <a href="/event-planner-project/User/my_bookings.php">My Bookings</a>
+
+            <!-- 🔔 NOTIFICATION -->
+            <a href="/event-planner-project/User/notifications.php" class="noti">
+                🔔
+                <?php if($noti_count > 0){ ?>
+                    <span class="badge"><?php echo $noti_count; ?></span>
+                <?php } ?>
+            </a>
+
             <a href="/event-planner-project/logout.php">Logout</a>
+
         <?php } else { ?>
+
             <a href="/event-planner-project/login.php">Login</a>
+
         <?php } ?>
+
     </div>
+
 </div>
 
 <script>

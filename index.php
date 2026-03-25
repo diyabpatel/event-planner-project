@@ -172,8 +172,7 @@ transform:none;
 From cultural fests to seminars and farewell nights —  
 we plan, manage and execute college events professionally.
 </p>
-<button onclick="location.href='events.php'">Explore Events</button>
-<button onclick="location.href='login.php'">Organize Event</button>
+
 </div>
 </div>
 

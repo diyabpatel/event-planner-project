@@ -14,6 +14,14 @@ if(isset($_POST['login']))
     {
         $user = mysqli_fetch_assoc($result);
 
+        /* ✅ CLEAR OLD SESSION (VERY IMPORTANT FIX) */
+        session_unset();
+        session_destroy();
+        session_start();
+
+        /* ✅ SECURE SESSION */
+        session_regenerate_id(true);
+
         $_SESSION['user_id'] = $user['user_id'];
         $_SESSION['college_name'] = $user['college_name'];
 
