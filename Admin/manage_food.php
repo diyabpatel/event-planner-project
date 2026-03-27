@@ -54,133 +54,152 @@ if(isset($_POST['save_food'])){
 <title>Manage Food</title>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 *{
     box-sizing:border-box;
 }
+
 body{
     margin:0;
-    font-family:'Segoe UI', Arial, sans-serif;
-    background:
-        radial-gradient(circle at top left,#dbeafe,transparent 40%),
-        radial-gradient(circle at bottom right,#bfdbfe,transparent 40%),
-        linear-gradient(135deg,#eef4ff,#f8fbff);
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
     padding:30px;
 }
 
-/* TITLES */
+/* HEADINGS */
 h2{
-    font-size:28px;
-    color:#1e3a8a;
-    margin-bottom:15px;
-}
-h3{
-    margin-top:0;
-    color:#1e40af;
+    text-align:center;
+    color:#5b21b6;
+    margin-bottom:20px;
+    font-weight:600;
 }
 
-/* FORM */
+h3{
+    margin-top:0;
+    color:#4c1d95;
+}
+
+/* ================= FORM ================= */
+
 form{
-    background:rgba(255,255,255,0.65);
-    backdrop-filter:blur(18px);
-    padding:25px;
-    border-radius:18px;
-    box-shadow:
-        0 15px 40px rgba(0,0,0,0.15),
-        inset 0 1px 1px rgba(255,255,255,0.6);
-    max-width:650px;
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 15px 40px rgba(91,33,182,0.15);
+    border:1px solid #e9d5ff;
+    max-width:600px;
+    margin:0 auto 40px auto;
 }
 
 /* INPUTS */
 input,textarea,select{
     width:100%;
-    padding:12px 14px;
-    margin:10px 0;
-    border-radius:12px;
-    border:1px solid rgba(0,0,0,0.15);
-    font-size:14px;
+    padding:12px;
+    margin-top:10px;
+    border-radius:10px;
+    border:1px solid #ddd;
     outline:none;
-    background:rgba(255,255,255,0.9);
+    transition:0.3s;
+    font-size:14px;
 }
 
+/* FOCUS */
 input:focus, textarea:focus, select:focus{
-    border-color:#2563eb;
-    box-shadow:0 0 0 2px rgba(37,99,235,0.25);
+    border-color:#7c3aed;
+    box-shadow:0 0 0 2px rgba(124,58,237,0.2);
 }
 
 /* BUTTON */
 button{
-    margin-top:10px;
-    padding:12px 28px;
+    margin-top:18px;
+    padding:12px;
     border:none;
     border-radius:30px;
-    background:linear-gradient(135deg,#22c55e,#16a34a);
-    color:#fff;
-    font-size:14px;
-    font-weight:600;
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
+    color:white;
     cursor:pointer;
-    box-shadow:0 8px 25px rgba(34,197,94,0.45);
-    transition:all 0.3s ease;
-}
-button:hover{
-    transform:translateY(-2px) scale(1.05);
+    font-weight:600;
+    transition:0.3s;
+    width:100%;
 }
 
-/* TABLE */
+button:hover{
+    transform:scale(1.03);
+    box-shadow:0 10px 20px rgba(124,58,237,0.3);
+}
+
+/* ================= TABLE ================= */
+
 table{
     width:100%;
     border-collapse:collapse;
-    margin-top:40px;
-    background:rgba(255,255,255,0.65);
-    backdrop-filter:blur(18px);
-    border-radius:18px;
+    background:white;
+    border-radius:16px;
     overflow:hidden;
-    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
 
-th,td{
-    padding:14px 15px;
-    text-align:left;
-}
-
+/* HEADER */
 th{
-    background:linear-gradient(135deg,#2563eb,#1e40af);
-    color:#fff;
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
+    color:white;
+    padding:14px;
+    text-align:left;
     font-weight:600;
-    letter-spacing:0.4px;
 }
 
-tr{
-    transition:0.25s;
+/* DATA */
+td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+    vertical-align:middle;
+    line-height:1.5;
 }
+
+/* ROW HOVER */
 tr:hover{
-    background:rgba(37,99,235,0.08);
+    background:#f5f3ff;
 }
 
-/* ACTION BUTTONS */
+/* ACTION BUTTON ALIGN */
+td:last-child{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+/* BUTTON COMMON */
 .btn{
-    display:inline-block;
-    padding:8px 16px;
+    padding:6px 14px;
     border-radius:20px;
+    color:white;
     text-decoration:none;
-    color:#fff;
     font-size:13px;
-    font-weight:600;
-    margin-right:6px;
-    transition:all 0.3s ease;
+    font-weight:500;
+    transition:0.3s;
+    white-space:nowrap;
 }
 
+/* EDIT */
 .edit{
-    background:linear-gradient(135deg,#f59e0b,#d97706);
-    box-shadow:0 6px 20px rgba(245,158,11,0.5);
-}
-.delete{
-    background:linear-gradient(135deg,#ef4444,#dc2626);
-    box-shadow:0 6px 20px rgba(239,68,68,0.5);
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);
 }
 
-.btn:hover{
-    transform:translateY(-2px) scale(1.05);
+.edit:hover{
+    opacity:0.85;
 }
+
+/* DELETE */
+.delete{
+    background:linear-gradient(135deg,#f43f5e,#e11d48);
+}
+
+.delete:hover{
+    opacity:0.85;
+}
+
 </style>
 
 </head>

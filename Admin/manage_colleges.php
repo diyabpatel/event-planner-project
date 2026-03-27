@@ -19,58 +19,89 @@ $query = mysqli_query($conn,"SELECT * FROM users WHERE user_id != 1");
 
 <style>
 
-body{
-font-family:Segoe UI;
-margin:0;
-background:#f1f5f9;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+*{
+box-sizing:border-box;
 }
 
+body{
+margin:0;
+font-family:'Poppins', sans-serif;
+background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+}
+
+/* HEADER */
 .header{
-background:#2563eb;
-color:white;
-padding:18px 30px;
+background:white;
+color:#5b21b6;
+padding:20px 30px;
 font-size:22px;
 font-weight:600;
+box-shadow:0 10px 30px rgba(91,33,182,0.15);
 }
 
+/* CONTAINER */
 .container{
 max-width:1200px;
 margin:auto;
 padding:30px;
 }
 
+/* CARD */
 .college-card{
 background:white;
-border-radius:12px;
-padding:20px;
+border-radius:18px;
+padding:25px;
 margin-bottom:25px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
+box-shadow:0 15px 40px rgba(91,33,182,0.15);
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:20px;
+gap:25px;
 align-items:center;
+transition:0.3s;
+border:1px solid #e9d5ff;
 }
 
+/* HOVER EFFECT */
+.college-card:hover{
+transform:translateY(-5px);
+box-shadow:0 20px 50px rgba(91,33,182,0.2);
+}
+
+/* INFO */
 .college-info h3{
 margin-top:0;
-color:#1e3a8a;
+color:#5b21b6;
+font-size:20px;
 }
 
 .college-info p{
-margin:6px 0;
+margin:8px 0;
+font-size:14px;
+color:#333;
 }
 
+/* MAP */
 .map{
 width:100%;
-height:220px;
-border-radius:10px;
+height:230px;
+border-radius:14px;
 overflow:hidden;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
 }
 
 iframe{
 width:100%;
 height:100%;
 border:0;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+.college-card{
+grid-template-columns:1fr;
+}
 }
 
 </style>

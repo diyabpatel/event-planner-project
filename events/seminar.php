@@ -305,7 +305,7 @@ coordination.
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/seminar/s2.jpeg">
+<img src="../uploads/images/seminar/image.png">
 <img src="../uploads/images/seminar/s3.jpeg">
 <img src="../uploads/images/seminar/s4.jpeg">
 <img src="../uploads/images/seminar/s5.jpeg">

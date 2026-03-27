@@ -39,6 +39,8 @@ while($row=mysqli_fetch_assoc($q)){
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 *{
 margin:0;
 padding:0;
@@ -46,9 +48,8 @@ box-sizing:border-box;
 }
 
 body{
-font-family:'Segoe UI',system-ui;
-background:#0f172a;
-color:#e2e8f0;
+font-family:'Poppins', sans-serif;
+background:linear-gradient(135deg,#f5f3ff,#ede9fe);
 padding:25px;
 }
 
@@ -56,13 +57,15 @@ padding:25px;
 h2{
 text-align:center;
 margin-bottom:25px;
-font-size:28px;
+font-size:26px;
+color:#5b21b6;
+font-weight:600;
 }
 
 /* BOARD */
 .board{
 display:flex;
-gap:20px;
+gap:25px;
 justify-content:center;
 flex-wrap:wrap;
 }
@@ -71,41 +74,49 @@ flex-wrap:wrap;
 .column{
 flex:1;
 min-width:300px;
-background:#1e293b;
-border-radius:12px;
+background:#ede9fe; /* LIGHT PURPLE */
+border-radius:16px;
 padding:15px;
+box-shadow:0 10px 25px rgba(91,33,182,0.12);
 }
 
+/* COLUMN TITLE */
 .column h3{
 margin-bottom:15px;
-font-size:16px;
+font-size:15px;
 display:flex;
 justify-content:space-between;
+color:#5b21b6;
+font-weight:600;
 }
 
 /* COUNT BADGE */
 .count{
-background:#334155;
-padding:3px 10px;
+background:#7c3aed;
+padding:4px 10px;
 border-radius:20px;
 font-size:12px;
+color:white;
+font-weight:600;
 }
 
 /* CARD */
 .card{
-background:#020617;
+background:white; /* CONTRAST FIX */
 padding:15px;
-border-radius:10px;
+border-radius:12px;
 margin-bottom:12px;
-transition:0.2s;
-border-left:4px solid #3b82f6;
+transition:0.25s;
+border-left:5px solid #7c3aed;
+box-shadow:0 8px 20px rgba(0,0,0,0.08);
 }
 
 .card:hover{
-transform:translateY(-3px);
+transform:translateY(-4px);
+box-shadow:0 12px 25px rgba(91,33,182,0.18);
 }
 
-/* DIFFERENT COLORS */
+/* STATUS COLORS */
 .pending-card{border-color:#facc15;}
 .approved-card{border-color:#22c55e;}
 .rejected-card{border-color:#ef4444;}
@@ -113,21 +124,22 @@ transform:translateY(-3px);
 /* NAME */
 .name{
 font-weight:600;
-margin-bottom:5px;
+margin-bottom:6px;
+color:#1f2937;
 }
 
 /* AMOUNT */
 .amount{
 font-size:16px;
 font-weight:700;
-color:#38bdf8;
+color:#5b21b6;
 margin-bottom:5px;
 }
 
 /* METHOD */
 .method{
 font-size:12px;
-color:#94a3b8;
+color:#6b7280;
 }
 
 /* BUTTON */
@@ -136,14 +148,16 @@ display:inline-block;
 margin-top:8px;
 padding:6px 12px;
 font-size:12px;
-border-radius:6px;
+border-radius:20px;
 text-decoration:none;
-background:#3b82f6;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
+font-weight:500;
+transition:0.3s;
 }
 
 .btn:hover{
-background:#2563eb;
+opacity:0.85;
 }
 
 </style>

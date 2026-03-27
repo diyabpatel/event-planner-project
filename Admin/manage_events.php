@@ -125,87 +125,159 @@ exit();
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 body{
 margin:0;
-font-family:Arial;
-background:#eef4ff;
+font-family:'Poppins', sans-serif;
+background:linear-gradient(135deg,#f5f3ff,#ede9fe);
 padding:30px;
 }
 
+/* HEADING */
 h2{
-color:#1e3a8a;
+color:#5b21b6;
+margin-bottom:25px;
+text-align:center;
+font-weight:600;
 }
+
+/* ================= FORM ================= */
 
 form{
 background:white;
-padding:25px;
-border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
-max-width:650px;
+padding:30px;
+border-radius:16px;
+box-shadow:0 15px 40px rgba(91,33,182,0.15);
+border:1px solid #e9d5ff;
+max-width:600px;
+margin:0 auto 40px auto; /* center + gap below */
 }
 
+/* LABEL */
 label{
-font-weight:bold;
+font-weight:600;
 display:block;
-margin-top:12px;
+margin-top:14px;
+color:#4c1d95;
 }
 
+/* INPUT */
 input,textarea{
 width:100%;
 padding:12px;
-margin-top:5px;
+margin-top:6px;
 border-radius:10px;
-border:1px solid #ccc;
+border:1px solid #ddd;
+outline:none;
+transition:0.3s;
+font-size:14px;
 }
 
+/* FOCUS */
+input:focus, textarea:focus{
+border-color:#7c3aed;
+box-shadow:0 0 0 2px rgba(124,58,237,0.2);
+}
+
+/* BUTTON */
 button{
-margin-top:15px;
-padding:12px 25px;
+margin-top:18px;
+padding:12px;
 border:none;
-border-radius:25px;
-background:#2563eb;
+border-radius:30px;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
 cursor:pointer;
+font-weight:600;
+transition:0.3s;
+width:100%;
 }
+
+button:hover{
+transform:scale(1.03);
+box-shadow:0 10px 20px rgba(124,58,237,0.3);
+}
+
+/* ================= TABLE ================= */
 
 table{
 width:100%;
-margin-top:40px;
 border-collapse:collapse;
 background:white;
-box-shadow:0 10px 30px rgba(0,0,0,0.1);
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
 
-th,td{
-padding:12px;
-text-align:left;
-}
-
+/* HEADER */
 th{
-background:#2563eb;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
+padding:14px;
+text-align:left;
+font-weight:600;
 }
 
+/* DATA */
+td{
+padding:14px;
+border-bottom:1px solid #eee;
+vertical-align:middle;
+line-height:1.5;
+}
+
+/* ROW HOVER */
+tr:hover{
+background:#f5f3ff;
+}
+
+/* IMAGE */
 img{
-width:80px;
-border-radius:8px;
+width:70px;
+height:70px;
+object-fit:cover;
+border-radius:12px;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
 }
 
+/* ACTION BUTTONS */
+td:last-child{
+display:flex;
+gap:8px;
+align-items:center;
+}
+
+/* BUTTON COMMON */
 .btn{
-padding:7px 14px;
+padding:6px 14px;
 border-radius:20px;
 color:white;
 text-decoration:none;
 font-size:13px;
+font-weight:500;
+transition:0.3s;
+white-space:nowrap;
 }
 
+/* EDIT */
 .edit{
-background:#f59e0b;
+background:linear-gradient(135deg,#a78bfa,#7c3aed);
 }
 
-.delete{
-background:#ef4444;
+.edit:hover{
+opacity:0.85;
 }
+
+/* DELETE */
+.delete{
+background:linear-gradient(135deg,#f43f5e,#e11d48);
+}
+
+.delete:hover{
+opacity:0.85;
+}
+
 
 </style>
 
@@ -214,6 +286,8 @@ background:#ef4444;
 <body>
 
 <h2>Manage Events</h2>
+
+
 
 <!-- FORM -->
 
@@ -305,6 +379,8 @@ Delete
 <?php } ?>
 
 </table>
+
+
 
 </body>
 </html>

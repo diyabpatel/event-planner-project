@@ -29,28 +29,28 @@ ORDER BY b.booking_id DESC
 <title>Manage Bookings</title>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 *{
     box-sizing:border-box;
 }
+
 body{
-    font-family:'Segoe UI', Arial, sans-serif;
     margin:0;
-    background:
-        radial-gradient(circle at top left,#dbeafe,transparent 40%),
-        radial-gradient(circle at bottom right,#bfdbfe,transparent 40%),
-        linear-gradient(135deg,#eef4ff,#f8fbff);
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
 }
 
 /* HEADER */
 .header{
-    background:rgba(30,64,175,0.85);
-    backdrop-filter:blur(14px);
-    color:#fff;
+    background:white;
+    color:#5b21b6;
     padding:18px 30px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    box-shadow:0 10px 30px rgba(0,0,0,0.25);
+    box-shadow:0 10px 30px rgba(91,33,182,0.15);
     position:sticky;
     top:0;
     z-index:10;
@@ -58,23 +58,24 @@ body{
 
 .header h2{
     margin:0;
-    font-size:24px;
-    letter-spacing:0.5px;
+    font-size:22px;
+    font-weight:600;
 }
 
+/* BACK BUTTON */
 .back-btn{
-    background:linear-gradient(135deg,#ef4444,#dc2626);
+    background:linear-gradient(135deg,#f43f5e,#e11d48);
     padding:10px 18px;
     border-radius:30px;
     text-decoration:none;
     color:white;
     font-size:14px;
     font-weight:600;
-    box-shadow:0 6px 20px rgba(239,68,68,0.5);
     transition:0.3s;
 }
+
 .back-btn:hover{
-    transform:translateY(-2px) scale(1.05);
+    opacity:0.85;
 }
 
 /* CONTAINER */
@@ -82,43 +83,44 @@ body{
     padding:30px;
 }
 
-/* TABLE */
+/* ================= TABLE ================= */
+
 table{
     width:100%;
     border-collapse:collapse;
-    background:rgba(255,255,255,0.65);
-    backdrop-filter:blur(18px);
-    border-radius:18px;
+    background:white;
+    border-radius:16px;
     overflow:hidden;
-    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+    box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
 
+/* HEADER */
 th{
-    background:linear-gradient(135deg,#2563eb,#1e40af);
-    color:#fff;
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
+    color:white;
     padding:14px;
     font-size:14px;
-    letter-spacing:0.4px;
+    text-align:center;
+    font-weight:600;
 }
 
+/* DATA */
 td{
     padding:14px;
     text-align:center;
-    border-bottom:1px solid rgba(0,0,0,0.08);
+    border-bottom:1px solid #eee;
     font-size:14px;
 }
 
-tr{
-    transition:0.25s;
-}
+/* ROW HOVER */
 tr:hover{
-    background:rgba(37,99,235,0.08);
+    background:#f5f3ff;
 }
 
-/* AMOUNT STYLES */
+/* AMOUNTS */
 .total{
     font-weight:700;
-    color:#1e3a8a;
+    color:#5b21b6;
 }
 
 .advance{
@@ -133,20 +135,21 @@ tr:hover{
 
 /* STATUS BADGES */
 .paid{
-    background:rgba(22,163,74,0.15);
+    background:rgba(34,197,94,0.15);
     color:#15803d;
     padding:6px 14px;
     border-radius:20px;
-    font-weight:700;
+    font-weight:600;
 }
 
 .pending{
-    background:rgba(234,88,12,0.15);
+    background:rgba(249,115,22,0.15);
     color:#c2410c;
     padding:6px 14px;
     border-radius:20px;
-    font-weight:700;
+    font-weight:600;
 }
+
 </style>
 
 </head>

@@ -1,195 +1,279 @@
 <?php
 include("../db.php");
 
-// DELETE
+// DELETE DECORATION
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
-    mysqli_query($conn, "DELETE FROM venues WHERE venue_id=$id");
-    header("Location: manage_venues.php");
+    mysqli_query($conn, "DELETE FROM decorations WHERE decoration_id=$id");
+    header("Location: manage_decorations.php");
 }
 
-// ADD
-if(isset($_POST['save_venue'])){
+// FETCH FOR EDIT
+$edit = null;
+if(isset($_GET['edit'])){
+    $id = $_GET['edit'];
+    $res = mysqli_query($conn, "SELECT * FROM decorations WHERE decoration_id=$id");
+    $edit = mysqli_fetch_assoc($res);
+}
+
+// ADD / UPDATE DECORATION
+if(isset($_POST['save_decoration'])){
 
     $package_id = $_POST['package_id'];
-    $venue_name = $_POST['venue_name'];
+    $decoration_name = $_POST['decoration_name'];
     $price = $_POST['price'];
 
-    $image = $_FILES['image']['name'];
-    $tmp = $_FILES['image']['tmp_name'];
-
-    if($image != ""){
-        move_uploaded_file($tmp, "../uploads/images/venues/annual_day/".$image);
+    // UPDATE
+    if($_POST['decoration_id'] != ""){
+        $did = $_POST['decoration_id'];
+        mysqli_query($conn,"UPDATE decorations SET 
+            package_id='$package_id',
+            decoration_name='$decoration_name',
+            price='$price'
+            WHERE decoration_id=$did");
+    }
+    // INSERT
+    else{
+        mysqli_query($conn,"INSERT INTO decorations(package_id,decoration_name,price)
+            VALUES('$package_id','$decoration_name','$price')");
     }
 
-    mysqli_query($conn,"INSERT INTO venues(package_id,venue_name,price,venue_image)
-        VALUES('$package_id','$venue_name','$price','$image')");
-
-    header("Location: manage_venues.php");
+    header("Location: manage_decorations.php");
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<title>Manage Venues</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Manage Decorations</title>
 
 <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+*{
+    box-sizing:border-box;
+}
+
 body{
-    background:#0f172a;
-    color:white;
-    font-family:Arial;
+    margin:0;
+    font-family:'Poppins', sans-serif;
+    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
     padding:30px;
 }
-form{
-    background:#1e293b;
-    padding:25px;
-    border-radius:15px;
-    max-width:600px;
+
+/* HEADINGS */
+h2{
+    text-align:center;
+    color:#5b21b6;
+    margin-bottom:20px;
+    font-weight:600;
 }
-select,input{
+
+h3{
+    margin-top:0;
+    color:#4c1d95;
+}
+
+/* ================= FORM ================= */
+
+form{
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 15px 40px rgba(91,33,182,0.15);
+    border:1px solid #e9d5ff;
+    max-width:600px;
+    margin:0 auto 40px auto;
+}
+
+/* INPUTS */
+input,select{
     width:100%;
     padding:12px;
-    margin:12px 0;
+    margin-top:10px;
     border-radius:10px;
-    border:none;
-    background:#334155;
-    color:white;
+    border:1px solid #ddd;
+    outline:none;
+    transition:0.3s;
+    font-size:14px;
 }
+
+/* FOCUS */
+input:focus, select:focus{
+    border-color:#7c3aed;
+    box-shadow:0 0 0 2px rgba(124,58,237,0.2);
+}
+
+/* BUTTON */
 button{
-    background:#2563eb;
-    padding:12px 25px;
+    margin-top:18px;
+    padding:12px;
     border:none;
-    border-radius:25px;
+    border-radius:30px;
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
     color:white;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s;
+    width:100%;
 }
+
+button:hover{
+    transform:scale(1.03);
+    box-shadow:0 10px 20px rgba(124,58,237,0.3);
+}
+
+/* ================= TABLE ================= */
+
 table{
     width:100%;
-    margin-top:40px;
     border-collapse:collapse;
-    background:#1e293b;
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
+
+/* HEADER */
 th{
-    background:#2563eb;
-    padding:12px;
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
+    color:white;
+    padding:14px;
+    text-align:left;
+    font-weight:600;
 }
+
+/* DATA */
 td{
-    padding:10px;
-    border-bottom:1px solid #334155;
+    padding:14px;
+    border-bottom:1px solid #eee;
+    vertical-align:middle;
+    line-height:1.5;
 }
-img{
-    width:80px;
-    height:60px;
-    border-radius:8px;
-    object-fit:cover;
+
+/* ROW HOVER */
+tr:hover{
+    background:#f5f3ff;
 }
+
+/* ACTION BUTTON ALIGN */
+td:last-child{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+/* BUTTON COMMON */
 .btn{
-    padding:6px 12px;
+    padding:6px 14px;
     border-radius:20px;
     color:white;
     text-decoration:none;
+    font-size:13px;
+    font-weight:500;
+    transition:0.3s;
+    white-space:nowrap;
 }
-.delete{background:red;}
-</style>
-</head>
 
+/* EDIT */
+.edit{
+    background:linear-gradient(135deg,#a78bfa,#7c3aed);
+}
+
+.edit:hover{
+    opacity:0.85;
+}
+
+/* DELETE */
+.delete{
+    background:linear-gradient(135deg,#f43f5e,#e11d48);
+}
+
+.delete:hover{
+    opacity:0.85;
+}
+
+</style>
+
+</head>
 <body>
 
-<h2>Manage Venues</h2>
+<h2>Manage Decorations</h2>
 
-<form method="post" enctype="multipart/form-data">
+<!-- ADD / EDIT FORM -->
+<form method="post">
+<h3><?php echo isset($edit) && $edit ? "Edit Decoration" : "Add Decoration"; ?></h3>
 
-<!-- EVENT -->
-<select name="event_id" required>
-<option value="">Select Event</option>
+<input type="hidden" name="decoration_id"
+value="<?php echo isset($edit['decoration_id']) ? $edit['decoration_id'] : ''; ?>">
 
-<?php
-$events = mysqli_query($conn,"SELECT * FROM events");
-while($e = mysqli_fetch_assoc($events)){
-    echo "<option value='{$e['event_id']}'>{$e['event_name']}</option>";
-}
-?>
-</select>
-
-<!-- PACKAGE -->
+<!-- PACKAGE DROPDOWN -->
 <select name="package_id" required>
-<option value="">Select Package</option>
-
-<?php
-$packages = mysqli_query($conn,"SELECT * FROM packages");
-while($p = mysqli_fetch_assoc($packages)){
-    echo "<option value='{$p['package_id']}'>
-          {$p['package_name']}
-          </option>";
-}
-?>
+    <option value="">Select Package</option>
+    <?php
+    $packages = mysqli_query($conn,"
+        SELECT packages.*, events.event_name 
+        FROM packages 
+        JOIN events ON packages.event_id = events.event_id
+    ");
+    while($p = mysqli_fetch_assoc($packages)){
+        $selected = (isset($edit['package_id']) && $edit['package_id']==$p['package_id']) ? "selected" : "";
+        echo "<option value='{$p['package_id']}' $selected>
+              {$p['event_name']} - {$p['package_name']}
+              </option>";
+    }
+    ?>
 </select>
 
-<input type="text" name="venue_name" placeholder="Venue Name" required>
-<input type="number" name="price" placeholder="Venue Price" required>
-<input type="file" name="image">
+<input type="text" name="decoration_name" placeholder="Decoration Name (Stage / Theme / Floral)"
+value="<?php echo isset($edit['decoration_name']) ? $edit['decoration_name'] : ''; ?>" required>
 
-<button name="save_venue">Add Venue</button>
+<input type="number" name="price" placeholder="Decoration Price"
+value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
 
+<button type="submit" name="save_decoration">
+<?php echo isset($edit) && $edit ? "Update Decoration" : "Add Decoration"; ?>
+</button>
 </form>
 
+<!-- DECORATIONS TABLE -->
 <table>
 <tr>
-<th>ID</th>
-<th>Event</th>
-<th>Package</th>
-<th>Venue</th>
-<th>Price</th>
-<th>Image</th>
-<th>Action</th>
+    <th>ID</th>
+    <th>Event</th>
+    <th>Package</th>
+    <th>Decoration</th>
+    <th>Price</th>
+    <th>Action</th>
 </tr>
 
 <?php
 $q = mysqli_query($conn,"
-SELECT venues.*, packages.package_name, events.event_name
-FROM venues
-JOIN packages ON venues.package_id = packages.package_id
+SELECT decorations.*, packages.package_name, events.event_name
+FROM decorations
+JOIN packages ON decorations.package_id = packages.package_id
 JOIN events ON packages.event_id = events.event_id
 ");
-
-$folders = ["annual_day","seminar","sports_day","farewell","freshers_party","convocation"];
 
 while($row = mysqli_fetch_assoc($q)){
 ?>
 <tr>
-<td><?php echo $row['venue_id']; ?></td>
-<td><?php echo $row['event_name']; ?></td>
-<td><?php echo $row['package_name']; ?></td>
-<td><?php echo $row['venue_name']; ?></td>
-
-<td>&#8377; <?php echo number_format($row['price']); ?></td>
-
-<td>
-<?php
-$img = $row['venue_image'];
-$found = false;
-
-foreach($folders as $folder){
-    $path = "../uploads/images/venues/".$folder."/".$img;
-
-    if($img != "" && file_exists($path)){
-        echo "<img src='$path'>";
-        $found = true;
-        break;
-    }
-}
-
-if(!$found){
-    echo "<span style='color:gray;'>No Image</span>";
-}
-?>
-</td>
-
-<td>
-<a href="?delete=<?php echo $row['venue_id']; ?>" class="btn delete">Delete</a>
-</td>
-
+    <td><?php echo $row['decoration_id']; ?></td>
+    <td><?php echo $row['event_name']; ?></td>
+    <td><?php echo $row['package_name']; ?></td>
+    <td><?php echo $row['decoration_name']; ?></td>
+    <td>₹ <?php echo $row['price']; ?></td>
+    <td>
+        <a href="manage_decorations.php?edit=<?php echo $row['decoration_id']; ?>" class="btn edit">Edit</a>
+        <a href="manage_decorations.php?delete=<?php echo $row['decoration_id']; ?>"
+           class="btn delete"
+           onclick="return confirm('Delete this decoration?');">Delete</a>
+    </td>
 </tr>
 <?php } ?>
 
