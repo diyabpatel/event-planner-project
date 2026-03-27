@@ -85,23 +85,29 @@ if(isset($_POST['pay']))
         }
 
         /* ✅ BOOKINGS INSERT */
-        mysqli_query($conn,"
-        INSERT INTO bookings
-        (user_id,event_id,package_id,capacity,event_date,total_price,
-        payment_status,food_ids,coverage_ids)
-        VALUES
-        (
-        '$user_id',
-        '".$data['event_id']."',
-        '".$data['package_id']."',
-        '".$data['capacity']."',
-        '".$data['event_date']."',
-        '$total',
-        'Verification Pending',
-        '".$data['food_ids']."',
-        '".$data['coverage_ids']."'
-        )
-        ");
+ $new_advance = $advance;
+$remaining = $total - $new_advance;
+
+mysqli_query($conn,"
+INSERT INTO bookings
+(user_id,event_id,package_id,capacity,event_date,total_price,
+advance_paid,remaining_amount,
+payment_status,food_ids,coverage_ids)
+VALUES
+(
+'$user_id',
+'".$data['event_id']."',
+'".$data['package_id']."',
+'".$data['capacity']."',
+'".$data['event_date']."',
+'$total',
+'$new_advance',
+'$remaining',
+'Verification Pending',
+'".$data['food_ids']."',
+'".$data['coverage_ids']."'
+)
+");
 
         $booking_id=mysqli_insert_id($conn);
 
@@ -215,11 +221,25 @@ cursor:pointer;
 <div class="section">
 <b>Pay Using UPI</b>
 
-<div class="row"><span>UPI</span><span>eventhub@upi</span></div>
-<div class="row"><span>Amount</span><span>&#8377; <?php echo htmlspecialchars($advance); ?></span></div>
+<?php
+$upi_id = "dixita3286@okicici";   // 🔥 same as Angular
+$upi_name = "Dixita";
+
+$upi_link = "upi://pay?pa=$upi_id&pn=$upi_name&am=$advance&cu=INR";
+?>
+
+<div class="row">
+  <span>UPI</span>
+  <span><?php echo $upi_id; ?></span>
+</div>
+
+<div class="row">
+  <span>Amount</span>
+  <span>&#8377; <?php echo htmlspecialchars($advance); ?></span>
+</div>
 
 <div class="qr">
-<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=eventhub@upi&pn=EventHub&am=<?php echo $advance; ?>">
+  <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?php echo urlencode($upi_link); ?>">
 </div>
 
 <p class="small">Pay and upload documents</p>

@@ -26,7 +26,7 @@ if(mysqli_num_rows($q)==0){
 $booking = mysqli_fetch_assoc($q);
 
 $current_total   = $booking['total_price'];
-$current_advance = $booking['advance_paid'];
+$current_advance = isset($booking['advance_paid']) ? $booking['advance_paid'] : 0;
 $current_date    = $booking['event_date'];
 
 $event_id   = $booking['event_id'];

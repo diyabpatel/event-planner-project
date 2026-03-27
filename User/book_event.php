@@ -54,13 +54,16 @@ if(isset($_POST['book'])){
         $total += $c['price'];
     }
 
-    $_SESSION['booking_data'] = [
-        "user_id"=>$user_id,
-        "event_id"=>$event_id,
-        "package_id"=>$package_id,
-        "event_date"=>$event_date,
-        "total_price"=>$total
-    ];
+  $_SESSION['booking_data'] = [
+    "user_id"=>$user_id,
+    "event_id"=>$event_id,
+    "package_id"=>$package_id,
+    "event_date"=>$event_date,
+    "capacity"=>$capacity,
+    "total_price"=>$total,
+    "food_ids"=>implode(',', $food_ids),         // 🔥 ADD
+    "coverage_ids"=>implode(',', $coverage_ids)  // 🔥 ADD
+];
 
     header("Location: payment_new.php");
     exit();
@@ -163,36 +166,39 @@ border:1px solid rgba(255,255,255,0.1);
 /* VENUE GRID */
 .venue-grid{
 display:grid;
-grid-template-columns:repeat(2,1fr);
+grid-template-columns:repeat(3,1fr); /* same as seats */
 gap:15px;
 margin-top:10px;
 }
 
+/* VENUE CARD */
 .venue-card{
 background:#020617;
 border:1px solid rgba(255,255,255,0.1);
 border-radius:14px;
-overflow:hidden;
+padding:15px;
 cursor:pointer;
 transition:0.3s;
+text-align:center;
 position:relative;
 }
 
+/* IMAGE SQUARE 🔥 */
 .venue-card img{
 width:100%;
-height:150px;
+aspect-ratio:1/1;   /* 🔥 main trick */
 object-fit:cover;
+border-radius:10px;
+margin-bottom:10px;
 }
 
-.venue-info{
-padding:10px;
-}
-
+/* HOVER */
 .venue-card:hover{
-transform:scale(1.03);
+transform:scale(1.05);
 border-color:#6366f1;
 }
 
+/* ACTIVE */
 .venue-card.active{
 border:2px solid #6366f1;
 box-shadow:0 0 20px rgba(99,102,241,0.6);
@@ -206,6 +212,49 @@ right:10px;
 background:#6366f1;
 padding:4px 8px;
 border-radius:6px;
+}
+
+/* SEAT GRID */
+.seat-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-top:10px;
+}
+
+.seat-card{
+background:#020617;
+border:1px solid rgba(255,255,255,0.1);
+border-radius:14px;
+padding:20px;
+cursor:pointer;
+transition:0.3s;
+text-align:center;
+position:relative;
+}
+
+.seat-card:hover{
+transform:scale(1.05);
+border-color:#6366f1;
+}
+
+.seat-card.active{
+border:2px solid #6366f1;
+box-shadow:0 0 20px rgba(99,102,241,0.6);
+}
+
+.seat-card.active::after{
+content:"✔";
+position:absolute;
+top:10px;
+right:10px;
+background:#6366f1;
+padding:4px 8px;
+border-radius:6px;
+}
+
+.seat-info h4{
+margin-bottom:8px;
 }
 
 /* CHECKBOX */
@@ -314,15 +363,32 @@ echo "<option value='{$r['decoration_id']}'>{$r['decoration_name']} ₹{$r['pric
 
 <div class="input">
 <label>Seats</label>
-<select name="seat_id" required>
-<option value="" disabled selected>-- Select Seats --</option>
+
+<input type="hidden" name="seat_id" id="seatInput" required>
+
+<div class="seat-grid">
 <?php
 $q=mysqli_query($conn,"SELECT * FROM seats WHERE event_id=$event_id AND package_id=$package_id");
 while($r=mysqli_fetch_assoc($q)){
-echo "<option value='{$r['seat_id']}'>{$r['seat_type']} ₹{$r['price']}</option>";
+
+
+$img = isset($r['seat_images']) ? "/event-planner-project/uploads/images/seats/".$r['seat_images'] : "";
+
+echo "
+<div class='seat-card' onclick='selectSeat(this, {$r['seat_id']})'>
+
+".($img ? "<img src='$img'>" : "")."
+
+<div class='seat-info'>
+<h4>{$r['seat_type']}</h4>
+<p>₹{$r['price']} per seat</p>
+</div>
+
+</div>
+";
 }
 ?>
-</select>
+</div>
 </div>
 
 <div class="input">
@@ -369,6 +435,16 @@ card.classList.remove("active");
 });
 el.classList.add("active");
 document.getElementById("venueInput").value = id;
+}
+</script>
+
+<script>
+function selectSeat(el, id){
+document.querySelectorAll(".seat-card").forEach(card=>{
+card.classList.remove("active");
+});
+el.classList.add("active");
+document.getElementById("seatInput").value = id;
 }
 </script>
 
