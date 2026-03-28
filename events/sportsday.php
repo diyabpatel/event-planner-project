@@ -263,7 +263,7 @@ photography, and complete sports event coordination.
 <div class="service-grid">
 
 <div class="service-card">
-<img src="../uploads/images/sports day/venue.jpg">
+<img src="../uploads/images/sports day/venues.jpg">
 <h3>Venue Setup</h3>
 </div>
 
