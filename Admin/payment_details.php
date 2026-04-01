@@ -233,9 +233,24 @@ cursor:pointer;
 </div>
 <?php } ?>
 
-<div class="status <?php echo ($row['proof_status']==1?'approved':'rejected'); ?>">
-<?php echo ($row['proof_status']==1?'✔ Approved':'✖ Rejected'); ?>
+<div class="status 
+<?php 
+echo ($row['proof_status']==1 ? 'approved' : ($row['proof_status']==2 ? 'rejected' : 'pending')); 
+?>">
+
+<?php 
+if($row['proof_status']==1){
+    echo "✔ Approved";
+}
+elseif($row['proof_status']==2){
+    echo "✖ Rejected";
+}
+else{
+    echo "⏳ Pending";
+}
+?>
 </div>
+
 </div>
 
 <!-- AADHAAR -->
@@ -252,8 +267,22 @@ cursor:pointer;
 </div>
 <?php } ?>
 
-<div class="status <?php echo ($row['aadhaar_status']==1?'approved':'rejected'); ?>">
-<?php echo ($row['aadhaar_status']==1?'✔ Approved':'✖ Rejected'); ?>
+<div class="status 
+<?php 
+echo ($row['aadhaar_status']==1 ? 'approved' : ($row['aadhaar_status']==2 ? 'rejected' : 'pending')); 
+?>">
+
+<?php 
+if($row['aadhaar_status']==1){
+    echo "✔ Approved";
+}
+elseif($row['aadhaar_status']==2){
+    echo "✖ Rejected";
+}
+else{
+    echo "⏳ Pending";
+}
+?>
 </div>
 </div>
 
@@ -271,8 +300,22 @@ cursor:pointer;
 </div>
 <?php } ?>
 
-<div class="status <?php echo ($row['pan_status']==1?'approved':'rejected'); ?>">
-<?php echo ($row['pan_status']==1?'✔ Approved':'✖ Rejected'); ?>
+<div class="status 
+<?php 
+echo ($row['pan_status']==1 ? 'approved' : ($row['pan_status']==2 ? 'rejected' : 'pending')); 
+?>">
+
+<?php 
+if($row['pan_status']==1){
+    echo "✔ Approved";
+}
+elseif($row['pan_status']==2){
+    echo "✖ Rejected";
+}
+else{
+    echo "⏳ Pending";
+}
+?>
 </div>
 </div>
 

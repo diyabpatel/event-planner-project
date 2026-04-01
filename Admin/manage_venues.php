@@ -276,7 +276,7 @@ JOIN packages ON venues.package_id = packages.package_id
 JOIN events ON packages.event_id = events.event_id
 ");
 
-$folders = ["annual_day","seminar","sports_day","farewell","freshers_party","convocation"];
+$folders = ["annual_day","seminar","sports_day","farewell_party","freshers_party","convocation"];
 
 while($row = mysqli_fetch_assoc($q)){
 ?>

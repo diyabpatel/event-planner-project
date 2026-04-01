@@ -196,7 +196,6 @@ value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
 <th>Package</th>
 <th>Decoration</th>
 <th>Price</th>
-<th>Image</th>
 <th>Action</th>
 </tr>
 
@@ -217,17 +216,6 @@ while($row = mysqli_fetch_assoc($q)){
 <td><?php echo $row['decoration_name']; ?></td>
 <td>₹ <?php echo $row['price']; ?></td>
 
-<td>
-<?php
-$img = isset($row['decoration_image']) ? $row['decoration_image'] : "";
-$path = "../uploads/decorations/".$img;
-
-if($img != "" && file_exists($path)){
-    echo "<img src='$path'>";
-}else{
-    echo "No Image";
-}
-?>
 </td>
 
 <td>
