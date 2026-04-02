@@ -40,18 +40,18 @@ $result = mysqli_query($conn,$query);
 body{
     margin:0;
     font-family:'Segoe UI', system-ui;
-    background:linear-gradient(135deg,#ffffff,#f5f3ff);
-    color:#1f1f2e;
+    background:linear-gradient(135deg,#ffffff,#f6f4ff);
+    color:#1e1b4b;
 }
 
-/* CONTAINER */
+/* container */
 .container{
     max-width:1100px;
     margin:50px auto;
-    padding:20px;
+    padding:10px;
 }
 
-/* HEADING */
+/* heading */
 h2{
     text-align:center;
     margin-bottom:40px;
@@ -61,23 +61,22 @@ h2{
     -webkit-text-fill-color:transparent;
 }
 
-/* CARD */
+/* card */
 .card{
     background:#ffffff;
     border-radius:18px;
     padding:25px;
     margin-bottom:30px;
-    box-shadow:0 15px 40px rgba(124,58,237,0.15);
+    box-shadow:0 10px 30px rgba(124,58,237,0.15);
     transition:0.3s;
     border:1px solid #eee;
 }
 
 .card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 25px 60px rgba(124,58,237,0.25);
+    transform:translateY(-5px);
 }
 
-/* HEADER */
+/* header */
 .card-header{
     display:flex;
     justify-content:space-between;
@@ -88,7 +87,7 @@ h2{
 .event-name{
     font-size:22px;
     font-weight:600;
-    color:#5b21b6;
+    color:#7c3aed;
 }
 
 .package{
@@ -99,20 +98,18 @@ h2{
     color:white;
 }
 
-/* GRID */
+/* grid */
 .details{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:15px;
 }
 
-/* BOX */
 .detail-box{
-    background:#f5f3ff;
+    background:#f6f4ff;
     padding:14px;
     border-radius:12px;
     font-size:13px;
-    border:1px solid #e9d5ff;
 }
 
 .detail-box b{
@@ -120,7 +117,7 @@ h2{
     font-size:12px;
 }
 
-/* STATUS */
+/* status */
 .status{
     display:inline-block;
     padding:5px 12px;
@@ -130,12 +127,12 @@ h2{
     color:white;
 }
 
-.upcoming{background:#22c55e;}
+.upcoming{background:#7c3aed;}
 .completed{background:#ef4444;}
 .payment-paid{background:#16a34a;}
 .payment-pending{background:#f59e0b;}
 
-/* BOTTOM */
+/* bottom */
 .bottom{
     margin-top:20px;
     display:flex;
@@ -149,7 +146,7 @@ h2{
     color:#7c3aed;
 }
 
-/* BUTTONS */
+/* buttons */
 .actions{
     display:flex;
     gap:10px;
@@ -175,11 +172,11 @@ h2{
 }
 
 .btn.receipt{
-    background:linear-gradient(135deg,#22c55e,#4ade80);
+    background:linear-gradient(135deg,#16a34a,#4ade80);
 }
 
 .btn.feedback{
-    background:linear-gradient(135deg,#f59e0b,#fbbf24);
+    background:linear-gradient(135deg,#f59e0b,#facc15);
 }
 
 </style>

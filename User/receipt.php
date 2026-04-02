@@ -42,50 +42,106 @@ $remaining = $data['total_price'] - $advance_paid;
 *{box-sizing:border-box;}
 
 body{
-font-family:Segoe UI,Arial;
-background:linear-gradient(135deg,#eef2f7,#dbeafe);
+font-family:'Segoe UI', Arial;
+background:linear-gradient(135deg,#ffffff,#f6f4ff);
 padding:40px;
 margin:0;
+color:#1e1b4b;
 }
+
+/* BACK BUTTON */
+
+.back-btn{
+position:fixed;
+top:20px;
+left:20px;
+background:linear-gradient(135deg,#7c3aed,#a78bfa);
+color:white;
+padding:10px 18px;
+border-radius:25px;
+text-decoration:none;
+font-size:14px;
+font-weight:500;
+box-shadow:0 8px 20px rgba(124,58,237,0.3);
+transition:0.3s;
+z-index:9999;
+}
+
+.back-btn:hover{
+transform:translateY(-2px) scale(1.05);
+box-shadow:0 12px 25px rgba(124,58,237,0.4);
+}
+
+/* RECEIPT CARD */
 
 .receipt{
 max-width:600px;
 margin:auto;
-background:#fff;
+background:#ffffff;
 padding:35px;
-border-radius:12px;
-box-shadow:0 12px 35px rgba(0,0,0,0.15);
+border-radius:16px;
+box-shadow:0 10px 30px rgba(124,58,237,0.15);
+border:1px solid #eee;
 }
 
-.header{text-align:center;margin-bottom:25px;}
+/* HEADER */
 
-.header h2{margin:0;color:#1e293b;}
+.header{
+text-align:center;
+margin-bottom:25px;
+}
 
-.header p{color:#64748b;margin-top:5px;}
+.header h2{
+margin:0;
+font-size:26px;
+background:linear-gradient(90deg,#7c3aed,#a78bfa);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.header p{
+color:#6d6aa3;
+margin-top:5px;
+}
+
+/* SECTION */
 
 .section{margin-top:15px;}
 
 .row{
 display:flex;
 justify-content:space-between;
-padding:10px 0;
-border-bottom:1px solid #e5e7eb;
+padding:12px 0;
+border-bottom:1px solid #eee;
 }
 
 .row:last-child{border-bottom:none;}
 
-.label{font-weight:600;color:#334155;}
+.label{
+font-weight:600;
+color:#6d6aa3;
+}
 
-.value{font-weight:500;color:#0f172a;}
+.value{
+font-weight:500;
+color:#1e1b4b;
+}
 
-.amount{font-weight:700;color:#2563eb;}
+.amount{
+font-weight:700;
+color:#7c3aed;
+}
+
+/* TOTAL BOX */
 
 .total-box{
-background:#f1f5f9;
+background:#f6f4ff;
 padding:15px;
-border-radius:8px;
+border-radius:10px;
 margin-top:15px;
 }
+
+/* BUTTONS */
 
 .buttons{
 margin-top:25px;
@@ -98,23 +154,39 @@ flex:1;
 padding:12px;
 border:none;
 font-size:15px;
-border-radius:8px;
+border-radius:25px;
 cursor:pointer;
+transition:0.3s;
 }
+
+/* PRINT */
 
 .print-btn{
-background:#2563eb;
+background:linear-gradient(135deg,#7c3aed,#a78bfa);
 color:white;
 }
 
+.print-btn:hover{
+transform:scale(1.05);
+}
+
+/* BOOKINGS */
+
 .bookings-btn{
-background:#16a34a;
+background:linear-gradient(135deg,#7c3aed,#a78bfa)
 color:white;
 }
+
+.bookings-btn:hover{
+transform:scale(1.05);
+}
+
+/* PRINT MODE */
 
 @media print{
 body{background:white;padding:0;}
 button{display:none;}
+.back-btn{display:none;}
 .receipt{box-shadow:none;}
 }
 
@@ -125,6 +197,8 @@ button{display:none;}
 <body>
 
 <div class="receipt">
+
+<a href="/event-planner-project/index.php" class="back-btn">← Back</a>
 
 <div class="header">
 <h2>Event Booking Receipt</h2>
@@ -175,7 +249,7 @@ button{display:none;}
 Print / Download
 </button>
 
-<button class="bookings-btn" onclick="window.location='my_bookings.php'">
+<button class="print-btn" onclick="window.location='my_bookings.php'">
 Go to My Bookings
 </button>
 

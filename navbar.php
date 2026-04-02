@@ -25,45 +25,40 @@ if(isset($_SESSION['user_id'])){
 
 :root{
     --bg-main:#ffffff;
-    --bg-soft:#f5f3ff;
-    --purple:#7c3aed;
-    --purple-light:#a78bfa;
-    --purple-glow:#c4b5fd;
-    --text-dark:#1f1f2e;
-    --text-muted:#6b7280;
+    --bg-soft:#f6f4ff;
+    --accent:#7c3aed;
+    --accent-light:#a78bfa;
+    --accent-glow:#c4b5fd;
+    --text-dark:#1e1b4b;
+    --text-muted:#6d6aa3;
 }
 
-/* BODY FIX (VERY IMPORTANT) */
-body{
-    margin:0;
-    padding-top:80px; /* navbar overlap fix */
-    font-family:'Segoe UI', system-ui;
-    background:var(--bg-main);
-}
-
-/* NAVBAR */
+/* 📌 FIXED NAVBAR */
 .navbar{
     height:72px;
-    background:linear-gradient(135deg,#ffffff,#f5f3ff);
+    background:linear-gradient(135deg,#ffffff,#f6f4ff);
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 65px;
-
-    position:fixed;   /* 🔥 FIXED NAVBAR */
+    padding:0 30px;
+    position:fixed;
     top:0;
     left:0;
     width:100%;
-
-    z-index:1000;
-    backdrop-filter:blur(10px);
-
-    box-shadow:
-        0 10px 40px rgba(124,58,237,0.15),
-        inset 0 1px 0 rgba(255,255,255,0.7);
+    box-sizing:border-box;
+    z-index:9999;
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 30px rgba(124,58,237,0.15);
+    overflow:visible; /* 🔥 FIX */
 }
 
-/* TOP SHIMMER LINE */
+/* page spacing */
+body{
+    margin:0;
+    padding-top:80px;
+}
+
+/* shimmer */
 .navbar::after{
     content:"";
     position:absolute;
@@ -71,14 +66,14 @@ body{
     left:-100%;
     width:100%;
     height:3px;
-    background:linear-gradient(90deg,transparent,var(--purple),transparent);
-    animation:shimmer 5s linear infinite;
+    background:linear-gradient(90deg,transparent,var(--accent-light),transparent);
+    animation:shimmer 6s linear infinite;
 }
 
 /* LOGO */
 .nav-logo{
-    color:var(--purple);
-    font-size:24px;
+    color:var(--accent);
+    font-size:22px;
     font-weight:700;
 }
 
@@ -86,7 +81,9 @@ body{
 .nav-menu{
     display:flex;
     align-items:center;
-    gap:28px;
+    gap:16px;
+    flex-wrap:nowrap;
+    overflow:visible;   /* 🔥 IMPORTANT FIX */
 }
 
 /* LINKS */
@@ -98,24 +95,45 @@ body{
     font-weight:500;
     position:relative;
     transition:0.3s;
+    padding:6px 4px;
+    white-space:nowrap;
 }
 
-/* HOVER EFFECT */
+/* hover */
 .nav-menu a:hover,
 .dropdown-toggle:hover{
-    color:var(--purple);
+    color:var(--accent);
 }
 
-/* UNDERLINE ANIMATION */
+/* ACTIVE TAB */
+.nav-menu a.active{
+    color:var(--accent);
+    font-weight:600;
+}
+
+/* glow underline */
+.nav-menu a.active::after{
+    content:"";
+    position:absolute;
+    bottom:-6px;
+    left:0;
+    width:100%;
+    height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-light));
+    border-radius:10px;
+    box-shadow:0 0 12px var(--accent-glow);
+}
+
+/* hover underline */
 .nav-menu a::after,
 .dropdown-toggle::after{
     content:"";
     position:absolute;
-    bottom:-4px;
+    bottom:-6px;
     left:0;
     width:0%;
     height:2px;
-    background:var(--purple);
+    background:var(--accent);
     transition:0.3s;
 }
 
@@ -125,66 +143,91 @@ body{
 }
 
 /* DROPDOWN */
-.dropdown{ position:relative; }
+.dropdown{
+    position:relative;
+    z-index:10000; /* 🔥 FIX */
+}
 
 .dropdown-menu{
     position:absolute;
     top:72px;
-    left:-30px;
-    width:250px;
+    left:0; /* 🔥 FIXED alignment */
+    width:240px;
     background:#ffffff;
     border-radius:16px;
     padding:10px 0;
     display:none;
-
-    box-shadow:0 20px 40px rgba(124,58,237,0.2);
+    box-shadow:0 15px 40px rgba(124,58,237,0.15);
+    border:1px solid #eee;
+    z-index:9999;
+    animation:fadeIn 0.3s ease;
 }
 
 .dropdown-menu a{
     display:block;
     padding:12px 20px;
-    color:var(--text-dark);
-    transition:0.3s;
 }
 
 .dropdown-menu a:hover{
-    background:#f5f3ff;
-    color:var(--purple);
+    background:var(--bg-soft);
+    color:var(--accent);
 }
 
-.dropdown-menu.show{ display:block; }
+.dropdown-menu.show{
+    display:block;
+}
 
-/* 🔔 NOTIFICATION ICON */
+/* animation for dropdown */
+@keyframes fadeIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* 🔔 NOTI */
 .noti{
     position:relative;
-    font-size:22px;
-    cursor:pointer;
-    color:var(--purple);
-    transition:0.3s;
+    font-size:20px;
+    color:var(--accent);
 }
 
-.noti:hover{
-    transform:scale(1.1);
-}
-
-/* 🔴 BADGE */
+/* badge */
 .badge{
     position:absolute;
     top:-6px;
     right:-10px;
-    background:linear-gradient(135deg,#ef4444,#dc2626);
+    background:linear-gradient(135deg,#ff4d6d,#ff758f);
     color:white;
     font-size:11px;
-    padding:2px 6px;
+    padding:3px 6px;
     border-radius:50%;
-    box-shadow:0 0 10px rgba(239,68,68,0.6);
 }
 
-/* ANIMATION */
+/* shimmer animation */
 @keyframes shimmer{
     0%{left:-100%}
     50%{left:100%}
     100%{left:100%}
+}
+
+/* 📱 RESPONSIVE */
+@media (max-width:900px){
+    .navbar{
+        padding:0 15px;
+    }
+
+    .nav-menu{
+        gap:12px;
+    }
+
+    .nav-menu a{
+        font-size:14px;
+    }
 }
 
 </style>
@@ -198,7 +241,9 @@ body{
         <a href="/event-planner-project/index.php">Home</a>
 
         <div class="dropdown">
-            <span class="dropdown-toggle" id="eventToggle">Events ▾</span>
+            
+            <a href="#" class="dropdown-toggle" id="eventToggle">Events ▾</a>
+
             <div class="dropdown-menu" id="eventMenu">
                 <?php
                 $res = mysqli_query($conn,"SELECT * FROM events ORDER BY event_name");
@@ -235,16 +280,38 @@ body{
 
 </div>
 
+
+<!-- ✅ FIXED JAVASCRIPT -->
 <script>
-const toggle = document.getElementById("eventToggle");
-const menu   = document.getElementById("eventMenu");
+document.addEventListener("DOMContentLoaded", function(){
 
-toggle.addEventListener("click", function(e){
-    e.stopPropagation();
-    menu.classList.toggle("show");
-});
+    const toggle = document.getElementById("eventToggle");
+    const menu   = document.getElementById("eventMenu");
 
-document.addEventListener("click", function(){
-    menu.classList.remove("show");
+    if(toggle && menu){
+
+        toggle.addEventListener("click", function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            menu.classList.toggle("show");
+        });
+
+        // 🔥 IMPORTANT FIX
+        document.addEventListener("click", function(e){
+            if(!toggle.contains(e.target) && !menu.contains(e.target)){
+                menu.classList.remove("show");
+            }
+        });
+    }
+
+    const links = document.querySelectorAll(".nav-menu a");
+    const current = window.location.pathname;
+
+    links.forEach(link => {
+        if(link.getAttribute("href") === current){
+            link.classList.add("active");
+        }
+    });
+
 });
 </script>
