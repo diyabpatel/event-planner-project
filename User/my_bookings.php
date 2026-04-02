@@ -40,38 +40,44 @@ $result = mysqli_query($conn,$query);
 body{
     margin:0;
     font-family:'Segoe UI', system-ui;
-    background:linear-gradient(135deg,#0b0f1a,#121a2e,#1a2742);
-    color:#eaeaff;
+    background:linear-gradient(135deg,#ffffff,#f5f3ff);
+    color:#1f1f2e;
 }
 
+/* CONTAINER */
 .container{
     max-width:1100px;
     margin:50px auto;
     padding:20px;
 }
 
+/* HEADING */
 h2{
     text-align:center;
     margin-bottom:40px;
     font-size:30px;
-    background:linear-gradient(90deg,#7aa2ff,#9bb6ff);
+    background:linear-gradient(90deg,#7c3aed,#a78bfa);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 }
 
+/* CARD */
 .card{
-    background:rgba(255,255,255,0.05);
+    background:#ffffff;
     border-radius:18px;
     padding:25px;
     margin-bottom:30px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    box-shadow:0 15px 40px rgba(124,58,237,0.15);
     transition:0.3s;
+    border:1px solid #eee;
 }
 
 .card:hover{
-    transform:translateY(-5px);
+    transform:translateY(-6px);
+    box-shadow:0 25px 60px rgba(124,58,237,0.25);
 }
 
+/* HEADER */
 .card-header{
     display:flex;
     justify-content:space-between;
@@ -82,46 +88,54 @@ h2{
 .event-name{
     font-size:22px;
     font-weight:600;
+    color:#5b21b6;
 }
 
 .package{
-    background:#4f7cff;
+    background:linear-gradient(135deg,#7c3aed,#a78bfa);
     padding:6px 16px;
     border-radius:30px;
     font-size:12px;
+    color:white;
 }
 
+/* GRID */
 .details{
     display:grid;
     grid-template-columns:repeat(3,1fr);
     gap:15px;
 }
 
+/* BOX */
 .detail-box{
-    background:#0b1220;
+    background:#f5f3ff;
     padding:14px;
     border-radius:12px;
     font-size:13px;
+    border:1px solid #e9d5ff;
 }
 
 .detail-box b{
-    color:#9bb6ff;
+    color:#7c3aed;
     font-size:12px;
 }
 
+/* STATUS */
 .status{
     display:inline-block;
     padding:5px 12px;
     border-radius:20px;
     font-size:11px;
     margin-top:5px;
+    color:white;
 }
 
-.upcoming{background:#16a34a;}
+.upcoming{background:#22c55e;}
 .completed{background:#ef4444;}
 .payment-paid{background:#16a34a;}
 .payment-pending{background:#f59e0b;}
 
+/* BOTTOM */
 .bottom{
     margin-top:20px;
     display:flex;
@@ -132,9 +146,10 @@ h2{
 
 .change-date{
     font-size:13px;
-    color:#facc15;
+    color:#7c3aed;
 }
 
+/* BUTTONS */
 .actions{
     display:flex;
     gap:10px;
@@ -146,20 +161,25 @@ h2{
     text-decoration:none;
     color:white;
     font-size:13px;
-    background:#4f7cff;
+    background:linear-gradient(135deg,#7c3aed,#a78bfa);
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
 }
 
 .btn.disabled{
-    background:#4b5563;
+    background:#9ca3af;
     pointer-events:none;
 }
 
 .btn.receipt{
-    background:#16a34a;
+    background:linear-gradient(135deg,#22c55e,#4ade80);
 }
 
 .btn.feedback{
-    background:#f59e0b;
+    background:linear-gradient(135deg,#f59e0b,#fbbf24);
 }
 
 </style>

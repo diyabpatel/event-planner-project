@@ -566,7 +566,7 @@ overflow-x:hidden;
             <img src="uploads/images/freshers/fresher1.jpg">
             <div class="event-body">
                 <h3>Freshers Party</h3>
-                <button onclick="location.href='events/freshers.php'">View Event</button>
+                <button onclick="location.href='events/fresher.php'">View Event</button>
             </div>
         </div>
 

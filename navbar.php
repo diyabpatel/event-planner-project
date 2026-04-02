@@ -22,46 +22,63 @@ if(isset($_SESSION['user_id'])){
 ?>
 
 <style>
+
 :root{
-    --bg-dark:#0b0f1a;
-    --accent:#7aa2ff;
-    --accent-glow:#9bb6ff;
-    --text-light:#eaeaff;
-    --text-muted:#b7b7d6;
+    --bg-main:#ffffff;
+    --bg-soft:#f5f3ff;
+    --purple:#7c3aed;
+    --purple-light:#a78bfa;
+    --purple-glow:#c4b5fd;
+    --text-dark:#1f1f2e;
+    --text-muted:#6b7280;
+}
+
+/* BODY FIX (VERY IMPORTANT) */
+body{
+    margin:0;
+    padding-top:80px; /* navbar overlap fix */
+    font-family:'Segoe UI', system-ui;
+    background:var(--bg-main);
 }
 
 /* NAVBAR */
 .navbar{
     height:72px;
-    background:linear-gradient(135deg,#0b0f1a,#12172a);
+    background:linear-gradient(135deg,#ffffff,#f5f3ff);
     display:flex;
     align-items:center;
     justify-content:space-between;
     padding:0 65px;
-    position:relative;
+
+    position:fixed;   /* 🔥 FIXED NAVBAR */
+    top:0;
+    left:0;
+    width:100%;
+
     z-index:1000;
-    backdrop-filter:blur(14px);
+    backdrop-filter:blur(10px);
+
     box-shadow:
-        0 20px 60px rgba(0,0,0,0.7),
-        inset 0 1px 0 rgba(255,255,255,0.08);
+        0 10px 40px rgba(124,58,237,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.7);
 }
 
-/* shimmer */
+/* TOP SHIMMER LINE */
 .navbar::after{
     content:"";
     position:absolute;
     top:0;
     left:-100%;
     width:100%;
-    height:2px;
-    background:linear-gradient(90deg,transparent,var(--accent-glow),transparent);
-    animation:shimmer 6s linear infinite;
+    height:3px;
+    background:linear-gradient(90deg,transparent,var(--purple),transparent);
+    animation:shimmer 5s linear infinite;
 }
 
 /* LOGO */
 .nav-logo{
-    color:var(--text-light);
-    font-size:22px;
+    color:var(--purple);
+    font-size:24px;
     font-weight:700;
 }
 
@@ -80,6 +97,31 @@ if(isset($_SESSION['user_id'])){
     font-size:15px;
     font-weight:500;
     position:relative;
+    transition:0.3s;
+}
+
+/* HOVER EFFECT */
+.nav-menu a:hover,
+.dropdown-toggle:hover{
+    color:var(--purple);
+}
+
+/* UNDERLINE ANIMATION */
+.nav-menu a::after,
+.dropdown-toggle::after{
+    content:"";
+    position:absolute;
+    bottom:-4px;
+    left:0;
+    width:0%;
+    height:2px;
+    background:var(--purple);
+    transition:0.3s;
+}
+
+.nav-menu a:hover::after,
+.dropdown-toggle:hover::after{
+    width:100%;
 }
 
 /* DROPDOWN */
@@ -90,15 +132,24 @@ if(isset($_SESSION['user_id'])){
     top:72px;
     left:-30px;
     width:250px;
-    background:#11162a;
+    background:#ffffff;
     border-radius:16px;
     padding:10px 0;
     display:none;
+
+    box-shadow:0 20px 40px rgba(124,58,237,0.2);
 }
 
 .dropdown-menu a{
     display:block;
     padding:12px 20px;
+    color:var(--text-dark);
+    transition:0.3s;
+}
+
+.dropdown-menu a:hover{
+    background:#f5f3ff;
+    color:var(--purple);
 }
 
 .dropdown-menu.show{ display:block; }
@@ -108,7 +159,12 @@ if(isset($_SESSION['user_id'])){
     position:relative;
     font-size:22px;
     cursor:pointer;
-    color:white;
+    color:var(--purple);
+    transition:0.3s;
+}
+
+.noti:hover{
+    transform:scale(1.1);
 }
 
 /* 🔴 BADGE */
@@ -116,19 +172,21 @@ if(isset($_SESSION['user_id'])){
     position:absolute;
     top:-6px;
     right:-10px;
-    background:red;
+    background:linear-gradient(135deg,#ef4444,#dc2626);
     color:white;
     font-size:11px;
     padding:2px 6px;
     border-radius:50%;
+    box-shadow:0 0 10px rgba(239,68,68,0.6);
 }
 
-/* ANIM */
+/* ANIMATION */
 @keyframes shimmer{
     0%{left:-100%}
     50%{left:100%}
     100%{left:100%}
 }
+
 </style>
 
 <div class="navbar">
