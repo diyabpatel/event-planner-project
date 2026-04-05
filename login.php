@@ -45,119 +45,149 @@ if(isset($_POST['login']))
 <title>College Event Login</title>
 
 <style>
-*{box-sizing:border-box}
-
-body{
+    
+*{
+    box-sizing:border-box;
     margin:0;
-    font-family:'Segoe UI',sans-serif;
+    padding:0;
+    font-family:'Poppins',sans-serif;
+}
+
+/* 🌟 BACKGROUND */
+body{
     min-height:100vh;
-    background:
-    radial-gradient(circle at top,#1e2a5a,#0b1020 70%);
     display:flex;
     justify-content:center;
     align-items:center;
+    background:
+    radial-gradient(circle at top,#ffffff,#f3f0ff 40%,#e4ddff 70%,#d6ccff);
 }
 
-/* GLASS CARD */
+/* 💎 GLASS CARD */
 .login-card{
-    width:380px;
-    background:rgba(255,255,255,0.15);
-    backdrop-filter:blur(18px);
-    border-radius:18px;
-    padding:38px 32px;
+    width:390px;
+    background:rgba(255,255,255,0.7);
+    backdrop-filter:blur(20px);
+    border-radius:22px;
+    padding:42px 34px;
     box-shadow:
-    0 25px 60px rgba(0,0,0,0.7),
-    inset 0 0 0 1px rgba(255,255,255,0.15);
-    animation:fadeIn 0.9s ease;
+    0 25px 60px rgba(111,66,193,0.25),
+    0 0 25px rgba(140,90,255,0.3),
+    inset 0 0 0 1px rgba(255,255,255,0.8);
+    animation:fadeIn 0.8s ease;
+    position:relative;
 }
 
+/* ✨ GLOW BORDER EFFECT */
+.login-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:22px;
+    padding:1px;
+    background:linear-gradient(135deg,#a084ff,#7f5cff,#c4b5fd);
+    -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+    mask-composite:exclude;
+}
+
+/* 🔥 ANIMATION */
 @keyframes fadeIn{
-    from{opacity:0;transform:translateY(30px)}
-    to{opacity:1;transform:none}
+    from{opacity:0; transform:translateY(25px)}
+    to{opacity:1;}
 }
 
-/* TITLE */
+/* 🏷 TITLE */
 .login-card h2{
     text-align:center;
-    margin-bottom:26px;
+    margin-bottom:28px;
     font-weight:600;
-    letter-spacing:0.6px;
-    background:linear-gradient(90deg,#9bb6ff,#e0e7ff);
+    font-size:24px;
+    background:linear-gradient(90deg,#6f42c1,#9d7bff);
     -webkit-background-clip:text;
     -webkit-text-fill-color:transparent;
 }
 
-/* INPUTS */
+/* 📥 INPUTS */
 .form-group{
-    margin-bottom:18px;
+    margin-bottom:20px;
 }
 
 .form-group label{
-    display:block;
-    margin-bottom:6px;
     font-size:14px;
-    color:#eaf0ff;
-    opacity:.9;
+    color:#5a4a9c;
+    margin-bottom:6px;
+    display:block;
 }
 
 .form-group input{
     width:100%;
-    padding:12px;
-    border-radius:10px;
+    padding:13px;
+    border-radius:12px;
     border:none;
+    background:#ffffff;
     font-size:14px;
-    background:rgba(0,0,0,0.45);
-    color:white;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.2);
+    box-shadow:
+    0 5px 15px rgba(0,0,0,0.08),
+    inset 0 0 0 1px #e0d8ff;
     transition:0.3s;
 }
 
+/* 🌟 INPUT GLOW */
 .form-group input:focus{
     outline:none;
     box-shadow:
-    inset 0 0 0 1px #7aa2ff,
-    0 0 0 3px rgba(122,162,255,0.25);
+    0 0 0 2px #a084ff,
+    0 0 18px rgba(160,132,255,0.5);
 }
 
-/* BUTTON */
+/* 🚀 BUTTON */
 .login-btn{
     width:100%;
-    padding:13px;
+    padding:14px;
     border:none;
     border-radius:30px;
     font-size:15px;
     cursor:pointer;
     margin-top:10px;
-    background:linear-gradient(135deg,#7aa2ff,#4f7cff);
     color:white;
-    box-shadow:0 15px 35px rgba(122,162,255,0.6);
+    font-weight:500;
+    background:linear-gradient(135deg,#7f5cff,#6f42c1);
+    box-shadow:
+    0 12px 30px rgba(111,66,193,0.5),
+    0 0 20px rgba(140,90,255,0.6);
     transition:.35s;
 }
 
+/* 💥 BUTTON HOVER */
 .login-btn:hover{
-    transform:translateY(-2px);
-    box-shadow:0 22px 45px rgba(122,162,255,0.8);
+    transform:translateY(-3px) scale(1.02);
+    box-shadow:
+    0 18px 45px rgba(111,66,193,0.7),
+    0 0 30px rgba(140,90,255,0.9);
 }
 
-/* EXTRA LINKS */
+/* 🔗 LINKS */
 .extra-links{
-    margin-top:20px;
+    margin-top:22px;
     text-align:center;
     font-size:14px;
-    color:#eaf0ff;
+    color:#5a4a9c;
 }
 
 .extra-links a{
-    color:#9bb6ff;
+    color:#7f5cff;
     text-decoration:none;
-    font-weight:500;
+    font-weight:600;
 }
 
 .extra-links a:hover{
     text-decoration:underline;
 }
 
-/* RESPONSIVE */
+/* 📱 RESPONSIVE */
 @media(max-width:480px){
     .login-card{
         width:92%;
