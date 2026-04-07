@@ -288,7 +288,99 @@ cursor:pointer;
 button:hover{
 transform:scale(1.03);
 }
+.food-card{
+background:#020617;
+border:1px solid rgba(255,255,255,0.1);
+border-radius:14px;
+padding:15px;
+cursor:pointer;
+transition:0.3s;
+text-align:center;
+position:relative;
+}
 
+.food-card img{
+width:100%;
+aspect-ratio:1/1;
+object-fit:cover;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+.food-card:hover{
+transform:scale(1.05);
+border-color:#6366f1;
+}
+
+.food-card.active{
+border:2px solid #6366f1;
+box-shadow:0 0 20px rgba(99,102,241,0.6);
+}
+
+.food-card.active::after{
+content:"✔";
+position:absolute;
+top:10px;
+right:10px;
+background:#6366f1;
+padding:4px 8px;
+border-radius:6px;
+}
+.food-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
+margin-top:10px;
+}
+.card-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+margin-top:10px;
+}
+
+.select-card{
+background:#020617;
+border:1px solid rgba(255,255,255,0.1);
+border-radius:14px;
+padding:20px;
+cursor:pointer;
+transition:0.3s;
+text-align:center;
+position:relative;
+}
+
+.select-card h4{
+margin-bottom:8px;
+font-size:16px;
+}
+
+.select-card p{
+color:#cbd5f5;
+font-size:14px;
+}
+
+/* HOVER */
+.select-card:hover{
+transform:scale(1.05);
+border-color:#6366f1;
+}
+
+/* ACTIVE */
+.select-card.active{
+border:2px solid #6366f1;
+box-shadow:0 0 20px rgba(99,102,241,0.6);
+}
+
+.select-card.active::after{
+content:"✔";
+position:absolute;
+top:10px;
+right:10px;
+background:#6366f1;
+padding:4px 8px;
+border-radius:6px;
+}
 </style>
 </head>
 
@@ -319,7 +411,8 @@ onclick="location='?event_id=<?= $event_id ?>&package_id=<?= $row['package_id'] 
 
 <div class="input">
 <label>Capacity</label>
-<input type="number" name="capacity" required>
+<input type="number" name="capacity" id="capacityInput" required>
+<small id="capacityMsg" style="color:#f87171;"></small>
 </div>
 
 <!-- VENUE CARDS -->
@@ -350,15 +443,24 @@ echo "
 
 <div class="input">
 <label>Decoration</label>
-<select name="decoration_id" required>
-<option value="" disabled selected>-- Select Decoration --</option>
+<input type="hidden" name="decoration_id" id="decorationInput" required>
+
+<div class="card-grid">
 <?php
 $q=mysqli_query($conn,"SELECT * FROM decorations WHERE event_id=$event_id AND package_id=$package_id");
 while($r=mysqli_fetch_assoc($q)){
-echo "<option value='{$r['decoration_id']}'>{$r['decoration_name']} ₹{$r['price']}</option>";
+
+echo "
+<div class='select-card' onclick='selectDecoration(this, {$r['decoration_id']})'>
+
+<h4>{$r['decoration_name']}</h4>
+<p>₹{$r['price']}</p>
+
+</div>
+";
 }
 ?>
-</select>
+</div>
 </div>
 
 <div class="input">
@@ -393,31 +495,67 @@ echo "
 
 <div class="input">
 <label>Food</label>
-<div class="checkbox">
+
+<div class="food-grid">
+
 <?php
 $q=mysqli_query($conn,"SELECT * FROM food WHERE event_id=$event_id AND package_id=$package_id");
+
 while($r=mysqli_fetch_assoc($q)){
-echo "<label><input type='checkbox' name='food_id[]' value='{$r['food_id']}'> <span>{$r['menu']}</span></label>";
+
+$img = "/event-planner-project/uploads/images/food/".$r['food_image'];
+
+echo "
+<div class='food-card' onclick='toggleFood(this, {$r['food_id']})'>
+
+<img src='$img'>
+
+<div class='venue-info'>
+<h4>{$r['menu']}</h4>
+<p>₹{$r['price']} / person</p>
+</div>
+
+</div>
+";
 }
 ?>
+
 </div>
+
+<!-- hidden inputs -->
+<div id="foodInputs"></div>
+
 </div>
 
 <div class="input">
 <label>Coverage</label>
-<div class="checkbox">
+<div class="card-grid">
+
 <?php
 $q=mysqli_query($conn,"SELECT * FROM coverage WHERE event_id=$event_id AND package_id=$package_id");
+
 while($r=mysqli_fetch_assoc($q)){
-echo "<label><input type='checkbox' name='coverage_id[]' value='{$r['coverage_id']}'> <span>{$r['coverage_type']}</span></label>";
+
+echo "
+<div class='select-card' onclick='toggleCoverage(this, {$r['coverage_id']})'>
+
+<h4>{$r['coverage_type']}</h4>
+<p>₹{$r['price']}</p>
+
+</div>
+";
 }
 ?>
+
 </div>
+
+<div id="coverageInputs"></div>
 </div>
 
 <div class="input">
 <label>Date</label>
-<input type="date" name="event_date" required>
+<input type="date" name="event_date" id="dateInput" required>
+<small id="dateMsg" style="color:#f87171;"></small>
 </div>
 
 <button name="book">Book Now</button>
@@ -447,6 +585,149 @@ el.classList.add("active");
 document.getElementById("seatInput").value = id;
 }
 </script>
+<script>
+let selectedFoods = [];
 
+function toggleFood(el, id){
+
+if(selectedFoods.includes(id)){
+    selectedFoods = selectedFoods.filter(f => f !== id);
+    el.classList.remove("active");
+}else{
+    selectedFoods.push(id);
+    el.classList.add("active");
+}
+
+let container = document.getElementById("foodInputs");
+container.innerHTML = "";
+
+selectedFoods.forEach(fid=>{
+    container.innerHTML += `<input type="hidden" name="food_id[]" value="${fid}">`;
+});
+}
+</script>
+<script>
+function selectDecoration(el, id){
+document.querySelectorAll(".select-card").forEach(card=>{
+card.classList.remove("active");
+});
+el.classList.add("active");
+document.getElementById("decorationInput").value = id;
+}
+
+let selectedCoverage = [];
+
+function toggleCoverage(el, id){
+
+if(selectedCoverage.includes(id)){
+    selectedCoverage = selectedCoverage.filter(c => c !== id);
+    el.classList.remove("active");
+}else{
+    selectedCoverage.push(id);
+    el.classList.add("active");
+}
+
+let container = document.getElementById("coverageInputs");
+container.innerHTML = "";
+
+selectedCoverage.forEach(cid=>{
+    container.innerHTML += `<input type="hidden" name="coverage_id[]" value="${cid}">`;
+});
+}
+</script>
+<script>
+const packageLimits = {
+    1: 200, // Basic
+    2: 400, // Standard
+    3: 600  // Premium
+};
+
+const currentPackage = <?= $package_id ?>;
+const capacityInput = document.getElementById("capacityInput");
+const capacityMsg = document.getElementById("capacityMsg");
+
+capacityInput.addEventListener("input", function(){
+    let max = packageLimits[currentPackage] || 200;
+
+    if(this.value > max){
+        capacityMsg.innerText = "Max capacity allowed: " + max;
+        this.value = max;
+    }else{
+        capacityMsg.innerText = "";
+    }
+});
+</script>
+<?php
+$pkg = mysqli_fetch_assoc(mysqli_query($conn,"SELECT package_name FROM packages WHERE package_id=$package_id"));
+?>
+<script>
+const currentPackageName = "<?= strtolower($pkg['package_name']) ?>";
+
+const limits = {
+    basic: 200,
+    standard: 400,
+    premium: 600
+};
+
+const capacityInput = document.getElementById("capacityInput");
+const capacityMsg = document.getElementById("capacityMsg");
+
+capacityInput.addEventListener("input", function(){
+
+    let max = limits[currentPackageName] || 200;
+
+    if(this.value > max){
+        capacityMsg.innerText = "Max capacity allowed: " + max;
+        this.value = max;
+    }else{
+        capacityMsg.innerText = "";
+    }
+});
+</script>
+<script>
+const dateInput = document.getElementById("dateInput");
+const dateMsg = document.getElementById("dateMsg");
+
+// get today (local, not UTC)
+let today = new Date();
+
+// min = today + 2 days
+let minDate = new Date();
+minDate.setDate(today.getDate() + 2);
+
+// max = today + 30 days
+let maxDate = new Date();
+maxDate.setDate(today.getDate() + 30);
+
+// FIX: format date properly (local timezone safe)
+function formatDateLocal(date) {
+    let d = new Date(date);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+// apply limits
+dateInput.min = formatDateLocal(minDate);
+dateInput.max = formatDateLocal(maxDate);
+
+// validation on change
+dateInput.addEventListener("change", function(){
+
+    let selected = new Date(this.value);
+
+    if(selected < minDate || selected > maxDate){
+        dateMsg.innerText = "Please select a date at least 2 days from today and within the next 30 days.";
+        this.value = "";
+    }else{
+        dateMsg.innerText = "";
+    }
+});
+</script>
 </body>
 </html>
