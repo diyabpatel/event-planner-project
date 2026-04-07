@@ -127,10 +127,22 @@ exit();
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
 
-body{
+/* RESET */
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:'Poppins', sans-serif;
+}
+
+/* BODY */
+body{
 background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+}
+
+/* MAIN CONTENT (IMPORTANT FIX) */
+.main-content{
+margin-left:260px;  /* sidebar space */
 padding:30px;
 }
 
@@ -147,11 +159,16 @@ font-weight:600;
 form{
 background:white;
 padding:30px;
-border-radius:16px;
+border-radius:20px;
 box-shadow:0 15px 40px rgba(91,33,182,0.15);
 border:1px solid #e9d5ff;
-max-width:600px;
-margin:0 auto 40px auto; /* center + gap below */
+max-width:650px;
+margin:0 auto 40px auto;
+transition:0.3s;
+}
+
+form:hover{
+transform:translateY(-3px);
 }
 
 /* LABEL */
@@ -167,7 +184,7 @@ input,textarea{
 width:100%;
 padding:12px;
 margin-top:6px;
-border-radius:10px;
+border-radius:12px;
 border:1px solid #ddd;
 outline:none;
 transition:0.3s;
@@ -177,13 +194,13 @@ font-size:14px;
 /* FOCUS */
 input:focus, textarea:focus{
 border-color:#7c3aed;
-box-shadow:0 0 0 2px rgba(124,58,237,0.2);
+box-shadow:0 0 0 3px rgba(124,58,237,0.2);
 }
 
 /* BUTTON */
 button{
-margin-top:18px;
-padding:12px;
+margin-top:20px;
+padding:14px;
 border:none;
 border-radius:30px;
 background:linear-gradient(135deg,#7c3aed,#5b21b6);
@@ -192,11 +209,12 @@ cursor:pointer;
 font-weight:600;
 transition:0.3s;
 width:100%;
+font-size:15px;
 }
 
 button:hover{
-transform:scale(1.03);
-box-shadow:0 10px 20px rgba(124,58,237,0.3);
+transform:scale(1.04);
+box-shadow:0 10px 25px rgba(124,58,237,0.4);
 }
 
 /* ================= TABLE ================= */
@@ -205,7 +223,7 @@ table{
 width:100%;
 border-collapse:collapse;
 background:white;
-border-radius:16px;
+border-radius:20px;
 overflow:hidden;
 box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
@@ -214,50 +232,50 @@ box-shadow:0 15px 40px rgba(91,33,182,0.15);
 th{
 background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
-padding:14px;
+padding:16px;
 text-align:left;
 font-weight:600;
 }
 
 /* DATA */
 td{
-padding:14px;
+padding:16px;
 border-bottom:1px solid #eee;
 vertical-align:middle;
-line-height:1.5;
+line-height:1.6;
 }
 
 /* ROW HOVER */
 tr:hover{
 background:#f5f3ff;
+transition:0.2s;
 }
 
 /* IMAGE */
 img{
-width:70px;
-height:70px;
+width:75px;
+height:75px;
 object-fit:cover;
-border-radius:12px;
-box-shadow:0 8px 20px rgba(0,0,0,0.15);
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 /* ACTION BUTTONS */
 td:last-child{
 display:flex;
-gap:8px;
+gap:10px;
 align-items:center;
 }
 
 /* BUTTON COMMON */
 .btn{
-padding:6px 14px;
-border-radius:20px;
+padding:7px 16px;
+border-radius:25px;
 color:white;
 text-decoration:none;
 font-size:13px;
 font-weight:500;
 transition:0.3s;
-white-space:nowrap;
 }
 
 /* EDIT */
@@ -266,7 +284,7 @@ background:linear-gradient(135deg,#a78bfa,#7c3aed);
 }
 
 .edit:hover{
-opacity:0.85;
+transform:scale(1.05);
 }
 
 /* DELETE */
@@ -275,7 +293,7 @@ background:linear-gradient(135deg,#f43f5e,#e11d48);
 }
 
 .delete:hover{
-opacity:0.85;
+transform:scale(1.05);
 }
 
 
@@ -285,9 +303,11 @@ opacity:0.85;
 
 <body>
 
+<?php include("admin_sidebar.php"); ?>
+
+<div class="main-content">
+
 <h2>Manage Events</h2>
-
-
 
 <!-- FORM -->
 
@@ -325,7 +345,7 @@ echo isset($edit['description']) ? $edit['description'] : '';
 <table>
 
 <tr>
-<th>ID</th>
+
 <th>Event Name</th>
 <th>Description</th>
 <th>Image</th>
@@ -342,7 +362,7 @@ while($row = mysqli_fetch_assoc($q)){
 
 <tr>
 
-<td><?php echo $row['event_id']; ?></td>
+
 
 <td><?php echo $row['event_name']; ?></td>
 
@@ -379,7 +399,7 @@ Delete
 <?php } ?>
 
 </table>
-
+</div>
 
 
 </body>

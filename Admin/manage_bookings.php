@@ -30,130 +30,140 @@ ORDER BY b.booking_id DESC
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
+/* RESET */
 *{
-    box-sizing:border-box;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins', sans-serif;
 }
 
+/* BODY */
 body{
-    margin:0;
-    font-family:'Poppins', sans-serif;
-    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+}
+
+/* MAIN CONTENT */
+.main-content{
+margin-left:260px;
+padding:30px;
 }
 
 /* HEADER */
 .header{
-    background:white;
-    color:#5b21b6;
-    padding:18px 30px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    box-shadow:0 10px 30px rgba(91,33,182,0.15);
-    position:sticky;
-    top:0;
-    z-index:10;
+background:white;
+color:#5b21b6;
+padding:18px 25px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(91,33,182,0.15);
+margin-bottom:20px;
 }
 
 .header h2{
-    margin:0;
-    font-size:22px;
-    font-weight:600;
+margin:0;
+font-size:22px;
+font-weight:600;
 }
 
 /* BACK BUTTON */
 .back-btn{
-    background:linear-gradient(135deg,#f43f5e,#e11d48);
-    padding:10px 18px;
-    border-radius:30px;
-    text-decoration:none;
-    color:white;
-    font-size:14px;
-    font-weight:600;
-    transition:0.3s;
+background:linear-gradient(135deg,#f43f5e,#e11d48);
+padding:10px 18px;
+border-radius:30px;
+text-decoration:none;
+color:white;
+font-size:14px;
+font-weight:600;
+transition:0.3s;
 }
 
 .back-btn:hover{
-    opacity:0.85;
+transform:scale(1.05);
 }
 
 /* CONTAINER */
 .container{
-    padding:30px;
+width:100%;
 }
 
 /* ================= TABLE ================= */
 
 table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 15px 40px rgba(91,33,182,0.15);
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
 
 /* HEADER */
 th{
-    background:linear-gradient(135deg,#7c3aed,#5b21b6);
-    color:white;
-    padding:14px;
-    font-size:14px;
-    text-align:center;
-    font-weight:600;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
+color:white;
+padding:16px;
+font-size:14px;
+text-align:center;
+font-weight:600;
 }
 
 /* DATA */
 td{
-    padding:14px;
-    text-align:center;
-    border-bottom:1px solid #eee;
-    font-size:14px;
+padding:16px;
+text-align:center;
+border-bottom:1px solid #eee;
+font-size:14px;
 }
 
 /* ROW HOVER */
 tr:hover{
-    background:#f5f3ff;
+background:#f5f3ff;
 }
 
 /* AMOUNTS */
 .total{
-    font-weight:700;
-    color:#5b21b6;
+font-weight:700;
+color:#5b21b6;
 }
 
 .advance{
-    color:#16a34a;
-    font-weight:700;
+color:#16a34a;
+font-weight:700;
 }
 
 .remaining{
-    color:#dc2626;
-    font-weight:700;
+color:#dc2626;
+font-weight:700;
 }
 
 /* STATUS BADGES */
 .paid{
-    background:rgba(34,197,94,0.15);
-    color:#15803d;
-    padding:6px 14px;
-    border-radius:20px;
-    font-weight:600;
+background:rgba(34,197,94,0.15);
+color:#15803d;
+padding:6px 14px;
+border-radius:20px;
+font-weight:600;
 }
 
 .pending{
-    background:rgba(249,115,22,0.15);
-    color:#c2410c;
-    padding:6px 14px;
-    border-radius:20px;
-    font-weight:600;
+background:rgba(249,115,22,0.15);
+color:#c2410c;
+padding:6px 14px;
+border-radius:20px;
+font-weight:600;
 }
 
 </style>
 
 </head>
 <body>
+
+<?php include("admin_sidebar.php"); ?>
+
+<div class="main-content">
 
 <div class="header">
     <h2>Manage Bookings</h2>
@@ -200,7 +210,7 @@ tr:hover{
 <?php } ?>
 
 </table>
-
+</div>
 </div>
 
 </body>

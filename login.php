@@ -91,6 +91,8 @@ body{
     linear-gradient(#fff 0 0);
     -webkit-mask-composite:xor;
     mask-composite:exclude;
+    
+    pointer-events:none; /* 🔥 IMPORTANT FIX */
 }
 
 /* 🔥 ANIMATION */

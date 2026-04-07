@@ -62,25 +62,43 @@ ORDER BY b.booking_date DESC
 
 <style>
 
-body{
-font-family:Segoe UI;
-background:#f1f5f9;
+/* RESET */
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins', sans-serif;
 }
 
+/* BODY */
+body{
+background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+}
+
+/* MAIN CONTENT */
+.main-content{
+margin-left:260px;
+padding:30px;
+}
+
+/* HEADER */
 .header{
-background:#1e40af;
-color:white;
-padding:18px 30px;
+background:white;
+color:#5b21b6;
+padding:20px 25px;
 font-size:22px;
 font-weight:600;
+border-radius:16px;
+box-shadow:0 10px 30px rgba(91,33,182,0.15);
+margin-bottom:25px;
 }
 
+/* CONTAINER */
 .container{
-padding:30px;
-max-width:1200px;
-margin:auto;
+width:100%;
 }
+
+/* ================= CARDS ================= */
 
 .cards{
 display:grid;
@@ -91,48 +109,72 @@ margin-bottom:30px;
 
 .card{
 background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
+padding:22px;
+border-radius:18px;
+box-shadow:0 15px 40px rgba(91,33,182,0.15);
 text-align:center;
+transition:0.3s;
+border:1px solid #e9d5ff;
+}
+
+.card:hover{
+transform:translateY(-5px);
+box-shadow:0 20px 50px rgba(91,33,182,0.25);
 }
 
 .card h2{
 margin:0;
-font-size:28px;
-color:#1e40af;
+font-size:26px;
+color:#5b21b6;
 }
+
+.card p{
+margin-top:6px;
+font-size:13px;
+color:#555;
+}
+
+/* ================= TABLE ================= */
 
 table{
 width:100%;
 border-collapse:collapse;
 background:white;
-box-shadow:0 5px 20px rgba(0,0,0,0.1);
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 15px 40px rgba(91,33,182,0.15);
 }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #ddd;
-text-align:center;
-}
-
+/* HEADER */
 th{
-background:#2563eb;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
+padding:16px;
+text-align:center;
+font-weight:600;
 }
 
+/* DATA */
+td{
+padding:16px;
+text-align:center;
+border-bottom:1px solid #eee;
+}
+
+/* ROW HOVER */
 tr:hover{
-background:#f1f5f9;
+background:#f5f3ff;
 }
 
+/* STATUS */
 .status-paid{
-color:green;
-font-weight:bold;
+color:#16a34a;
+font-weight:600;
 }
 
 .status-advance{
-color:orange;
-font-weight:bold;
+color:#f59e0b;
+font-weight:600;
 }
 
 </style>
@@ -140,9 +182,15 @@ font-weight:bold;
 
 <body>
 
+<?php include("admin_sidebar.php"); ?>
+
+<div class="main-content">
+
 <div class="header">
 Revenue History
 </div>
+
+<div class="container">
 
 <div class="container">
 
@@ -208,6 +256,6 @@ echo "<tr>
 </table>
 
 </div>
-
+</div>
 </body>
 </html>
