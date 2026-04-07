@@ -74,6 +74,8 @@ th{background:#1f4fd8;color:white;}
 </head>
 <body>
 
+<?php include("admin_sidebar.php"); ?>
+
 <h2>Manage Packages</h2>
 
 <!-- ADD / EDIT FORM -->

@@ -19,39 +19,46 @@ $query = mysqli_query($conn,"SELECT * FROM users WHERE user_id != 1");
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
+/* RESET */
 *{
+margin:0;
+padding:0;
 box-sizing:border-box;
+font-family:'Poppins', sans-serif;
 }
 
+/* BODY */
 body{
-margin:0;
-font-family:'Poppins', sans-serif;
 background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+}
+
+/* MAIN CONTENT */
+.main-content{
+margin-left:260px;
+padding:30px;
 }
 
 /* HEADER */
 .header{
 background:white;
 color:#5b21b6;
-padding:20px 30px;
+padding:20px 25px;
 font-size:22px;
 font-weight:600;
+border-radius:16px;
 box-shadow:0 10px 30px rgba(91,33,182,0.15);
+margin-bottom:25px;
 }
 
 /* CONTAINER */
 .container{
-max-width:1200px;
-margin:auto;
-padding:30px;
+width:100%;
 }
 
 /* CARD */
 .college-card{
 background:white;
-border-radius:18px;
+border-radius:20px;
 padding:25px;
 margin-bottom:25px;
 box-shadow:0 15px 40px rgba(91,33,182,0.15);
@@ -63,10 +70,10 @@ transition:0.3s;
 border:1px solid #e9d5ff;
 }
 
-/* HOVER EFFECT */
+/* HOVER */
 .college-card:hover{
-transform:translateY(-5px);
-box-shadow:0 20px 50px rgba(91,33,182,0.2);
+transform:translateY(-6px);
+box-shadow:0 20px 50px rgba(91,33,182,0.25);
 }
 
 /* INFO */
@@ -74,23 +81,25 @@ box-shadow:0 20px 50px rgba(91,33,182,0.2);
 margin-top:0;
 color:#5b21b6;
 font-size:20px;
+margin-bottom:10px;
 }
 
 .college-info p{
-margin:8px 0;
+margin:6px 0;
 font-size:14px;
-color:#333;
+color:#444;
 }
 
 /* MAP */
 .map{
 width:100%;
 height:230px;
-border-radius:14px;
+border-radius:16px;
 overflow:hidden;
-box-shadow:0 8px 20px rgba(0,0,0,0.1);
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
+/* IFRAME */
 iframe{
 width:100%;
 height:100%;
@@ -109,6 +118,10 @@ grid-template-columns:1fr;
 </head>
 
 <body>
+
+<?php include("admin_sidebar.php"); ?>
+
+<div class="main-content">
 
 <div class="header">
 Manage Colleges
@@ -156,6 +169,6 @@ src='https://maps.google.com/maps?q=$location&output=embed'>
 ?>
 
 </div>
-
+</div>
 </body>
 </html>

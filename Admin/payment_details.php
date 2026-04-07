@@ -2,12 +2,17 @@
 session_start();
 include("../db.php");
 
-$id = $_GET['id'];
+/* ✅ SAFE ID */
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+if($id == 0){
+    die("Invalid or missing ID");
+}
 
 /* ===== HANDLE ACTIONS ===== */
 
 if(isset($_GET['action'])){
-    $action=$_GET['action'];
+    $action = $_GET['action'];
 
     if($action=="proofA") mysqli_query($conn,"UPDATE payments SET proof_status=1 WHERE payment_id=$id");
     if($action=="proofR") mysqli_query($conn,"UPDATE payments SET proof_status=2 WHERE payment_id=$id");
@@ -25,9 +30,19 @@ if(isset($_GET['action'])){
 /* ===== FINAL ACTION ===== */
 
 if(isset($_GET['final'])){
-    $type=$_GET['final'];
+    $type = $_GET['final'];
 
-    $data=mysqli_fetch_assoc(mysqli_query($conn,"SELECT booking_id FROM payments WHERE payment_id=$id"));
+    $result = mysqli_query($conn,"SELECT booking_id FROM payments WHERE payment_id=$id");
+
+    if(!$result){
+        die("Query Error: " . mysqli_error($conn));
+    }
+
+    $data = mysqli_fetch_assoc($result);
+
+    if(!$data){
+        die("No booking found");
+    }
 
     if($type=="confirm"){
         mysqli_query($conn,"
@@ -53,13 +68,23 @@ if(isset($_GET['final'])){
 
 /* ===== FETCH ===== */
 
-$row=mysqli_fetch_assoc(mysqli_query($conn,"
+$query = mysqli_query($conn,"
 SELECT p.*,u.college_name,b.payment_status 
 FROM payments p
 JOIN users u ON p.user_id=u.user_id
 JOIN bookings b ON p.booking_id=b.booking_id
 WHERE p.payment_id=$id
-"));
+");
+
+if(!$query){
+    die("Query Error: " . mysqli_error($conn));
+}
+
+$row = mysqli_fetch_assoc($query);
+
+if(!$row){
+    die("No data found");
+}
 ?>
 
 <!DOCTYPE html>
@@ -210,6 +235,8 @@ cursor:pointer;
 </head>
 
 <body>
+
+
 
 <div class="container">
 

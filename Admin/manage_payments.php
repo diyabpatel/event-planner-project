@@ -39,18 +39,23 @@ while($row=mysqli_fetch_assoc($q)){
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
+/* RESET */
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
+font-family:'Poppins', sans-serif;
 }
 
+/* BODY */
 body{
-font-family:'Poppins', sans-serif;
 background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-padding:25px;
+}
+
+/* MAIN CONTENT */
+.main-content{
+margin-left:260px;
+padding:30px;
 }
 
 /* HEADER */
@@ -74,10 +79,15 @@ flex-wrap:wrap;
 .column{
 flex:1;
 min-width:300px;
-background:#ede9fe; /* LIGHT PURPLE */
-border-radius:16px;
-padding:15px;
-box-shadow:0 10px 25px rgba(91,33,182,0.12);
+background:#ede9fe;
+border-radius:18px;
+padding:18px;
+box-shadow:0 12px 30px rgba(91,33,182,0.15);
+transition:0.3s;
+}
+
+.column:hover{
+transform:translateY(-4px);
 }
 
 /* COLUMN TITLE */
@@ -93,7 +103,7 @@ font-weight:600;
 /* COUNT BADGE */
 .count{
 background:#7c3aed;
-padding:4px 10px;
+padding:5px 12px;
 border-radius:20px;
 font-size:12px;
 color:white;
@@ -102,18 +112,18 @@ font-weight:600;
 
 /* CARD */
 .card{
-background:white; /* CONTRAST FIX */
-padding:15px;
-border-radius:12px;
-margin-bottom:12px;
+background:white;
+padding:16px;
+border-radius:14px;
+margin-bottom:14px;
 transition:0.25s;
-border-left:5px solid #7c3aed;
-box-shadow:0 8px 20px rgba(0,0,0,0.08);
+border-left:6px solid #7c3aed;
+box-shadow:0 10px 25px rgba(0,0,0,0.08);
 }
 
 .card:hover{
-transform:translateY(-4px);
-box-shadow:0 12px 25px rgba(91,33,182,0.18);
+transform:translateY(-5px);
+box-shadow:0 15px 30px rgba(91,33,182,0.2);
 }
 
 /* STATUS COLORS */
@@ -126,11 +136,12 @@ box-shadow:0 12px 25px rgba(91,33,182,0.18);
 font-weight:600;
 margin-bottom:6px;
 color:#1f2937;
+font-size:15px;
 }
 
 /* AMOUNT */
 .amount{
-font-size:16px;
+font-size:17px;
 font-weight:700;
 color:#5b21b6;
 margin-bottom:5px;
@@ -140,13 +151,14 @@ margin-bottom:5px;
 .method{
 font-size:12px;
 color:#6b7280;
+margin-bottom:5px;
 }
 
 /* BUTTON */
 .btn{
 display:inline-block;
 margin-top:8px;
-padding:6px 12px;
+padding:7px 14px;
 font-size:12px;
 border-radius:20px;
 text-decoration:none;
@@ -157,7 +169,7 @@ transition:0.3s;
 }
 
 .btn:hover{
-opacity:0.85;
+transform:scale(1.05);
 }
 
 </style>
@@ -165,6 +177,10 @@ opacity:0.85;
 </head>
 
 <body>
+
+<?php include("admin_sidebar.php"); ?>
+
+<div class="main-content">
 
 <h2>💳 Payment Board</h2>
 
@@ -216,6 +232,6 @@ opacity:0.85;
 </div>
 
 </div>
-
+</div>
 </body>
 </html>
