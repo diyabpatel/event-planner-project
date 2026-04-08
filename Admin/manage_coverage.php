@@ -23,10 +23,17 @@ if(isset($_POST['save_coverage'])){
     $coverage_type = $_POST['coverage_type'];
     $price = $_POST['price'];
 
+    /* ✅ ONLY ADDED THIS */
+    $pkg = mysqli_fetch_assoc(mysqli_query($conn,"
+        SELECT event_id FROM packages WHERE package_id='$package_id'
+    "));
+    $event_id = $pkg['event_id'];
+
     // UPDATE
     if($_POST['coverage_id'] != ""){
         $cid = $_POST['coverage_id'];
         mysqli_query($conn,"UPDATE coverage SET 
+            event_id='$event_id',
             package_id='$package_id',
             coverage_type='$coverage_type',
             price='$price'
@@ -34,8 +41,8 @@ if(isset($_POST['save_coverage'])){
     }
     // INSERT
     else{
-        mysqli_query($conn,"INSERT INTO coverage(package_id,coverage_type,price)
-            VALUES('$package_id','$coverage_type','$price')");
+        mysqli_query($conn,"INSERT INTO coverage(event_id,package_id,coverage_type,price)
+            VALUES('$event_id','$package_id','$coverage_type','$price')");
     }
 
     header("Location: manage_coverage.php");
@@ -196,7 +203,9 @@ td:last-child{
 
 .delete:hover{
     opacity:0.85;
-}/* RESET */
+}
+
+/* RESET */
 *{
 margin:0;
 padding:0;
@@ -363,14 +372,12 @@ transform:scale(1.05);
 
 <h2>Manage Coverage</h2>
 
-<!-- ADD / EDIT FORM -->
 <form method="post">
 <h3><?php echo isset($edit) && $edit ? "Edit Coverage" : "Add Coverage"; ?></h3>
 
 <input type="hidden" name="coverage_id"
 value="<?php echo isset($edit['coverage_id']) ? $edit['coverage_id'] : ''; ?>">
 
-<!-- PACKAGE DROPDOWN -->
 <select name="package_id" required>
     <option value="">Select Package</option>
     <?php
@@ -399,7 +406,6 @@ value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
 </button>
 </form>
 
-<!-- COVERAGE TABLE -->
 <table>
 <tr>
     <th>ID</th>
@@ -415,7 +421,7 @@ $q = mysqli_query($conn,"
 SELECT coverage.*, packages.package_name, events.event_name
 FROM coverage
 JOIN packages ON coverage.package_id = packages.package_id
-JOIN events ON packages.event_id = events.event_id
+JOIN events ON coverage.event_id = events.event_id
 ");
 
 while($row = mysqli_fetch_assoc($q)){

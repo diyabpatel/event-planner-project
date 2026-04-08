@@ -21,15 +21,6 @@ header("Location: manage_events.php");
 exit();
 }
 
-/* FETCH FOR EDIT */
-$edit = null;
-
-if(isset($_GET['edit'])){
-$id = $_GET['edit'];
-$res = mysqli_query($conn,"SELECT * FROM events WHERE event_id=$id");
-$edit = mysqli_fetch_assoc($res);
-}
-
 /* ADD / UPDATE */
 if(isset($_POST['save'])){
 
@@ -107,16 +98,34 @@ margin-left:260px;
 padding:30px;
 }
 
-h2{
-text-align:center;
-color:#5b21b6;
-margin-bottom:30px;
+/* HEADER ROW */
+.top-bar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:25px;
 }
 
-/* CARD GRID */
+h2{
+color:#5b21b6;
+margin:0;
+}
+
+/* ADD BUTTON */
+.add-btn{
+padding:10px 20px;
+border:none;
+border-radius:25px;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
+color:white;
+cursor:pointer;
+font-weight:600;
+}
+
+/* GRID */
 .event-grid{
 display:grid;
-grid-template-columns:repeat(3,1fr);
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
 gap:25px;
 }
 
@@ -127,22 +136,25 @@ border-radius:18px;
 overflow:hidden;
 box-shadow:0 10px 30px rgba(91,33,182,0.2);
 transition:0.3s;
+display:flex;
+flex-direction:column;
 }
 
 .event-card:hover{
 transform:translateY(-6px);
 }
 
-/* IMAGE */
 .event-card img{
 width:100%;
-height:180px;
+height:200px;
 object-fit:cover;
 }
 
-/* BODY */
 .event-body{
 padding:15px;
+display:flex;
+flex-direction:column;
+flex:1;
 }
 
 .event-body h3{
@@ -150,27 +162,19 @@ color:#5b21b6;
 margin-bottom:8px;
 }
 
+/* FIXED DESCRIPTION ISSUE */
 .event-body p{
-font-size:13px;
+font-size:14px;
 color:#555;
-height:40px;
-overflow:hidden;
-}
-
-/* STATS */
-.stats{
-display:flex;
-justify-content:space-between;
-margin-top:10px;
-font-size:13px;
-color:#6d28d9;
+line-height:1.5;
+margin-bottom:10px;
 }
 
 /* BUTTONS */
 .actions{
 display:flex;
 gap:10px;
-margin-top:15px;
+margin-top:auto;
 }
 
 .btn{
@@ -183,17 +187,11 @@ text-decoration:none;
 font-size:13px;
 }
 
-.view{
-background:#6366f1;
-}
+.view{background:#6366f1;}
+.edit{background:#7c3aed;}
+.delete{background:#e11d48;}
 
-.edit{
-background:#7c3aed;
-}
-
-.delete{
-background:#e11d48;
-}
+/* MODAL */
 .modal{
 display:none;
 position:fixed;
@@ -205,91 +203,46 @@ background:rgba(0,0,0,0.6);
 z-index:1000;
 }
 
-/* CENTER PERFECTLY */
 .modal-content{
 background:white;
 padding:30px;
 border-radius:20px;
-width:500px;
+width:450px;
 max-width:90%;
 position:absolute;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-box-shadow:0 20px 50px rgba(0,0,0,0.3);
-animation:fadeIn 0.3s ease;
 }
 
-/* CLOSE BUTTON */
 .close{
 position:absolute;
-top:12px;
-right:18px;
-font-size:22px;
+top:10px;
+right:15px;
+font-size:20px;
 cursor:pointer;
-color:#333;
 }
 
-/* TITLE */
-.modal-content h3{
-margin-bottom:20px;
-color:#5b21b6;
-text-align:center;
-}
-
-/* FORM LAYOUT FIX */
 .modal-content form{
 display:flex;
 flex-direction:column;
-gap:15px;
+gap:12px;
 }
 
-/* LABEL */
-.modal-content label{
-font-weight:600;
-color:#4c1d95;
-font-size:14px;
-}
-
-/* INPUT + TEXTAREA */
 .modal-content input,
 .modal-content textarea{
-width:100%;
 padding:10px;
-border-radius:10px;
-border:1px solid #ddd;
-outline:none;
-font-size:14px;
+border-radius:8px;
+border:1px solid #ccc;
 }
 
-/* TEXTAREA FIX */
-.modal-content textarea{
-resize:none;
-height:80px;
-}
-
-/* BUTTON */
 .modal-content button{
-margin-top:10px;
-padding:12px;
+padding:10px;
 border:none;
-border-radius:25px;
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
+border-radius:20px;
+background:#7c3aed;
 color:white;
-font-weight:600;
 cursor:pointer;
-transition:0.3s;
-}
-
-.modal-content button:hover{
-transform:scale(1.05);
-box-shadow:0 10px 25px rgba(124,58,237,0.4);
-}
-
-/* ANIMATION */
-@keyframes fadeIn{
-from{opacity:0; transform:translate(-50%,-60%) scale(0.9);}
-to{opacity:1; transform:translate(-50%,-50%) scale(1);}
 }
 </style>
 </head>
@@ -300,7 +253,10 @@ to{opacity:1; transform:translate(-50%,-50%) scale(1);}
 
 <div class="main-content">
 
+<div class="top-bar">
 <h2>Manage Events</h2>
+<button class="add-btn" onclick="openAddModal()">+ Add Event</button>
+</div>
 
 <div class="event-grid">
 
@@ -308,15 +264,6 @@ to{opacity:1; transform:translate(-50%,-50%) scale(1);}
 $q = mysqli_query($conn,"SELECT * FROM events");
 
 while($row = mysqli_fetch_assoc($q)){
-
-$event_id = $row['event_id'];
-
-/* BOOKINGS COUNT */
-$b = mysqli_fetch_assoc(mysqli_query($conn,"SELECT COUNT(*) as total FROM bookings WHERE event_id=$event_id"));
-
-/* TOTAL REVENUE */
-$r = mysqli_fetch_assoc(mysqli_query($conn,"SELECT SUM(total_price) as revenue FROM bookings WHERE event_id=$event_id"));
-
 ?>
 
 <div class="event-card">
@@ -328,30 +275,18 @@ $r = mysqli_fetch_assoc(mysqli_query($conn,"SELECT SUM(total_price) as revenue F
 <div class="event-body">
 
 <h3><?php echo $row['event_name']; ?></h3>
-
 <p><?php echo $row['description']; ?></p>
-
-
 
 <div class="actions">
 
-<a href="event_insights.php?event_id=<?php echo $event_id; ?>" class="btn view">
-View Insights
-</a>
+<a href="event_insights.php?event_id=<?php echo $row['event_id']; ?>" class="btn view">View Insights</a>
 
 <a href="#" class="btn edit"
-onclick="openEditModal(
-'<?php echo $row['event_id']; ?>',
-'<?php echo addslashes($row['event_name']); ?>',
-'<?php echo addslashes($row['description']); ?>'
-)">
+onclick="openEditModal('<?php echo $row['event_id']; ?>','<?php echo addslashes($row['event_name']); ?>','<?php echo addslashes($row['description']); ?>')">
 Edit
 </a>
 
-<a href="manage_events.php?delete=<?php echo $event_id; ?>" class="btn delete"
-onclick="return confirm('Delete this event?');">
-Delete
-</a>
+<a href="?delete=<?php echo $row['event_id']; ?>" class="btn delete" onclick="return confirm('Delete this event?')">Delete</a>
 
 </div>
 
@@ -361,56 +296,65 @@ Delete
 <?php } ?>
 
 </div>
-
 </div>
-<div id="editModal" class="modal">
 
+<!-- ADD MODAL -->
+<div id="addModal" class="modal">
 <div class="modal-content">
-
-<span class="close" onclick="closeModal()">&times;</span>
-
-<h3>Edit Event</h3>
+<span class="close" onclick="closeAddModal()">&times;</span>
+<h3>Add Event</h3>
 
 <form method="post" enctype="multipart/form-data">
-
-<input type="hidden" name="event_id" id="edit_id">
-
-<label>Event Name</label>
-<input type="text" name="event_name" id="edit_name" required>
-
-<label>Description</label>
-<textarea name="description" id="edit_desc"></textarea>
-
-<label>Event Image</label>
+<input type="hidden" name="event_id" value="">
+<input type="text" name="event_name" placeholder="Event Name" required>
+<textarea name="description" placeholder="Description"></textarea>
 <input type="file" name="image">
-
-<button type="submit" name="save">Update Event</button>
-
+<button type="submit" name="save">Add Event</button>
 </form>
 
 </div>
 </div>
-</body>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeEditModal()">&times;</span>
+<h3>Edit Event</h3>
+
+<form method="post" enctype="multipart/form-data">
+<input type="hidden" name="event_id" id="edit_id">
+<input type="text" name="event_name" id="edit_name" required>
+<textarea name="description" id="edit_desc"></textarea>
+<input type="file" name="image">
+<button type="submit" name="save">Update Event</button>
+</form>
+
+</div>
+</div>
+
 <script>
-function openEditModal(id, name, desc){
-
-document.getElementById("editModal").style.display = "block";
-
-document.getElementById("edit_id").value = id;
-document.getElementById("edit_name").value = name;
-document.getElementById("edit_desc").value = desc;
+function openAddModal(){
+document.getElementById("addModal").style.display="block";
+}
+function closeAddModal(){
+document.getElementById("addModal").style.display="none";
 }
 
-function closeModal(){
-document.getElementById("editModal").style.display = "none";
+function openEditModal(id,name,desc){
+document.getElementById("editModal").style.display="block";
+document.getElementById("edit_id").value=id;
+document.getElementById("edit_name").value=name;
+document.getElementById("edit_desc").value=desc;
+}
+function closeEditModal(){
+document.getElementById("editModal").style.display="none";
 }
 
-/* CLOSE ON OUTSIDE CLICK */
-window.onclick = function(e){
-let modal = document.getElementById("editModal");
-if(e.target == modal){
-    modal.style.display = "none";
-}
+window.onclick=function(e){
+if(e.target==document.getElementById("addModal")) closeAddModal();
+if(e.target==document.getElementById("editModal")) closeEditModal();
 }
 </script>
+
+</body>
 </html>
