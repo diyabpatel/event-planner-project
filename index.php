@@ -130,143 +130,155 @@ overflow-x:hidden;
 }
 
 /* ===== PREMIUM HOW IT WORKS (UPDATED) ===== */
-/* SECTION BASE */
+/* 🔥 FULL SECTION FIXED */
 .how-section{
-    height:100vh;
-    width:100%;
-    padding:40px 6%;
-    background:linear-gradient(135deg,#ffffff,#f5f3ff,#ede9fe);
+    min-height:100vh;                 /* 👈 important fix */
+    display:flex;
+    align-items:flex-start;           /* 👈 removes vertical centering */
+    justify-content:space-between;
+    padding:80px 6%;                  /* 👈 controlled spacing */
+    background:linear-gradient(135deg,#ffffff,#f5f3ff);
+}
+
+/* LEFT SIDE */
+.how-left{
+    width:40%;
+    .how-left{
+    width:40%;
     display:flex;
     flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    overflow:hidden;
+    justify-content:center;   /* 👈 centers left content */
+}
 }
 
-/* HEADING (FIXED - DARKER) */
-.how-section h2{
-    color:#3b0764; /* DARK PURPLE */
+.how-left h2{
     font-size:34px;
-    margin-bottom:25px;
-    letter-spacing:1px;
-    position:relative;
-    font-weight:700;
+    color:#3b0764;
+    margin-bottom:15px;
 }
 
-.how-section h2::after{
-    content:'';
-    width:70px;
-    height:4px;
-    background:#7c3aed;
-    display:block;
-    margin:10px auto 0;
-    border-radius:5px;
+/* TAGLINE */
+.how-tagline{
+    color:#7c3aed;
+    font-weight:600;
+    margin-bottom:15px;
+    font-size:16px;
 }
 
-/* TIMELINE GRID (TIGHT FIT) */
+/* DESCRIPTION */
+.how-desc{
+    color:#6b7280;
+    margin-bottom:20px;
+    line-height:1.6;
+}
+
+/* POINTS */
+.how-points div{
+    margin-bottom:10px;
+    color:#4c1d95;
+    font-size:14px;
+}
+
+/* 🔥 RIGHT SIDE GRID */
+/* 🔥 RIGHT SIDE GRID (FIXED) */
 .timeline{
-    width:100%;
-    max-width:1100px;
+    width:55%;
     display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:18px;
+    grid-template-columns:1fr 1fr;
+    gap:22px;                  /* 👈 more spacing */
+    align-content:center;      /* 👈 center vertically (IMPORTANT) */
 }
 
 /* STEP */
 .step{
     display:flex;
     align-items:flex-start;
-    gap:10px;
+    gap:14px;
 }
 
 /* NUMBER */
 .step-number{
-    min-width:36px;
-    height:36px;
-    background:linear-gradient(135deg,#9333ea,#7c3aed);
+    min-width:42px;
+    height:42px;
+    background:#7c3aed;
     color:#fff;
     font-weight:bold;
     display:flex;
     align-items:center;
     justify-content:center;
     border-radius:50%;
-    font-size:14px;
-    box-shadow:0 4px 10px rgba(124,58,237,0.4);
+    font-size:15px;
 }
 
-/* BOX */
+/* 🔥 BIGGER CARD (MAIN FIX) */
 .step-box{
     background:#ffffff;
-    padding:14px;
-    border-radius:10px;
-    transition:0.25s;
-    border:1px solid #e9d5ff;
+    padding:18px;              /* 👈 increased */
+    border-radius:14px;
+    border:1px solid #ede9fe;
+    transition:0.3s;
     width:100%;
-    box-shadow:0 5px 15px rgba(0,0,0,0.04);
+    min-height:85px;           /* 👈 forces height */
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
 }
 
 /* HOVER */
 .step-box:hover{
-    transform:translateY(-4px);
-    box-shadow:0 10px 20px rgba(124,58,237,0.2);
-    border-color:#c084fc;
+    transform:translateY(-6px);
+    box-shadow:0 15px 30px rgba(124,58,237,0.2);
 }
 
 /* TITLE */
 .step-title{
     color:#4c1d95;
-    font-size:15px;
+    font-size:16px;            /* 👈 bigger */
     font-weight:600;
-    margin-bottom:4px;
+    margin-bottom:6px;
 }
 
-/* DESCRIPTION */
+/* DESC */
 .step-desc{
     color:#6b7280;
     font-size:13px;
-    line-height:1.4;
 }
 
-/* TABLET */
-@media(max-width:1000px){
-    .timeline{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-/* MOBILE */
-@media(max-width:600px){
+/* 📱 RESPONSIVE */
+@media(max-width:900px){
     .how-section{
-        height:auto;
+        flex-direction:column;
         padding:50px 5%;
+    }
+
+    .how-left,
+    .timeline{
+        width:100%;
     }
 
     .timeline{
         grid-template-columns:1fr;
-        gap:15px;
     }
 }
 
 /* ===== EVENT CATEGORIES ===== */
 /* SECTION */
+/* 🔥 FULL SCREEN SECTION */
 .event-section{
-    padding:70px 8%;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 6%;
     background:linear-gradient(135deg,#ffffff,#f5f3ff);
-    text-align:center;
 }
 
-.event-section h2{
-    font-size:34px;
-    color:#3b0764;
-    margin-bottom:40px;
-    font-weight:700;
-}
-
-/* GRID */
+/* LEFT GRID */
 .event-grid{
+    width:55%;
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:30px;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
 }
 
 /* CARD */
@@ -276,70 +288,101 @@ overflow-x:hidden;
     overflow:hidden;
     box-shadow:0 10px 25px rgba(0,0,0,0.08);
     transition:0.3s;
-    cursor:pointer;
+    text-align:center;
 }
 
 /* IMAGE */
 .event-card img{
     width:100%;
-    height:200px;
+    height:130px; /* 👈 reduced to fit screen */
     object-fit:cover;
-    transition:0.4s;
-}
-
-/* BODY */
-.event-body{
-    padding:20px;
 }
 
 /* TITLE */
-.event-body h3{
+.event-card h3{
+    padding:10px;
     color:#4c1d95;
+    font-size:14px;
+}
+
+/* HOVER */
+.event-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 15px 35px rgba(124,58,237,0.2);
+}
+
+/* RIGHT TEXT */
+.event-text{
+    width:40%;
+}
+
+/* HEADING */
+.event-text h2{
+    font-size:34px;
+    color:#3b0764;
     margin-bottom:15px;
 }
 
+/* TAGLINE */
+.tagline{
+    color:#7c3aed;
+    font-weight:600;
+    margin-bottom:15px;
+    font-size:16px;
+}
+
+/* DESCRIPTION */
+.desc{
+    color:#6b7280;
+    margin-bottom:20px;
+    line-height:1.6;
+}
+
+/* FEATURES */
+.features{
+    margin-bottom:20px;
+}
+
+.features div{
+    margin-bottom:8px;
+    color:#4c1d95;
+    font-size:14px;
+}
+
 /* BUTTON */
-.event-body button{
-    padding:10px 20px;
+.explore-btn{
+    padding:12px 22px;
     border:none;
-    background:linear-gradient(135deg,#9333ea,#7c3aed);
+    background:#7c3aed;
     color:#fff;
     border-radius:25px;
     cursor:pointer;
-    transition:0.3s;
-}
-
-/* HOVER EFFECTS */
-.event-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 20px 40px rgba(124,58,237,0.2);
-}
-
-.event-card:hover img{
-    transform:scale(1.08);
-}
-
-.event-body button:hover{
-    background:linear-gradient(135deg,#7c3aed,#6d28d9);
+    font-weight:600;
 }
 
 /* RESPONSIVE */
-@media(max-width:1000px){
-    .event-grid{
-        grid-template-columns:repeat(2,1fr);
+@media(max-width:900px){
+    .event-section{
+        flex-direction:column;
+        height:auto;
+        padding:50px 5%;
+    }
+
+    .event-grid,
+    .event-text{
+        width:100%;
     }
 }
-
-@media(max-width:600px){
-    .event-grid{
-        grid-template-columns:1fr;
-    }
+.event-card{
+    text-decoration:none;   /* ❗ removes underline */
+    color:inherit;          /* ❗ keeps text color */
+    display:block;          /* ❗ makes full card clickable */
 }
 
 /* ===== FEEDBACK===== */
 /* SECTION */
 .feedback-section{
-    height:100vh;
+    padding:80px 8%;
     padding:50px 8%;
     background:linear-gradient(135deg,#ffffff,#f5f3ff,#ede9fe);
     display:flex;
@@ -454,142 +497,171 @@ overflow-x:hidden;
 
 </div>
 
-<!-- HOW IT WORKS (UPDATED ONLY THIS PART) -->
-<div class="section how-section">
-<h2>How It Works</h2>
-
-<div class="timeline">
-
-<div class="step">
-<div class="step-number">1</div>
-<div class="step-box">
-<div class="step-title">Choose Event</div>
-<div class="step-desc">Select your preferred event type to begin planning.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">2</div>
-<div class="step-box">
-<div class="step-title">Select Package</div>
-<div class="step-desc">Pick a package that fits your requirements.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">3</div>
-<div class="step-box">
-<div class="step-title">Specify Capacity</div>
-<div class="step-desc">Define number of guests attending the event.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">4</div>
-<div class="step-box">
-<div class="step-title">Choose Venue</div>
-<div class="step-desc">Select the perfect venue for your event.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">5</div>
-<div class="step-box">
-<div class="step-title">Choose Decoration</div>
-<div class="step-desc">Customize themes and decorations.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">6</div>
-<div class="step-box">
-<div class="step-title">Choose Seats</div>
-<div class="step-desc">Select seating arrangements.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">7</div>
-<div class="step-box">
-<div class="step-title">Choose Food</div>
-<div class="step-desc">Pick menu options for your guests.</div>
-</div>
-</div>
-
-<div class="step">
-<div class="step-number">8</div>
-<div class="step-box">
-<div class="step-title">Select Date</div>
-<div class="step-desc">Finalize your event schedule.</div>
-</div>
-</div>
-
-</div>
-</div>
-
-<!-- EVENT CATEGORIES -->
 <!-- EVENT CATEGORIES -->
 <div class="event-section">
-    <h2>Event Categories</h2>
 
+    <!-- LEFT SIDE (EVENTS) -->
     <div class="event-grid">
 
-        <!-- ANNUAL DAY -->
-        <div class="event-card">
-            <img src="uploads/images/annual/image1.webp">
-            <div class="event-body">
-                <h3>Annual Day</h3>
-                <button onclick="location.href='events/annualday.php'">View Event</button>
+    <a href="events/annualday.php" class="event-card">
+        <img src="uploads/images/annual/image1.webp">
+        <h3>Annual Day</h3>
+    </a>
+
+    <a href="events/convocation.php" class="event-card">
+        <img src="uploads/images/convocation/convocation1.jpg">
+        <h3>Convocation</h3>
+    </a>
+
+    <a href="events/farewell.php" class="event-card">
+        <img src="uploads/images/farewell/farewell1.jpg">
+        <h3>Farewell</h3>
+    </a>
+
+    <a href="events/fresher.php" class="event-card">
+        <img src="uploads/images/freshers/fresher1.jpg">
+        <h3>Freshers</h3>
+    </a>
+
+    <a href="events/seminar.php" class="event-card">
+        <img src="uploads/images/seminar/s1.jpg">
+        <h3>Seminar</h3>
+    </a>
+
+    <a href="events/sportsday.php" class="event-card">
+        <img src="uploads/images/sports day/sports day1.jpg">
+        <h3>Sports Day</h3>
+    </a>
+
+</div>
+    <!-- RIGHT SIDE (TEXT) -->
+    <div class="event-text">
+
+        <h2>Crafting Memorable College Experiences</h2>
+
+        <p class="tagline">
+            “From planning to perfection — we bring your events to life.”
+        </p>
+
+        <p class="desc">
+            Whether it’s a grand Annual Day, an emotional Farewell, or a professional Seminar,
+            our platform helps you organize events seamlessly. We provide end-to-end solutions
+            including venue selection, decoration, catering, and execution.
+        </p>
+
+        <div class="features">
+            <div>✔ Smart Planning</div>
+            <div>✔ Creative Execution</div>
+            <div>✔ Budget Friendly Packages</div>
+            <div>✔ Trusted by Colleges</div>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<!-- HOW IT WORKS (UPDATED ONLY THIS PART) -->
+<div class="how-section">
+
+    <!-- LEFT SIDE (TEXT) -->
+    <div class="how-left">
+
+        <h2>How EventHub Works</h2>
+
+        <p class="how-tagline">
+            “Plan smarter. Execute better. Celebrate bigger.”
+        </p>
+
+        <p class="how-desc">
+            EventHub simplifies the entire event planning process for colleges.
+            From selecting event types to final execution, everything is handled
+            in a structured and seamless way.
+        </p>
+
+        <div class="how-points">
+            <div>✔ Simple step-by-step process</div>
+            <div>✔ Fully customizable options</div>
+            <div>✔ End-to-end event management</div>
+            <div>✔ Designed for students & organizers</div>
+        </div>
+
+    </div>
+
+    <!-- RIGHT SIDE (STEPS) -->
+    <div class="timeline">
+
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-box">
+                <div class="step-title">Choose Event</div>
+                <div class="step-desc">Select your preferred event type.</div>
             </div>
         </div>
 
-        <!-- CONVOCATION -->
-        <div class="event-card">
-            <img src="uploads/images/convocation/convocation1.jpg">
-            <div class="event-body">
-                <h3>Convocation</h3>
-                <button onclick="location.href='events/convocation.php'">View Event</button>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-box">
+                <div class="step-title">Select Package</div>
+                <div class="step-desc">Pick a package that suits you.</div>
             </div>
         </div>
 
-        <!-- FAREWELL -->
-        <div class="event-card">
-            <img src="uploads/images/farewell/farewell1.jpg">
-            <div class="event-body">
-                <h3>Farewell</h3>
-                <button onclick="location.href='events/farewell.php'">View Event</button>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-box">
+                <div class="step-title">Capacity</div>
+                <div class="step-desc">Define number of guests.</div>
             </div>
         </div>
 
-        <!-- FRESHERS -->
-        <div class="event-card">
-            <img src="uploads/images/freshers/fresher1.jpg">
-            <div class="event-body">
-                <h3>Freshers Party</h3>
-                <button onclick="location.href='events/fresher.php'">View Event</button>
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-box">
+                <div class="step-title">Venue</div>
+                <div class="step-desc">Choose your event location.</div>
             </div>
         </div>
 
-        <!-- SEMINAR -->
-        <div class="event-card">
-            <img src="uploads/images/seminar/s1.jpg">
-            <div class="event-body">
-                <h3>Seminar</h3>
-                <button onclick="location.href='events/seminar.php'">View Event</button>
+        <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-box">
+                <div class="step-title">Decoration</div>
+                <div class="step-desc">Customize themes & decor.</div>
             </div>
         </div>
 
-        <!-- SPORTS DAY -->
-        <div class="event-card">
-            <img src="uploads/images/sports day/sports day1.jpg">
-            <div class="event-body">
-                <h3>Sports Day</h3>
-                <button onclick="location.href='events/sportsday.php'">View Event</button>
+        <div class="step">
+            <div class="step-number">6</div>
+            <div class="step-box">
+                <div class="step-title">Seating</div>
+                <div class="step-desc">Arrange seating style.</div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">7</div>
+            <div class="step-box">
+                <div class="step-title">Food</div>
+                <div class="step-desc">Select menu options.</div>
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-number">8</div>
+            <div class="step-box">
+                <div class="step-title">Date</div>
+                <div class="step-desc">Finalize your schedule.</div>
             </div>
         </div>
 
     </div>
+
 </div>
+
+
+
 
 
 <!-- CLIENT FEEDBACK -->
