@@ -2,7 +2,7 @@
 session_start();
 include("../db.php");
 
-/* ✅ SAFE ID */
+/* SAFE ID */
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if($id == 0){
@@ -44,38 +44,66 @@ if(isset($_GET['final'])){
         die("No booking found");
     }
 
-  if($type=="confirm"){
+    $booking_id = $data['booking_id'];
 
-    /* ✅ UPDATE bookings */
+    /* ===== APPROVE ===== */
+    /* ===== APPROVE ===== */
+if($type=="confirm"){
+
+    /* GET EVENT NAME (SAFE - NO BREAK) */
+    $event_name = "";
+
+    $event_query = mysqli_query($conn,"
+    SELECT e.event_name 
+    FROM bookings b
+    JOIN events e ON b.event_id = e.event_id
+    WHERE b.booking_id = $booking_id
+    ");
+
+    if($event_query && mysqli_num_rows($event_query) > 0){
+        $event_data = mysqli_fetch_assoc($event_query);
+        $event_name = $event_data['event_name'];
+    }
+
+    /* SAFE MESSAGE (fallback included) */
+    if($event_name != ""){
+        $message = "Your booking for $event_name has been successfully confirmed 🎉";
+    } else {
+        $message = "Your booking has been successfully confirmed 🎉";
+    }
+
     mysqli_query($conn,"
     UPDATE bookings SET 
-    payment_status='Advance Paid',
-    notification='Your booking is confirmed',
+    payment_status='Approved',
+    notification='$message',
     is_read=0
-    WHERE booking_id=".$data['booking_id']);
+    WHERE booking_id=$booking_id
+    ");
 
-    /* ✅ IMPORTANT: UPDATE payments ALSO */
     mysqli_query($conn,"
     UPDATE payments SET 
-    payment_status='Confirmed'
-    WHERE payment_id=$id");
+    payment_status='Approved'
+    WHERE payment_id=$id
+    ");
 }
 
- if($type=="reject"){
+    /* ===== REJECT ===== */
+    if($type=="reject"){
 
-    mysqli_query($conn,"
-    UPDATE bookings SET 
-    payment_status='Rejected',
-    notification='Some documents were rejected. Please re-upload.',
-    is_read=0
-    WHERE booking_id=".$data['booking_id']);
+        mysqli_query($conn,"
+        UPDATE bookings SET 
+        payment_status='Rejected',
+        notification='Some documents were rejected. Please re-upload.',
+        is_read=0
+        WHERE booking_id=$booking_id
+        ");
 
-    /* ✅ ADD THIS */
-    mysqli_query($conn,"
-    UPDATE payments SET 
-    payment_status='Rejected'
-    WHERE payment_id=$id");
-}
+        mysqli_query($conn,"
+        UPDATE payments SET 
+        payment_status='Rejected'
+        WHERE payment_id=$id
+        ");
+    }
 
     header("Location: payment_details.php?id=$id&final_done=1");
     exit();
@@ -251,8 +279,6 @@ cursor:pointer;
 
 <body>
 
-
-
 <div class="container">
 
 <div class="header">
@@ -268,28 +294,19 @@ cursor:pointer;
 <img src="../<?php echo $row['proof_image']; ?>" onclick="openImage(this.src)">
 </div>
 
-<?php if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){ ?>
+<?php if($row['payment_status']!='Approved' && $row['payment_status']!='Rejected'){ ?>
 <div class="actions">
 <a href="?id=<?php echo $id ?>&action=proofA" class="btn approve">Approve</a>
 <a href="?id=<?php echo $id ?>&action=proofR" class="btn reject">Reject</a>
 </div>
 <?php } ?>
 
-<div class="status 
-<?php 
-echo ($row['proof_status']==1 ? 'approved' : ($row['proof_status']==2 ? 'rejected' : 'pending')); 
-?>">
+<div class="status <?php echo ($row['proof_status']==1 ? 'approved' : ($row['proof_status']==2 ? 'rejected' : '')); ?>">
 
 <?php 
-if($row['proof_status']==1){
-    echo "✔ Approved";
-}
-elseif($row['proof_status']==2){
-    echo "✖ Rejected";
-}
-else{
-    echo "⏳ Pending";
-}
+if($row['proof_status']==1) echo "✔ Approved";
+elseif($row['proof_status']==2) echo "✖ Rejected";
+else echo "⏳ Pending";
 ?>
 </div>
 
@@ -302,28 +319,19 @@ else{
 <img src="../<?php echo $row['aadhaar']; ?>" onclick="openImage(this.src)">
 </div>
 
-<?php if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){ ?>
+<?php if($row['payment_status']!='Approved' && $row['payment_status']!='Rejected'){ ?>
 <div class="actions">
 <a href="?id=<?php echo $id ?>&action=aadhaarA" class="btn approve">Approve</a>
 <a href="?id=<?php echo $id ?>&action=aadhaarR" class="btn reject">Reject</a>
 </div>
 <?php } ?>
 
-<div class="status 
-<?php 
-echo ($row['aadhaar_status']==1 ? 'approved' : ($row['aadhaar_status']==2 ? 'rejected' : 'pending')); 
-?>">
+<div class="status <?php echo ($row['aadhaar_status']==1 ? 'approved' : ($row['aadhaar_status']==2 ? 'rejected' : '')); ?>">
 
 <?php 
-if($row['aadhaar_status']==1){
-    echo "✔ Approved";
-}
-elseif($row['aadhaar_status']==2){
-    echo "✖ Rejected";
-}
-else{
-    echo "⏳ Pending";
-}
+if($row['aadhaar_status']==1) echo "✔ Approved";
+elseif($row['aadhaar_status']==2) echo "✖ Rejected";
+else echo "⏳ Pending";
 ?>
 </div>
 </div>
@@ -335,28 +343,19 @@ else{
 <img src="../<?php echo $row['pan']; ?>" onclick="openImage(this.src)">
 </div>
 
-<?php if($row['payment_status']!='Advance Paid' && $row['payment_status']!='Rejected'){ ?>
+<?php if($row['payment_status']!='Approved' && $row['payment_status']!='Rejected'){ ?>
 <div class="actions">
 <a href="?id=<?php echo $id ?>&action=panA" class="btn approve">Approve</a>
 <a href="?id=<?php echo $id ?>&action=panR" class="btn reject">Reject</a>
 </div>
 <?php } ?>
 
-<div class="status 
-<?php 
-echo ($row['pan_status']==1 ? 'approved' : ($row['pan_status']==2 ? 'rejected' : 'pending')); 
-?>">
+<div class="status <?php echo ($row['pan_status']==1 ? 'approved' : ($row['pan_status']==2 ? 'rejected' : '')); ?>">
 
 <?php 
-if($row['pan_status']==1){
-    echo "✔ Approved";
-}
-elseif($row['pan_status']==2){
-    echo "✖ Rejected";
-}
-else{
-    echo "⏳ Pending";
-}
+if($row['pan_status']==1) echo "✔ Approved";
+elseif($row['pan_status']==2) echo "✖ Rejected";
+else echo "⏳ Pending";
 ?>
 </div>
 </div>
@@ -367,7 +366,7 @@ else{
 <div class="final-box">
 
 <?php
-if($row['payment_status'] == 'Advance Paid'){
+if($row['payment_status'] == 'Approved'){
     echo "<div class='status approved'>✔ Booking Confirmed</div>";
 }
 else if($row['payment_status'] == 'Rejected'){
@@ -396,7 +395,7 @@ else{
 
 </div>
 
-<!-- IMAGE MODAL -->
+<!-- MODAL -->
 <div id="imageModal" class="modal" onclick="closeImage()">
 <span class="close">&times;</span>
 <img class="modal-content" id="modalImg">
@@ -407,7 +406,6 @@ function openImage(src){
 document.getElementById("imageModal").style.display="block";
 document.getElementById("modalImg").src=src;
 }
-
 function closeImage(){
 document.getElementById("imageModal").style.display="none";
 }

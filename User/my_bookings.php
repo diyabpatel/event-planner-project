@@ -8,33 +8,27 @@ if(!isset($_SESSION['user_id'])){
 
 include("../db.php");
 
-/* UTF-8 */
-header('Content-Type: text/html; charset=utf-8');
+date_default_timezone_set('Asia/Kolkata');
 
 $user_id = $_SESSION['user_id'];
 
-/* ✅ FILTER */
+/* FILTER */
 $filter = isset($_GET['status']) ? $_GET['status'] : 'approved';
 
-/* ✅ CORRECT STATUS CONDITION (PAYMENT BASED) */
+/* FILTER LOGIC */
 if($filter == 'pending'){
-    $status_condition = "AND b.booking_id IN (
-        SELECT booking_id FROM payments 
-        WHERE payment_status = 'Verification Pending'
-    )";
+    $status_condition = "AND b.payment_status = 'Pending'";
 }else{
-    $status_condition = "AND b.booking_id IN (
-        SELECT booking_id FROM payments 
-        WHERE payment_status = 'Confirmed'
-    )";
+    $status_condition = "AND (b.payment_status = 'Approved' OR b.payment_status = 'Full Payment Done')";
 }
 
-/* QUERY */
+/* ✅ IMPORTANT: ADD is_completed FROM SQL */
 $query = "
-SELECT 
-b.*,
-e.event_name,
-p.package_name
+SELECT b.*, e.event_name, e.image, p.package_name,
+CASE 
+    WHEN b.event_date < CURDATE() THEN 1 
+    ELSE 0 
+END AS is_completed
 FROM bookings b
 LEFT JOIN events e ON b.event_id = e.event_id
 LEFT JOIN packages p ON b.package_id = p.package_id
@@ -43,11 +37,7 @@ $status_condition
 ORDER BY b.booking_date DESC
 ";
 
-/* ✅ DEBUG SAFE */
 $result = mysqli_query($conn,$query);
-if(!$result){
-    die("SQL Error: " . mysqli_error($conn));
-}
 ?>
 
 <!DOCTYPE html>
@@ -57,126 +47,30 @@ if(!$result){
 <title>My Bookings</title>
 
 <style>
-
-body{
-    margin:0;
-    font-family:'Segoe UI', system-ui;
-    background:linear-gradient(135deg,#ffffff,#f6f4ff);
-    color:#1e1b4b;
-}
-
-.container{
-    max-width:1100px;
-    margin:50px auto;
-    padding:10px;
-}
-
-h2{
-    text-align:center;
-    margin-bottom:20px;
-    font-size:30px;
-    background:linear-gradient(90deg,#7c3aed,#a78bfa);
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-}
-
-/* FILTER BUTTON */
-.filter-btn{
-    padding:10px 25px;
-    margin:5px;
-    border-radius:30px;
-    text-decoration:none;
-    font-size:14px;
-    background:#e5e7eb;
-    color:#4b5563;
-}
-
-.filter-btn.active{
-    background:linear-gradient(135deg,#7c3aed,#a78bfa);
-    color:white;
-}
-
-/* CARD */
-.card{
-    background:#fff;
-    border-radius:18px;
-    padding:25px;
-    margin-bottom:30px;
-    box-shadow:0 10px 30px rgba(124,58,237,0.15);
-}
-
-.card-header{
-    display:flex;
-    justify-content:space-between;
-    margin-bottom:20px;
-}
-
-.event-name{
-    font-size:22px;
-    color:#7c3aed;
-}
-
-.package{
-    background:#7c3aed;
-    padding:6px 16px;
-    border-radius:30px;
-    font-size:12px;
-    color:white;
-}
-
-.details{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-}
-
-.detail-box{
-    background:#f6f4ff;
-    padding:14px;
-    border-radius:12px;
-    font-size:13px;
-}
-
-.status{
-    padding:5px 12px;
-    border-radius:20px;
-    font-size:11px;
-    color:white;
-}
-
-.upcoming{background:#7c3aed;}
-.completed{background:#ef4444;}
+body{margin:0;font-family:'Segoe UI', system-ui;background:#f4f5f9;}
+.container{max-width:1100px;margin:50px auto;padding:10px;}
+h2{text-align:center;margin-bottom:30px;}
+.filter-btn{padding:8px 18px;margin:5px;border-radius:20px;text-decoration:none;background:#e5e7eb;color:#333;}
+.filter-btn.active{background:#7c3aed;color:white;}
+.card{display:flex;background:#fff;border-radius:14px;margin-bottom:25px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.08);}
+.card-img{width:220px;height:180px;}
+.card-img img{width:100%;height:100%;object-fit:cover;}
+.card-content{flex:1;padding:18px;}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.event-name{font-size:18px;font-weight:600;}
+.package{font-size:12px;color:#7c3aed;margin-top:3px;}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.info-grid span{font-size:12px;color:#6b7280;}
+.info-grid b{display:block;font-size:14px;margin-top:3px;}
+.status{padding:4px 10px;border-radius:20px;font-size:11px;color:white;}
 .payment-paid{background:#16a34a;}
 .payment-pending{background:#f59e0b;}
-
-.bottom{
-    margin-top:20px;
-    display:flex;
-    justify-content:space-between;
-    flex-wrap:wrap;
-}
-
-.actions{
-    display:flex;
-    gap:10px;
-}
-
-.btn{
-    padding:8px 18px;
-    border-radius:25px;
-    text-decoration:none;
-    color:white;
-    background:#7c3aed;
-}
-
-.btn.disabled{
-    background:#9ca3af;
-    pointer-events:none;
-}
-
+.edit-window{margin-top:10px;font-size:12px;color:#6b7280;}
+.actions{margin-top:15px;display:flex;gap:10px;}
+.btn{padding:6px 14px;border-radius:20px;text-decoration:none;color:white;background:#7c3aed;font-size:12px;}
+.btn.disabled{background:#9ca3af;pointer-events:none;}
 .btn.receipt{background:#16a34a;}
 .btn.feedback{background:#f59e0b;}
-
 </style>
 </head>
 
@@ -188,8 +82,7 @@ h2{
 
 <h2>My Bookings</h2>
 
-<!-- FILTER -->
-<div style="text-align:center; margin-bottom:30px;">
+<div style="text-align:center;">
 <a href="?status=approved" class="filter-btn <?php echo ($filter=='approved')?'active':''; ?>">Approved</a>
 <a href="?status=pending" class="filter-btn <?php echo ($filter=='pending')?'active':''; ?>">Pending</a>
 </div>
@@ -201,6 +94,7 @@ if(mysqli_num_rows($result)>0){
 while($row=mysqli_fetch_assoc($result)){
 
 $booking_id = $row['booking_id'];
+$is_completed = $row['is_completed']; // ✅ FROM SQL
 
 /* PAYMENT */
 $paidData = mysqli_fetch_assoc(mysqli_query($conn,"
@@ -209,68 +103,59 @@ FROM payments
 WHERE booking_id = $booking_id
 "));
 
-$totalPaid = (isset($paidData['total'])) ? $paidData['total'] : 0;
+$totalPaid = isset($paidData['total']) ? $paidData['total'] : 0;
 $remaining = $row['total_price'] - $totalPaid;
 
 /* STATUS */
-$event_date = $row['event_date'];
-$today = date("Y-m-d");
+$status = $row['payment_status'];
 
-$event_status = ($today <= $event_date)
-? "<span class='status upcoming'>Upcoming</span>"
-: "<span class='status completed'>Completed</span>";
-
-$payment_status = ($remaining <= 0)
-? "<span class='status payment-paid'>Fully Paid</span>"
-: "<span class='status payment-pending'>Advance Paid</span>";
-
-$change_last_date = date("Y-m-d", strtotime($event_date . " -2 days"));
-$is_edit_allowed = ($today <= $change_last_date);
-
-$event_name = isset($row['event_name']) ? $row['event_name'] : "Event Deleted";
-$package_name = isset($row['package_name']) ? $row['package_name'] : "Package Deleted";
-
-echo "
-
-<div class='card'>
-
-<div class='card-header'>
-<div class='event-name'>$event_name</div>
-<div class='package'>$package_name</div>
-</div>
-
-<div class='details'>
-
-<div class='detail-box'><b>Booking ID</b><br>$booking_id</div>
-<div class='detail-box'><b>Capacity</b><br>{$row['capacity']}</div>
-<div class='detail-box'><b>Event Date</b><br>$event_date</div>
-
-<div class='detail-box'><b>Total Price</b><br>₹ ".number_format($row['total_price'],2)."</div>
-<div class='detail-box'><b>Paid</b><br>₹ ".number_format($totalPaid,2)."</div>
-<div class='detail-box'><b>Remaining</b><br>₹ ".number_format($remaining,2)."</div>
-
-<div class='detail-box'><b>Payment</b><br>$payment_status</div>
-<div class='detail-box'><b>Status</b><br>$event_status</div>
-<div class='detail-box'><b>Booked On</b><br>{$row['booking_date']}</div>
-
-</div>
-
-<div class='bottom'>
-
-<div>Changes allowed until: <b>$change_last_date</b></div>
-
-<div class='actions'>
-";
-
-if($is_edit_allowed){
-    echo "<a href='edit_booking.php?id=$booking_id' class='btn'>Edit</a>";
-}else{
-    echo "<a class='btn disabled'>Edit Closed</a>";
+if($status == 'Full Payment Done'){
+    $payment_status = "<span class='status payment-paid'>Full Payment Done</span>";
+}
+else if($status == 'Approved'){
+    $payment_status = "<span class='status payment-paid'>Approved</span>";
+}
+else{
+    $payment_status = "<span class='status payment-pending'>Pending</span>";
 }
 
-echo "<a href='receipt.php?booking_id=$booking_id' class='btn receipt'>Receipt</a>";
+$event_name = isset($row['event_name']) ? $row['event_name'] : "Event Deleted";
+$image = isset($row['image']) ? $row['image'] : "default.jpg";
+$package_name = isset($row['package_name']) ? $row['package_name'] : "Package Deleted";
 
-if($today > $event_date){
+?>
+
+<div class="card">
+
+<div class="card-img">
+<img src="../uploads/images/events_images/<?php echo $image; ?>">
+</div>
+
+<div class="card-content">
+
+<div class="top">
+<div>
+<div class="event-name"><?php echo $event_name; ?></div>
+<div class="package"><?php echo $package_name; ?></div>
+</div>
+<div><?php echo $payment_status; ?></div>
+</div>
+
+<div class="info-grid">
+<div><span>Capacity</span><b><?php echo $row['capacity']; ?></b></div>
+<div><span>Event Date</span><b><?php echo $row['event_date']; ?></b></div>
+<div><span>Total Price</span><b>₹ <?php echo number_format($row['total_price'],2); ?></b></div>
+<div><span>Advance Paid</span><b>₹ <?php echo number_format($totalPaid,2); ?></b></div>
+<div><span>Remaining</span><b>₹ <?php echo number_format($remaining,2); ?></b></div>
+</div>
+
+<div class="actions">
+
+<a href="receipt.php?booking_id=<?php echo $booking_id; ?>" class="btn receipt">Receipt</a>
+
+<?php
+/* ✅ FINAL FEEDBACK (NOW 100% WORKS) */
+if($is_completed){
 
 $check=mysqli_query($conn,"
 SELECT * FROM feedback 
@@ -279,25 +164,26 @@ AND user_id='$user_id'
 ");
 
 if(mysqli_num_rows($check)==0){
-    echo "<a href='feedback.php?booking_id=$booking_id' class='btn feedback'>Feedback</a>";
+echo "<a href='feedback.php?booking_id=$booking_id' class='btn feedback'>Give Feedback</a>";
 }else{
-    echo "<a class='btn disabled'>Feedback Done</a>";
+echo "<a class='btn disabled'>Feedback Submitted</a>";
 }
 
 }
+?>
 
-echo "
 </div>
-</div>
-</div>
-";
 
+</div>
+
+</div>
+
+<?php
 }
 
 }else{
-    echo "<div class='card'>No bookings found</div>";
+echo "<div class='card'>No bookings found</div>";
 }
-
 ?>
 
 </div>

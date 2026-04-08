@@ -197,88 +197,160 @@ exit();
 
 <style>
 
+:root{
+    --purple-main:#7c3aed;
+    --purple-light:#a78bfa;
+    --purple-soft:#ede9fe;
+    --purple-bg:#f8f7ff;
+    --purple-glow:rgba(124,58,237,0.25);
+
+    --text-dark:#1e1b4b;
+    --text-muted:#6d6aa3;
+}
+
+/* BODY */
 body{
-margin:0;
-font-family:Segoe UI;
-background:
-linear-gradient(rgba(10,25,60,0.65), rgba(10,25,60,0.7)),
-url('../uploads/images/annual/stage_bg.jpg') center/cover no-repeat;
-min-height:100vh;
-color:white;
+    margin:0;
+    font-family:Segoe UI;
+    background:linear-gradient(135deg,#ffffff,#f3f0ff,#ede9fe);
+    min-height:100vh;
+    color:var(--text-dark);
 }
 
+/* CONTAINER */
 .container{
-width:950px;
-max-width:95%;
-margin:50px auto;
-padding:40px;
-border-radius:22px;
-background:rgba(255,255,255,0.12);
-backdrop-filter:blur(18px);
-box-shadow:0 20px 50px rgba(0,0,0,0.45);
+    width:950px;
+    max-width:95%;
+    margin:50px auto;
+    padding:40px;
+    border-radius:24px;
+    background:linear-gradient(135deg,#ffffff,#faf9ff);
+    box-shadow:
+        0 20px 60px rgba(124,58,237,0.15),
+        0 0 0 1px rgba(167,139,250,0.15);
+    position:relative;
 }
 
+/* subtle glow border */
+.container::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:24px;
+    padding:1px;
+    background:linear-gradient(135deg,transparent,var(--purple-light),transparent);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events:none;
+}
+
+/* HEADING */
 h2{
-text-align:center;
-margin-bottom:20px;
+    text-align:center;
+    margin-bottom:25px;
+    font-size:26px;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--purple-main),var(--purple-light));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
+/* INFO BOX */
 .info{
-background:rgba(0,0,0,0.3);
-padding:12px;
-border-radius:10px;
-margin-bottom:10px;
+    background:linear-gradient(135deg,#f3f0ff,#ede9fe);
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:12px;
+    color:var(--text-muted);
+    border:1px solid rgba(167,139,250,0.2);
 }
 
+/* INPUTS */
 select,input{
-width:100%;
-padding:14px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,0.3);
-background:#0f172a;
-color:white;
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:1px solid #e5e7eb;
+    background:#ffffff;
+    color:var(--text-dark);
+    margin-bottom:14px;
+    transition:0.3s;
 }
 
-select option{
-background:#0f172a;
-color:white;
+/* focus glow */
+select:focus,
+input:focus{
+    outline:none;
+    border-color:var(--purple-main);
+    box-shadow:0 0 0 4px var(--purple-glow);
 }
 
+/* CHECKBOX GROUP */
 .checkbox-group{
-background:rgba(15,23,42,0.6);
-padding:18px;
-border-radius:18px;
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:16px;
+    background:linear-gradient(135deg,#f8f7ff,#ede9fe);
+    padding:18px;
+    border-radius:18px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:16px;
+    margin-bottom:15px;
 }
 
+/* CHECK CARD */
 .check-card{
-display:flex;
-align-items:center;
-gap:14px;
-background:rgba(255,255,255,0.08);
-padding:16px;
-border-radius:14px;
-cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#ffffff;
+    padding:16px;
+    border-radius:14px;
+    cursor:pointer;
+    border:1px solid rgba(167,139,250,0.2);
+    transition:all 0.25s ease;
 }
 
+/* hover effect */
+.check-card:hover{
+    transform:translateY(-3px);
+    border-color:var(--purple-light);
+    box-shadow:0 10px 25px rgba(124,58,237,0.15);
+}
+
+/* checkbox */
 .check-card input{
-width:18px;
-height:18px;
-accent-color:#3b82f6;
+    width:18px;
+    height:18px;
+    accent-color:var(--purple-main);
 }
 
+/* BUTTON */
 button{
-width:100%;
-margin-top:25px;
-padding:15px;
-border:none;
-border-radius:18px;
-background:linear-gradient(135deg,#3b82f6,#2563eb);
-color:white;
-font-size:16px;
-cursor:pointer;
+    width:100%;
+    margin-top:25px;
+    padding:16px;
+    border:none;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--purple-main),var(--purple-light));
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    box-shadow:0 10px 25px rgba(124,58,237,0.25);
+}
+
+/* button hover */
+button:hover{
+    transform:translateY(-3px) scale(1.01);
+    box-shadow:0 15px 35px rgba(124,58,237,0.35);
+}
+
+/* smooth animations */
+*{
+    transition:all 0.2s ease;
 }
 
 </style>

@@ -90,12 +90,12 @@ overflow-x:hidden;
 }
 
 /* IMAGES */
-.slide:nth-child(1){background-image:url('uploads/images/annual/image2.jpg'); animation-delay:0s;}
-.slide:nth-child(2){background-image:url('uploads/images/convocation/convocation1.jpg'); animation-delay:5s;}
-.slide:nth-child(3){background-image:url('uploads/images/farewell/farewell2.jpg'); animation-delay:10s;}
-.slide:nth-child(4){background-image:url('uploads/images/freshers/fresher1.jpg'); animation-delay:15s;}
-.slide:nth-child(5){background-image:url('uploads/images/seminar/s2.jpeg'); animation-delay:20s;}
-.slide:nth-child(6){background-image:url('uploads/images/sports day/sports day2.jpg'); animation-delay:25s;}
+.slide:nth-child(1){background-image:url('uploads/images/annual/annualday_bg02.jpg'); animation-delay:0s;}
+.slide:nth-child(2){background-image:url('uploads/images/convocation/convocation1.jpg'); animation-delay:3s;}
+.slide:nth-child(3){background-image:url('uploads/images/farewell/farewell2.jpg'); animation-delay:6s;}
+.slide:nth-child(4){background-image:url('uploads/images/freshers/fresher5.jpg'); animation-delay:9s;}
+.slide:nth-child(5){background-image:url('uploads/images/seminar/s2.jpeg'); animation-delay:12s;}
+.slide:nth-child(6){background-image:url('uploads/images/sports day/sports day1.jpg'); animation-delay:15s;}
 
 /* ANIMATION */
 @keyframes slideShow{
@@ -504,7 +504,7 @@ overflow-x:hidden;
     <div class="event-grid">
 
     <a href="events/annualday.php" class="event-card">
-        <img src="uploads/images/annual/image1.webp">
+        <img src="uploads/images/annual/annualday_bg03.jpg">
         <h3>Annual Day</h3>
     </a>
 
