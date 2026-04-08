@@ -44,23 +44,38 @@ if(isset($_GET['final'])){
         die("No booking found");
     }
 
-    if($type=="confirm"){
-        mysqli_query($conn,"
-        UPDATE bookings SET 
-        payment_status='Advance Paid',
-        notification='Your booking is confirmed',
-        is_read=0
-        WHERE booking_id=".$data['booking_id']);
-    }
+  if($type=="confirm"){
 
-    if($type=="reject"){
-        mysqli_query($conn,"
-        UPDATE bookings SET 
-        payment_status='Rejected',
-        notification='Some documents were rejected. Please re-upload.',
-        is_read=0
-        WHERE booking_id=".$data['booking_id']);
-    }
+    /* ✅ UPDATE bookings */
+    mysqli_query($conn,"
+    UPDATE bookings SET 
+    payment_status='Advance Paid',
+    notification='Your booking is confirmed',
+    is_read=0
+    WHERE booking_id=".$data['booking_id']);
+
+    /* ✅ IMPORTANT: UPDATE payments ALSO */
+    mysqli_query($conn,"
+    UPDATE payments SET 
+    payment_status='Confirmed'
+    WHERE payment_id=$id");
+}
+
+ if($type=="reject"){
+
+    mysqli_query($conn,"
+    UPDATE bookings SET 
+    payment_status='Rejected',
+    notification='Some documents were rejected. Please re-upload.',
+    is_read=0
+    WHERE booking_id=".$data['booking_id']);
+
+    /* ✅ ADD THIS */
+    mysqli_query($conn,"
+    UPDATE payments SET 
+    payment_status='Rejected'
+    WHERE payment_id=$id");
+}
 
     header("Location: payment_details.php?id=$id&final_done=1");
     exit();

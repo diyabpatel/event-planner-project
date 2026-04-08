@@ -5,29 +5,39 @@ include("../db.php");
 /* UTF-8 */
 header('Content-Type: text/html; charset=utf-8');
 
+/* ✅ CORRECT QUERY (USE payments TABLE STATUS) */
 $q = mysqli_query($conn,"
-SELECT p.*,u.college_name,b.payment_status 
+SELECT p.*,u.college_name
 FROM payments p
 JOIN users u ON p.user_id=u.user_id
-JOIN bookings b ON p.booking_id=b.booking_id
 ORDER BY p.payment_id DESC
 ");
 
-/* ARRANGE INTO COLUMNS */
+/* DEBUG */
+if(!$q){
+    die("SQL Error: " . mysqli_error($conn));
+}
+
+/* ARRAYS */
 $pending = [];
 $approved = [];
 $rejected = [];
 
+/* ✅ CORRECT STATUS LOGIC */
 while($row=mysqli_fetch_assoc($q)){
-    if($row['payment_status']=="Advance Paid"){
-        $approved[] = $row;
-    }
-    elseif($row['payment_status']=="Rejected"){
-        $rejected[] = $row;
-    }
-    else{
-        $pending[] = $row;
-    }
+
+$status = strtolower($row['payment_status']);
+
+if(strpos($status,'pending') !== false){
+    $pending[] = $row;
+}
+elseif(strpos($status,'reject') !== false){
+    $rejected[] = $row;
+}
+else{
+    $approved[] = $row;
+}
+
 }
 ?>
 
@@ -186,7 +196,7 @@ transform:scale(1.05);
 
 <div class="board">
 
-<!-- PENDING -->
+<!-- 🔴 PENDING -->
 <div class="column">
 <h3>Pending <span class="count"><?php echo count($pending); ?></span></h3>
 
@@ -201,7 +211,7 @@ transform:scale(1.05);
 
 </div>
 
-<!-- APPROVED -->
+<!-- 🟢 APPROVED -->
 <div class="column">
 <h3>Confirmed <span class="count"><?php echo count($approved); ?></span></h3>
 
@@ -216,7 +226,7 @@ transform:scale(1.05);
 
 </div>
 
-<!-- REJECTED -->
+<!-- 🔴 REJECTED -->
 <div class="column">
 <h3>Rejected <span class="count"><?php echo count($rejected); ?></span></h3>
 
