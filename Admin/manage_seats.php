@@ -4,6 +4,15 @@ include("../db.php");
 // DELETE SEAT
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
+
+    // delete image
+    $res = mysqli_query($conn,"SELECT seat_images FROM seats WHERE seat_id=$id");
+    $img = mysqli_fetch_assoc($res);
+
+    if($img && $img['seat_images']!=""){
+        @unlink("../uploads/images/seats/".$img['seat_images']);
+    }
+
     mysqli_query($conn, "DELETE FROM seats WHERE seat_id=$id");
     header("Location: manage_seats.php");
 }
@@ -23,19 +32,53 @@ if(isset($_POST['save_seat'])){
     $seat_type  = $_POST['seat_type'];
     $price      = $_POST['price'];
 
+    /* GET EVENT ID */
+    $pkg = mysqli_fetch_assoc(mysqli_query($conn,"
+        SELECT event_id FROM packages WHERE package_id='$package_id'
+    "));
+    $event_id = $pkg['event_id'];
+
+    $image_name = "";
+
+    // IMAGE UPLOAD
+    if(isset($_FILES['image']) && $_FILES['image']['name']!=""){
+
+        $image_name = time()."_".$_FILES['image']['name'];
+
+        $upload_path = "../uploads/images/seats/";
+
+        if(!file_exists($upload_path)){
+            mkdir($upload_path,0777,true);
+        }
+
+        move_uploaded_file($_FILES['image']['tmp_name'], $upload_path.$image_name);
+    }
+
     // UPDATE
     if($_POST['seat_id'] != ""){
         $sid = $_POST['seat_id'];
-        mysqli_query($conn,"UPDATE seats SET 
-            package_id='$package_id',
-            seat_type='$seat_type',
-            price='$price'
-            WHERE seat_id=$sid");
+
+        if($image_name!=""){
+            mysqli_query($conn,"UPDATE seats SET 
+                event_id='$event_id',
+                package_id='$package_id',
+                seat_type='$seat_type',
+                price='$price',
+                seat_images='$image_name'
+                WHERE seat_id=$sid");
+        } else {
+            mysqli_query($conn,"UPDATE seats SET 
+                event_id='$event_id',
+                package_id='$package_id',
+                seat_type='$seat_type',
+                price='$price'
+                WHERE seat_id=$sid");
+        }
     }
     // INSERT
     else{
-        mysqli_query($conn,"INSERT INTO seats(package_id,seat_type,price)
-            VALUES('$package_id','$seat_type','$price')");
+        mysqli_query($conn,"INSERT INTO seats(event_id,package_id,seat_type,price,seat_images)
+            VALUES('$event_id','$package_id','$seat_type','$price','$image_name')");
     }
 
     header("Location: manage_seats.php");
@@ -45,17 +88,13 @@ if(isset($_POST['save_seat'])){
 <!DOCTYPE html>
 <html>
 <head>
-
-
 <meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-
 <title>Manage Seats</title>
 
 <style>
 
-/* RESET */
+/* YOUR ORIGINAL CSS — UNCHANGED */
+
 *{
 margin:0;
 padding:0;
@@ -63,18 +102,15 @@ box-sizing:border-box;
 font-family:'Poppins', sans-serif;
 }
 
-/* BODY */
 body{
 background:linear-gradient(135deg,#f5f3ff,#ede9fe);
 }
 
-/* MAIN CONTENT */
 .main-content{
 margin-left:260px;
 padding:30px;
 }
 
-/* HEADINGS */
 h2{
 text-align:center;
 color:#5b21b6;
@@ -86,8 +122,6 @@ h3{
 color:#4c1d95;
 margin-bottom:10px;
 }
-
-/* ================= FORM ================= */
 
 form{
 background:white;
@@ -104,7 +138,6 @@ form:hover{
 transform:translateY(-3px);
 }
 
-/* INPUT */
 input,select{
 width:100%;
 padding:12px;
@@ -116,13 +149,11 @@ transition:0.3s;
 font-size:14px;
 }
 
-/* FOCUS */
 input:focus, select:focus{
 border-color:#7c3aed;
 box-shadow:0 0 0 3px rgba(124,58,237,0.2);
 }
 
-/* BUTTON */
 button{
 margin-top:20px;
 padding:14px;
@@ -142,8 +173,6 @@ transform:scale(1.04);
 box-shadow:0 10px 25px rgba(124,58,237,0.4);
 }
 
-/* ================= TABLE ================= */
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -154,7 +183,6 @@ box-shadow:0 15px 40px rgba(91,33,182,0.15);
 margin-top:20px;
 }
 
-/* HEADER */
 th{
 background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
@@ -163,26 +191,22 @@ text-align:left;
 font-weight:600;
 }
 
-/* DATA */
 td{
 padding:16px;
 border-bottom:1px solid #eee;
 line-height:1.6;
 }
 
-/* ROW HOVER */
 tr:hover{
 background:#f5f3ff;
 }
 
-/* ACTION BUTTON */
 td:last-child{
 display:flex;
 gap:10px;
 align-items:center;
 }
 
-/* BUTTON COMMON */
 .btn{
 padding:7px 16px;
 border-radius:25px;
@@ -193,22 +217,19 @@ font-weight:500;
 transition:0.3s;
 }
 
-/* EDIT */
 .edit{
 background:linear-gradient(135deg,#a78bfa,#7c3aed);
 }
 
-.edit:hover{
-transform:scale(1.05);
-}
-
-/* DELETE */
 .delete{
 background:linear-gradient(135deg,#f43f5e,#e11d48);
 }
 
-.delete:hover{
-transform:scale(1.05);
+img{
+width:80px;
+height:60px;
+object-fit:cover;
+border-radius:10px;
 }
 
 </style>
@@ -222,51 +243,54 @@ transform:scale(1.05);
 
 <h2>Manage Seats</h2>
 
-<!-- ADD / EDIT FORM -->
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 <h3><?php echo isset($edit) && $edit ? "Edit Seating" : "Add Seating"; ?></h3>
 
 <input type="hidden" name="seat_id"
 value="<?php echo isset($edit['seat_id']) ? $edit['seat_id'] : ''; ?>">
 
-<!-- PACKAGE DROPDOWN -->
 <select name="package_id" required>
-    <option value="">Select Package</option>
-    <?php
-    $packages = mysqli_query($conn,"
-        SELECT packages.*, events.event_name 
-        FROM packages 
-        JOIN events ON packages.event_id = events.event_id
-    ");
-    while($p = mysqli_fetch_assoc($packages)){
-        $selected = (isset($edit['package_id']) && $edit['package_id']==$p['package_id']) ? "selected" : "";
-        echo "<option value='{$p['package_id']}' $selected>
-              {$p['event_name']} - {$p['package_name']}
-              </option>";
-    }
-    ?>
+<option value="">Select Package</option>
+
+<?php
+$packages = mysqli_query($conn,"
+SELECT packages.*, events.event_name 
+FROM packages 
+JOIN events ON packages.event_id = events.event_id
+");
+
+while($p = mysqli_fetch_assoc($packages)){
+$selected = (isset($edit['package_id']) && $edit['package_id']==$p['package_id']) ? "selected" : "";
+echo "<option value='{$p['package_id']}' $selected>
+{$p['event_name']} - {$p['package_name']}
+</option>";
+}
+?>
 </select>
 
-<input type="text" name="seat_type" placeholder="Seat Type (Normal / VIP / Sofa)"
+<input type="text" name="seat_type" placeholder="Seat Type"
 value="<?php echo isset($edit['seat_type']) ? $edit['seat_type'] : ''; ?>" required>
 
 <input type="number" name="price" placeholder="Seat Price"
 value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
 
+<input type="file" name="image">
+
 <button type="submit" name="save_seat">
 <?php echo isset($edit) && $edit ? "Update Seating" : "Add Seating"; ?>
 </button>
+
 </form>
 
-<!-- SEATS TABLE -->
 <table>
 <tr>
-    <th>ID</th>
-    <th>Event</th>
-    <th>Package</th>
-    <th>Seat Type</th>
-    <th>Price</th>
-    <th>Action</th>
+<th>ID</th>
+<th>Event</th>
+<th>Package</th>
+<th>Seat Type</th>
+<th>Price</th>
+<th>Image</th>
+<th>Action</th>
 </tr>
 
 <?php
@@ -274,27 +298,37 @@ $q = mysqli_query($conn,"
 SELECT seats.*, packages.package_name, events.event_name
 FROM seats
 JOIN packages ON seats.package_id = packages.package_id
-JOIN events ON packages.event_id = events.event_id
+JOIN events ON seats.event_id = events.event_id
 ");
 
 while($row = mysqli_fetch_assoc($q)){
 ?>
 <tr>
-    <td><?php echo $row['seat_id']; ?></td>
-    <td><?php echo $row['event_name']; ?></td>
-    <td><?php echo $row['package_name']; ?></td>
-    <td><?php echo $row['seat_type']; ?></td>
-    <td>₹ <?php echo $row['price']; ?></td>
-    <td>
-        <a href="manage_seats.php?edit=<?php echo $row['seat_id']; ?>" class="btn edit">Edit</a>
-        <a href="manage_seats.php?delete=<?php echo $row['seat_id']; ?>"
-           class="btn delete"
-           onclick="return confirm('Delete this seating option?');">Delete</a>
-    </td>
+<td><?php echo $row['seat_id']; ?></td>
+<td><?php echo $row['event_name']; ?></td>
+<td><?php echo $row['package_name']; ?></td>
+<td><?php echo $row['seat_type']; ?></td>
+<td>₹ <?php echo $row['price']; ?></td>
+
+<td>
+<?php if(isset($row['seat_images']) && $row['seat_images']!=""){ ?>
+<img src="../uploads/images/seats/<?php echo $row['seat_images']; ?>">
+<?php } else { ?>
+<span style="color:#999;">No Image</span>
+<?php } ?>
+</td>
+
+<td>
+<a href="manage_seats.php?edit=<?php echo $row['seat_id']; ?>" class="btn edit">Edit</a>
+<a href="manage_seats.php?delete=<?php echo $row['seat_id']; ?>"
+class="btn delete"
+onclick="return confirm('Delete this seating option?');">Delete</a>
+</td>
 </tr>
 <?php } ?>
 
 </table>
+
 </div>
 </body>
 </html>

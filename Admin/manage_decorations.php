@@ -5,14 +5,6 @@ include("../db.php");
 if(isset($_GET['delete'])){
     $id = $_GET['delete'];
 
-    // delete image
-    $res = mysqli_query($conn,"SELECT decoration_image FROM decorations WHERE decoration_id=$id");
-    $img = mysqli_fetch_assoc($res);
-
-    if($img && $img['decoration_image'] != ""){
-        @unlink("../uploads/decorations/".$img['decoration_image']);
-    }
-
     mysqli_query($conn,"DELETE FROM decorations WHERE decoration_id=$id");
     header("Location: manage_decorations.php");
 }
@@ -32,41 +24,27 @@ if(isset($_POST['save_decoration'])){
     $decoration_name = $_POST['decoration_name'];
     $price = $_POST['price'];
 
-    $image_name = "";
-
-    // ✅ IMAGE UPLOAD
-    if(isset($_FILES['image']) && $_FILES['image']['name'] != ""){
-        $image_name = time()."_".$_FILES['image']['name'];
-
-        // folder path
-        $target = "../uploads/decorations/".$image_name;
-
-        move_uploaded_file($_FILES['image']['tmp_name'], $target);
-    }
+    /* ✅ FIX: GET EVENT ID */
+    $pkg = mysqli_fetch_assoc(mysqli_query($conn,"
+        SELECT event_id FROM packages WHERE package_id='$package_id'
+    "));
+    $event_id = $pkg['event_id'];
 
     // UPDATE
     if($_POST['decoration_id'] != ""){
         $did = $_POST['decoration_id'];
 
-        if($image_name != ""){
-            mysqli_query($conn,"UPDATE decorations SET 
-                package_id='$package_id',
-                decoration_name='$decoration_name',
-                price='$price',
-                decoration_image='$image_name'
-                WHERE decoration_id=$did");
-        } else {
-            mysqli_query($conn,"UPDATE decorations SET 
-                package_id='$package_id',
-                decoration_name='$decoration_name',
-                price='$price'
-                WHERE decoration_id=$did");
-        }
+        mysqli_query($conn,"UPDATE decorations SET 
+            event_id='$event_id',
+            package_id='$package_id',
+            decoration_name='$decoration_name',
+            price='$price'
+            WHERE decoration_id=$did");
     }
     // INSERT
     else{
-        mysqli_query($conn,"INSERT INTO decorations(package_id,decoration_name,price,decoration_image)
-        VALUES('$package_id','$decoration_name','$price','$image_name')");
+        mysqli_query($conn,"INSERT INTO decorations(event_id,package_id,decoration_name,price)
+        VALUES('$event_id','$package_id','$decoration_name','$price')");
     }
 
     header("Location: manage_decorations.php");
@@ -200,15 +178,6 @@ tr:hover{
 background:#f5f3ff;
 }
 
-/* IMAGE */
-img{
-width:85px;
-height:65px;
-object-fit:cover;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
-
 /* ACTION BUTTON ALIGN */
 td:last-child{
 display:flex;
@@ -255,7 +224,7 @@ transform:scale(1.05);
 
 <h2>Manage Decorations</h2>
 
-<form method="post" enctype="multipart/form-data">
+<form method="post">
 
 <input type="hidden" name="decoration_id"
 value="<?php echo isset($edit['decoration_id']) ? $edit['decoration_id'] : ''; ?>">
@@ -285,8 +254,9 @@ value="<?php echo isset($edit['decoration_name']) ? $edit['decoration_name'] : '
 <input type="number" name="price" placeholder="Decoration Price"
 value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
 
-
-
+<button type="submit" name="save_decoration">
+<?php echo isset($edit) && $edit ? "Update Decoration" : "Add Decoration"; ?>
+</button>
 
 </form>
 
@@ -305,7 +275,7 @@ $q = mysqli_query($conn,"
 SELECT decorations.*, packages.package_name, events.event_name
 FROM decorations
 JOIN packages ON decorations.package_id = packages.package_id
-JOIN events ON packages.event_id = events.event_id
+JOIN events ON decorations.event_id = events.event_id
 ");
 
 while($row = mysqli_fetch_assoc($q)){
@@ -317,15 +287,12 @@ while($row = mysqli_fetch_assoc($q)){
 <td><?php echo $row['decoration_name']; ?></td>
 <td>₹ <?php echo $row['price']; ?></td>
 
-</td>
-
 <td>
 <a href="manage_decorations.php?edit=<?php echo $row['decoration_id']; ?>" class="btn edit">Edit</a>
 
 <a href="manage_decorations.php?delete=<?php echo $row['decoration_id']; ?>" 
 class="btn delete"
 onclick="return confirm('Delete?')">Delete</a>
-
 </td>
 </tr>
 <?php } ?>
