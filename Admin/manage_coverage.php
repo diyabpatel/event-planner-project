@@ -1,447 +1,287 @@
 <?php
+session_start();
 include("../db.php");
 
-// DELETE COVERAGE
+/* DELETE */
 if(isset($_GET['delete'])){
-    $id = $_GET['delete'];
-    mysqli_query($conn, "DELETE FROM coverage WHERE coverage_id=$id");
-    header("Location: manage_coverage.php");
+$id=$_GET['delete'];
+mysqli_query($conn,"DELETE FROM coverage WHERE coverage_id=$id");
+$_SESSION['success']="Coverage deleted!";
+header("Location: manage_coverage.php");
+exit();
 }
 
-// FETCH FOR EDIT
-$edit = null;
-if(isset($_GET['edit'])){
-    $id = $_GET['edit'];
-    $res = mysqli_query($conn, "SELECT * FROM coverage WHERE coverage_id=$id");
-    $edit = mysqli_fetch_assoc($res);
-}
-
-// ADD / UPDATE COVERAGE
+/* ADD / UPDATE */
 if(isset($_POST['save_coverage'])){
 
-    $package_id = $_POST['package_id'];
-    $coverage_type = $_POST['coverage_type'];
-    $price = $_POST['price'];
+$coverage_type=$_POST['coverage_type'];
+$price=$_POST['price'];
 
-    /* ✅ ONLY ADDED THIS */
-    $pkg = mysqli_fetch_assoc(mysqli_query($conn,"
-        SELECT event_id FROM packages WHERE package_id='$package_id'
-    "));
-    $event_id = $pkg['event_id'];
+/* ================= UPDATE ================= */
+if(isset($_POST['coverage_id']) && $_POST['coverage_id']!=""){
 
-    // UPDATE
-    if($_POST['coverage_id'] != ""){
-        $cid = $_POST['coverage_id'];
-        mysqli_query($conn,"UPDATE coverage SET 
-            event_id='$event_id',
-            package_id='$package_id',
-            coverage_type='$coverage_type',
-            price='$price'
-            WHERE coverage_id=$cid");
-    }
-    // INSERT
-    else{
-        mysqli_query($conn,"INSERT INTO coverage(event_id,package_id,coverage_type,price)
-            VALUES('$event_id','$package_id','$coverage_type','$price')");
-    }
+$id=$_POST['coverage_id'];
 
-    header("Location: manage_coverage.php");
+/* KEEP OLD EVENT + PACKAGE */
+$old=mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT event_id,package_id FROM coverage WHERE coverage_id='$id'
+"));
+
+$event_id=$old['event_id'];
+$package_id=$old['package_id'];
+
+mysqli_query($conn,"UPDATE coverage SET 
+coverage_type='$coverage_type',
+price='$price'
+WHERE coverage_id=$id");
+
+$_SESSION['success']="Coverage updated!";
+}
+
+/* ================= ADD ================= */
+else{
+
+$event_name=$_POST['event_name'];
+$package_name=$_POST['package_id'];
+
+/* EVENT */
+$ev=mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT event_id FROM events WHERE event_name='$event_name'
+"));
+$event_id=$ev['event_id'];
+
+/* PACKAGE */
+$pkg=mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT * FROM packages 
+WHERE package_name='$package_name' 
+AND event_id='$event_id'
+LIMIT 1
+"));
+$package_id=$pkg['package_id'];
+
+mysqli_query($conn,"INSERT INTO coverage(event_id,package_id,coverage_type,price)
+VALUES('$event_id','$package_id','$coverage_type','$price')");
+
+$_SESSION['success']="Coverage added!";
+}
+
+header("Location: manage_coverage.php");
+exit();
 }
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
 <title>Manage Coverage</title>
 
 <style>
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
-
-*{
-    box-sizing:border-box;
-}
-
-body{
-    margin:0;
-    font-family:'Poppins', sans-serif;
-    background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-    padding:30px;
-}
-
-/* HEADINGS */
-h2{
-    text-align:center;
-    color:#5b21b6;
-    margin-bottom:20px;
-    font-weight:600;
-}
-
-h3{
-    margin-top:0;
-    color:#4c1d95;
-}
-
-/* ================= FORM ================= */
-
-form{
-    background:white;
-    padding:30px;
-    border-radius:16px;
-    box-shadow:0 15px 40px rgba(91,33,182,0.15);
-    border:1px solid #e9d5ff;
-    max-width:600px;
-    margin:0 auto 40px auto;
-}
-
-/* INPUTS */
-input,select{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border-radius:10px;
-    border:1px solid #ddd;
-    outline:none;
-    transition:0.3s;
-    font-size:14px;
-}
-
-/* FOCUS */
-input:focus, select:focus{
-    border-color:#7c3aed;
-    box-shadow:0 0 0 2px rgba(124,58,237,0.2);
-}
-
-/* BUTTON */
-button{
-    margin-top:18px;
-    padding:12px;
-    border:none;
-    border-radius:30px;
-    background:linear-gradient(135deg,#7c3aed,#5b21b6);
-    color:white;
-    cursor:pointer;
-    font-weight:600;
-    transition:0.3s;
-    width:100%;
-}
-
-button:hover{
-    transform:scale(1.03);
-    box-shadow:0 10px 20px rgba(124,58,237,0.3);
-}
-
-/* ================= TABLE ================= */
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 15px 40px rgba(91,33,182,0.15);
-}
-
-/* HEADER */
-th{
-    background:linear-gradient(135deg,#7c3aed,#5b21b6);
-    color:white;
-    padding:14px;
-    text-align:left;
-    font-weight:600;
-}
-
-/* DATA */
-td{
-    padding:14px;
-    border-bottom:1px solid #eee;
-    vertical-align:middle;
-    line-height:1.5;
-}
-
-/* ROW HOVER */
-tr:hover{
-    background:#f5f3ff;
-}
-
-/* ACTION BUTTON ALIGN */
-td:last-child{
-    display:flex;
-    gap:8px;
-    align-items:center;
-}
-
-/* BUTTON COMMON */
-.btn{
-    padding:6px 14px;
-    border-radius:20px;
-    color:white;
-    text-decoration:none;
-    font-size:13px;
-    font-weight:500;
-    transition:0.3s;
-    white-space:nowrap;
-}
-
-/* EDIT */
-.edit{
-    background:linear-gradient(135deg,#a78bfa,#7c3aed);
-}
-
-.edit:hover{
-    opacity:0.85;
-}
-
-/* DELETE */
-.delete{
-    background:linear-gradient(135deg,#f43f5e,#e11d48);
-}
-
-.delete:hover{
-    opacity:0.85;
-}
-
-/* RESET */
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins', sans-serif;
-}
-
-/* BODY */
-body{
-background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-}
-
-/* MAIN CONTENT */
-.main-content{
-margin-left:260px;
-padding:30px;
-}
-
-/* HEADINGS */
-h2{
-text-align:center;
-color:#5b21b6;
-margin-bottom:25px;
-font-weight:600;
-}
-
-h3{
-color:#4c1d95;
-margin-bottom:10px;
-}
-
-/* ================= FORM ================= */
-
-form{
-background:white;
-padding:30px;
-border-radius:20px;
-box-shadow:0 15px 40px rgba(91,33,182,0.15);
-border:1px solid #e9d5ff;
-max-width:650px;
-margin:0 auto 40px auto;
-transition:0.3s;
-}
-
-form:hover{
-transform:translateY(-3px);
-}
-
-/* INPUT */
-input,select{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:12px;
-border:1px solid #ddd;
-outline:none;
-transition:0.3s;
-font-size:14px;
-}
-
-/* FOCUS */
-input:focus, select:focus{
-border-color:#7c3aed;
-box-shadow:0 0 0 3px rgba(124,58,237,0.2);
-}
-
-/* BUTTON */
-button{
-margin-top:20px;
-padding:14px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
-color:white;
-cursor:pointer;
-font-weight:600;
-transition:0.3s;
-width:100%;
-font-size:15px;
-}
-
-button:hover{
-transform:scale(1.04);
-box-shadow:0 10px 25px rgba(124,58,237,0.4);
-}
-
-/* ================= TABLE ================= */
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-border-radius:20px;
-overflow:hidden;
-box-shadow:0 15px 40px rgba(91,33,182,0.15);
-margin-top:20px;
-}
-
-/* HEADER */
-th{
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
-color:white;
-padding:16px;
-text-align:left;
-font-weight:600;
-}
-
-/* DATA */
-td{
-padding:16px;
-border-bottom:1px solid #eee;
-line-height:1.6;
-}
-
-/* ROW HOVER */
-tr:hover{
-background:#f5f3ff;
-}
-
-/* ACTION BUTTON */
-td:last-child{
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-/* BUTTON COMMON */
-.btn{
-padding:7px 16px;
-border-radius:25px;
-color:white;
-text-decoration:none;
-font-size:13px;
-font-weight:500;
-transition:0.3s;
-}
-
-/* EDIT */
-.edit{
-background:linear-gradient(135deg,#a78bfa,#7c3aed);
-}
-
-.edit:hover{
-transform:scale(1.05);
-}
-
-/* DELETE */
-.delete{
-background:linear-gradient(135deg,#f43f5e,#e11d48);
-}
-
-.delete:hover{
-transform:scale(1.05);
-}
-
+body{background:linear-gradient(135deg,#f5f3ff,#ede9fe);font-family:'Poppins';}
+.main-content{margin-left:260px;padding:30px;}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+h2{color:#5b21b6;}
+.add-btn{padding:10px 20px;border:none;border-radius:25px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;cursor:pointer;}
+.filters{display:flex;gap:10px;margin-bottom:20px;}
+select.filter{padding:10px;border-radius:12px;border:1px solid #ddd;}
+button.filter-btn{padding:8px 15px;border:none;border-radius:20px;background:#ddd;cursor:pointer;}
+button.active{background:#7c3aed;color:white;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.card{background:white;border-radius:18px;padding:20px;box-shadow:0 10px 25px rgba(91,33,182,0.15);}
+.card h3{color:#5b21b6;}
+.btn{padding:6px 12px;border-radius:8px;color:white;text-decoration:none;font-size:13px;}
+.edit{background:#7c3aed;}
+.delete{background:#e11d48;}
+.event-title{margin:25px 0 10px;color:#4c1d95;font-weight:600;}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;}
+.modal-content{background:white;padding:30px;border-radius:20px;width:450px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.modal-content input,.modal-content select{width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px solid #ddd;}
+.modal-content button{margin-top:15px;padding:12px;border:none;border-radius:25px;background:#7c3aed;color:white;}
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
 </head>
+
 <body>
 
 <?php include("admin_sidebar.php"); ?>
 
 <div class="main-content">
 
+<div class="top-bar">
 <h2>Manage Coverage</h2>
+<button class="add-btn" onclick="openAddModal()">+ Add Coverage</button>
+</div>
 
-<form method="post">
-<h3><?php echo isset($edit) && $edit ? "Edit Coverage" : "Add Coverage"; ?></h3>
-
-<input type="hidden" name="coverage_id"
-value="<?php echo isset($edit['coverage_id']) ? $edit['coverage_id'] : ''; ?>">
-
-<select name="package_id" required>
-    <option value="">Select Package</option>
-    <?php
-    $packages = mysqli_query($conn,"
-        SELECT packages.*, events.event_name 
-        FROM packages 
-        JOIN events ON packages.event_id = events.event_id
-    ");
-    while($p = mysqli_fetch_assoc($packages)){
-        $selected = (isset($edit['package_id']) && $edit['package_id']==$p['package_id']) ? "selected" : "";
-        echo "<option value='{$p['package_id']}' $selected>
-              {$p['event_name']} - {$p['package_name']}
-              </option>";
-    }
-    ?>
+<div class="filters">
+<select class="filter" id="eventFilter" onchange="filterEvent()">
+<option value="all">All Events</option>
+<?php
+$ev=mysqli_query($conn,"SELECT * FROM events");
+while($e=mysqli_fetch_assoc($ev)){
+echo "<option value='{$e['event_name']}'>{$e['event_name']}</option>";
+}
+?>
 </select>
 
-<input type="text" name="coverage_type" placeholder="Coverage Type (Photography / Videography / Cinematic)"
-value="<?php echo isset($edit['coverage_type']) ? $edit['coverage_type'] : ''; ?>" required>
-
-<input type="number" name="price" placeholder="Coverage Price"
-value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
-
-<button type="submit" name="save_coverage">
-<?php echo isset($edit) && $edit ? "Update Coverage" : "Add Coverage"; ?>
-</button>
-</form>
-
-<table>
-<tr>
-    <th>ID</th>
-    <th>Event</th>
-    <th>Package</th>
-    <th>Coverage Type</th>
-    <th>Price</th>
-    <th>Action</th>
-</tr>
+<button type="button" class="filter-btn active" onclick="filterPackage('all',this)">All</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Basic',this)">Basic</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Standard',this)">Standard</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Premium',this)">Premium</button>
+</div>
 
 <?php
-$q = mysqli_query($conn,"
-SELECT coverage.*, packages.package_name, events.event_name
+$events=mysqli_query($conn,"SELECT * FROM events");
+while($e=mysqli_fetch_assoc($events)){
+?>
+
+<div class="event-section">
+<div class="event-title"><?php echo $e['event_name']; ?></div>
+
+<div class="grid">
+
+<?php
+$q=mysqli_query($conn,"
+SELECT coverage.*,packages.package_name
 FROM coverage
-JOIN packages ON coverage.package_id = packages.package_id
-JOIN events ON coverage.event_id = events.event_id
+JOIN packages ON coverage.package_id=packages.package_id
+WHERE coverage.event_id=".$e['event_id']."
 ");
 
-while($row = mysqli_fetch_assoc($q)){
+while($row=mysqli_fetch_assoc($q)){
 ?>
-<tr>
-    <td><?php echo $row['coverage_id']; ?></td>
-    <td><?php echo $row['event_name']; ?></td>
-    <td><?php echo $row['package_name']; ?></td>
-    <td><?php echo $row['coverage_type']; ?></td>
-    <td>₹ <?php echo $row['price']; ?></td>
-    <td>
-        <a href="manage_coverage.php?edit=<?php echo $row['coverage_id']; ?>" class="btn edit">Edit</a>
-        <a href="manage_coverage.php?delete=<?php echo $row['coverage_id']; ?>"
-           class="btn delete"
-           onclick="return confirm('Delete this coverage option?');">Delete</a>
-    </td>
-</tr>
+
+<div class="card" data-package="<?php echo $row['package_name']; ?>">
+<h3><?php echo $row['coverage_type']; ?></h3>
+<p><b>Package:</b> <?php echo $row['package_name']; ?></p>
+<p><b>₹ <?php echo $row['price']; ?></b></p>
+
+<a href="#" class="btn edit"
+onclick="openEditModal(
+'<?php echo $row['coverage_id']; ?>',
+'<?php echo $e['event_name']; ?>',
+'<?php echo $row['package_name']; ?>',
+'<?php echo $row['coverage_type']; ?>',
+'<?php echo $row['price']; ?>'
+)">Edit</a>
+
+<a href="?delete=<?php echo $row['coverage_id']; ?>" class="btn delete">Delete</a>
+</div>
+
 <?php } ?>
 
-</table>
 </div>
+</div>
+
+<?php } ?>
+
+</div>
+
+<!-- ADD MODAL -->
+<div id="addModal" class="modal">
+<div class="modal-content">
+<h3>Add Coverage</h3>
+
+<form method="post">
+
+<select name="event_name" required>
+<option value="">Select Event</option>
+<?php
+$events=mysqli_query($conn,"SELECT * FROM events");
+while($e=mysqli_fetch_assoc($events)){
+echo "<option value='{$e['event_name']}'>{$e['event_name']}</option>";
+}
+?>
+</select>
+
+<select name="package_id">
+<?php
+$packages=mysqli_query($conn,"SELECT DISTINCT package_name FROM packages");
+while($p=mysqli_fetch_assoc($packages)){
+echo "<option value='{$p['package_name']}'>{$p['package_name']}</option>";
+}
+?>
+</select>
+
+<input type="text" name="coverage_type" placeholder="Coverage Type">
+<input type="number" name="price" placeholder="Price">
+
+<button name="save_coverage">Add</button>
+</form>
+</div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+<div class="modal-content">
+<h3>Edit Coverage</h3>
+
+<form method="post">
+
+<input type="hidden" name="coverage_id" id="edit_id">
+
+<input type="text" id="edit_package_display" disabled style="background:#eee;">
+<input type="text" id="edit_type_display" disabled style="background:#eee;">
+<input type="hidden" name="coverage_type" id="edit_type">
+
+<input type="number" name="price" id="edit_price">
+
+<button name="save_coverage">Update</button>
+
+</form>
+</div>
+</div>
+
+<script>
+
+function openAddModal(){
+document.getElementById("addModal").style.display="block";
+}
+
+function openEditModal(id,event,pkg,type,price){
+document.getElementById("editModal").style.display="block";
+
+edit_id.value=id;
+
+edit_package_display.value="Package: "+pkg;
+edit_type_display.value=type;
+
+edit_type.value=type;
+edit_price.value=price;
+}
+
+window.onclick=function(e){
+if(e.target==addModal) addModal.style.display="none";
+if(e.target==editModal) editModal.style.display="none";
+}
+
+function filterEvent(){
+let val=document.getElementById("eventFilter").value;
+document.querySelectorAll(".event-section").forEach(sec=>{
+let title=sec.querySelector(".event-title").innerText;
+sec.style.display=(val=="all" || title==val)?"block":"none";
+});
+}
+
+function filterPackage(type,btn){
+document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+
+document.querySelectorAll(".card").forEach(c=>{
+c.style.display=(type=="all" || c.dataset.package==type)?"block":"none";
+});
+}
+
+</script>
+
+<?php if(isset($_SESSION['success'])){ ?>
+<script>
+Swal.fire({title:'Success 🎉',text:'<?php echo $_SESSION['success']; ?>',icon:'success',timer:2000,showConfirmButton:false});
+confetti({particleCount:120,spread:100});
+</script>
+<?php unset($_SESSION['success']); } ?>
+
 </body>
 </html>

@@ -14,16 +14,45 @@ exit();
 /* ADD / UPDATE */
 if(isset($_POST['save_food'])){
 
+$food_type=$_POST['food_type'];
+$menu=$_POST['menu'];
+$price=$_POST['price'];
+
+/* ================= UPDATE ================= */
+if(isset($_POST['food_id']) && $_POST['food_id']!=""){
+
+$id=$_POST['food_id'];
+
+/* ⚠️ OLD EVENT & PACKAGE SAME RAKHVANA */
+$old=mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT event_id,package_id FROM food WHERE food_id='$id'
+"));
+
+$event_id=$old['event_id'];
+$package_id=$old['package_id'];
+
+mysqli_query($conn,"UPDATE food SET 
+food_type='$food_type',
+menu='$menu',
+price='$price'
+WHERE food_id=$id");
+
+$_SESSION['success']="Food updated!";
+}
+
+/* ================= ADD ================= */
+else{
+
 $event_name=$_POST['event_name'];
 $package_name=$_POST['package_id'];
 
-/* 🔥 event_id find */
+/* EVENT */
 $ev=mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT event_id FROM events WHERE event_name='$event_name'
 "));
 $event_id=$ev['event_id'];
 
-/* 🔥 correct package (event wise) */
+/* PACKAGE */
 $pkg=mysqli_fetch_assoc(mysqli_query($conn,"
 SELECT * FROM packages 
 WHERE package_name='$package_name' 
@@ -32,22 +61,6 @@ LIMIT 1
 "));
 $package_id=$pkg['package_id'];
 
-$food_type=$_POST['food_type'];
-$menu=$_POST['menu'];
-$price=$_POST['price'];
-
-if($_POST['food_id']!=""){
-$id=$_POST['food_id'];
-mysqli_query($conn,"UPDATE food SET 
-event_id='$event_id',
-package_id='$package_id',
-food_type='$food_type',
-menu='$menu',
-price='$price'
-WHERE food_id=$id");
-
-$_SESSION['success']="Food updated!";
-}else{
 mysqli_query($conn,"INSERT INTO food(event_id,package_id,food_type,menu,price)
 VALUES('$event_id','$package_id','$food_type','$menu','$price')");
 
@@ -217,30 +230,24 @@ echo "<option value='{$p['package_name']}'>{$p['package_name']}</option>";
 <h3>Edit Food</h3>
 
 <form method="post">
+
 <input type="hidden" name="food_id" id="edit_id">
 
-<input type="text" name="event_name" id="edit_event">
+<!-- 👇 PACKAGE (READ ONLY) -->
+<input type="text" id="edit_package_display" disabled style="background:#eee;">
 
-<select name="package_id" id="edit_package">
-<?php
-$packages=mysqli_query($conn,"SELECT DISTINCT package_name FROM packages");
-while($p=mysqli_fetch_assoc($packages)){
-echo "<option value='{$p['package_name']}'>{$p['package_name']}</option>";
-}
-?>
-</select>
+<!-- ✅ ONLY NAME -->
+<input type="text" id="edit_type_display" disabled style="background:#eee;">
+<input type="hidden" name="food_type" id="edit_type">
 
-<select name="food_type" id="edit_type">
-<option>Breakfast</option>
-<option>Lunch</option>
-<option>Dinner</option>
-<option>Snacks</option>
-</select>
+<!-- ✅ DESCRIPTION -->
+<textarea name="menu" id="edit_menu" placeholder="Description"></textarea>
 
-<textarea name="menu" id="edit_menu"></textarea>
-<input type="number" name="price" id="edit_price">
+<!-- ✅ PRICE -->
+<input type="number" name="price" id="edit_price" placeholder="Price">
 
 <button name="save_food">Update</button>
+
 </form>
 </div>
 </div>
@@ -252,12 +259,18 @@ document.getElementById("addModal").style.display="block";
 
 function openEditModal(id,event,pkg,type,menu,price){
 document.getElementById("editModal").style.display="block";
+
 document.getElementById("edit_id").value=id;
-document.getElementById("edit_event").value=event;
-document.getElementById("edit_package").value=pkg;
+
+/* 👇 DISPLAY */
+document.getElementById("edit_type_display").value=type;
+
+/* 👇 HIDDEN (for DB update) */
 document.getElementById("edit_type").value=type;
+
 document.getElementById("edit_menu").value=menu;
 document.getElementById("edit_price").value=price;
+document.getElementById("edit_package_display").value="Package: "+pkg;
 }
 
 window.onclick=function(e){

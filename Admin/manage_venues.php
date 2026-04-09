@@ -121,10 +121,10 @@ echo "<option value='{$e['event_name']}'>{$e['event_name']}</option>";
 ?>
 </select>
 
-<button class="filter-btn active" onclick="filterPackage('all',this)">All</button>
-<button class="filter-btn" onclick="filterPackage('Basic',this)">Basic</button>
-<button class="filter-btn" onclick="filterPackage('Standard',this)">Standard</button>
-<button class="filter-btn" onclick="filterPackage('Premium',this)">Premium</button>
+<button type="button" class="filter-btn active" onclick="filterPackage('all',this)">All</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Basic',this)">Basic</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Standard',this)">Standard</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Premium',this)">Premium</button>
 
 </div>
 
@@ -176,15 +176,21 @@ onclick="openEditModal('<?php echo $row['venue_id']; ?>','<?php echo $row['event
 
 </div>
 
-<!-- 🔥 UPDATED MODAL -->
+<!-- MODAL -->
 <div id="modal" class="modal">
 <div class="modal-content">
 
-<form method="post" enctype="multipart/form-data">
+<h3 id="modal_title" style="text-align:center;color:#5b21b6;margin-bottom:15px;">
+Add Venue
+</h3>
+
+<form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
 
 <input type="hidden" name="venue_id" id="edit_id">
+<input type="hidden" name="event_id" id="hidden_event">
+<input type="hidden" name="package_id" id="hidden_package">
 
-<select name="event_id" id="event_select" onchange="filterPackages()" required>
+<select id="event_select" onchange="filterPackages()" required>
 <option value="">Select Event</option>
 <?php
 $events=mysqli_query($conn,"SELECT * FROM events");
@@ -194,7 +200,7 @@ echo "<option value='{$e['event_id']}'>{$e['event_name']}</option>";
 ?>
 </select>
 
-<select name="package_id" id="package_select" required>
+<select id="package_select" required>
 <option value="">Select Package</option>
 <?php
 $packages=mysqli_query($conn,"SELECT * FROM packages");
@@ -216,61 +222,109 @@ echo "<option value='{$p['package_id']}' data-event='{$p['event_id']}'>{$p['pack
 </div>
 
 <script>
-let selectedEvent="all";
-let selectedPackage="all";
 
+let selectedEvent = "all";
+let selectedPackage = "all";
+
+/* EVENT FILTER */
 function filterEvent(){
-selectedEvent=document.getElementById("eventFilter").value;
+selectedEvent = document.getElementById("eventFilter").value;
 applyFilters();
 }
 
+/* PACKAGE FILTER */
 function filterPackage(type,btn){
-selectedPackage=type;
+selectedPackage = type;
+
 document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
 btn.classList.add("active");
+
 applyFilters();
 }
 
+/* APPLY BOTH FILTERS */
 function applyFilters(){
 document.querySelectorAll(".card").forEach(c=>{
-let e=(selectedEvent=="all" || c.dataset.event==selectedEvent);
-let p=(selectedPackage=="all" || c.dataset.package==selectedPackage);
-c.style.display=(e && p)?"block":"none";
+
+let eventMatch = (selectedEvent=="all" || c.dataset.event==selectedEvent);
+let packageMatch = (selectedPackage=="all" || c.dataset.package==selectedPackage);
+
+c.style.display = (eventMatch && packageMatch) ? "block" : "none";
+
 });
 }
 
-/* 🔥 package filter */
+/* PACKAGE DROPDOWN FILTER (MODAL) */
 function filterPackages(){
-let eventId=document.getElementById("event_select").value;
+let eventId = event_select.value;
+package_select.value="";
+
 document.querySelectorAll("#package_select option").forEach(opt=>{
-if(opt.value=="" || opt.dataset.event==eventId){
-opt.style.display="block";
-}else{
-opt.style.display="none";
-}
+opt.hidden = !(opt.value=="" || opt.dataset.event==eventId);
 });
 }
 
+/* ADD */
 function openAddModal(){
 modal.style.display="block";
+modal_title.innerText="Add Venue";
+
 edit_id.value="";
 edit_name.value="";
 edit_price.value="";
+
+event_select.value="";
+package_select.value="";
+
+event_select.disabled=false;
+package_select.disabled=false;
+
+hidden_event.value="";
+hidden_package.value="";
 }
 
+/* EDIT */
 function openEditModal(id,event,pkg,name,price){
 modal.style.display="block";
+modal_title.innerText="Edit Venue";
+
 edit_id.value=id;
+
 event_select.value=event;
 filterPackages();
 package_select.value=pkg;
+
 edit_name.value=name;
 edit_price.value=price;
+
+event_select.disabled=true;
+package_select.disabled=true;
+
+hidden_event.value=event;
+hidden_package.value=pkg;
 }
 
+/* VALIDATION */
+function validateForm(){
+hidden_event.value=event_select.value;
+hidden_package.value=package_select.value;
+
+if(hidden_event.value==""){
+alert("Select Event");
+return false;
+}
+if(hidden_package.value==""){
+alert("Select Package");
+return false;
+}
+return true;
+}
+
+/* CLOSE MODAL */
 window.onclick=function(e){
 if(e.target==modal) modal.style.display="none";
 }
+
 </script>
 
 <?php if(isset($_SESSION['success'])){ ?>

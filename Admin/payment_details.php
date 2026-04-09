@@ -2,15 +2,13 @@
 session_start();
 include("../db.php");
 
-/* SAFE ID */
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 if($id == 0){
-    die("Invalid or missing ID");
+    die("Invalid ID");
 }
 
-/* ===== HANDLE ACTIONS ===== */
-
+/* ACTIONS */
 if(isset($_GET['action'])){
     $action = $_GET['action'];
 
@@ -27,107 +25,23 @@ if(isset($_GET['action'])){
     exit();
 }
 
-/* ===== FINAL ACTION ===== */
-
+/* FINAL */
 if(isset($_GET['final'])){
     $type = $_GET['final'];
 
-    $result = mysqli_query($conn,"SELECT booking_id FROM payments WHERE payment_id=$id");
-
-    if(!$result){
-        die("Query Error: " . mysqli_error($conn));
-    }
-
-    $data = mysqli_fetch_assoc($result);
-
-    if(!$data){
-        die("No booking found");
-    }
-
+    $data = mysqli_fetch_assoc(mysqli_query($conn,"SELECT booking_id FROM payments WHERE payment_id=$id"));
     $booking_id = $data['booking_id'];
 
-    /* ===== APPROVE ===== */
-    /* ===== APPROVE ===== */
-if($type=="confirm"){
-
-    /* GET EVENT NAME (SAFE - NO BREAK) */
-    $event_name = "";
-
-    $event_query = mysqli_query($conn,"
-    SELECT e.event_name 
-    FROM bookings b
-    JOIN events e ON b.event_id = e.event_id
-    WHERE b.booking_id = $booking_id
-    ");
-
-    if($event_query && mysqli_num_rows($event_query) > 0){
-        $event_data = mysqli_fetch_assoc($event_query);
-        $event_name = $event_data['event_name'];
+    if($type=="confirm"){
+        mysqli_query($conn,"UPDATE bookings SET payment_status='Approved' WHERE booking_id=$booking_id");
+        mysqli_query($conn,"UPDATE payments SET payment_status='Approved' WHERE payment_id=$id");
     }
 
-    /* SAFE MESSAGE (fallback included) */
-    if($event_name != ""){
-        $message = "Your booking for $event_name has been successfully confirmed 🎉";
-    } else {
-        $message = "Your booking has been successfully confirmed 🎉";
-    }
-
-    mysqli_query($conn,"
-    UPDATE bookings SET 
-    payment_status='Approved',
-    notification='$message',
-    is_read=0
-    WHERE booking_id=$booking_id
-    ");
-
-    mysqli_query($conn,"
-    UPDATE payments SET 
-    payment_status='Approved'
-    WHERE payment_id=$id
-    ");
-}
-
-    /* ===== REJECT ===== */
-    if($type=="reject"){
-
-        mysqli_query($conn,"
-        UPDATE bookings SET 
-        payment_status='Rejected',
-        notification='Some documents were rejected. Please re-upload.',
-        is_read=0
-        WHERE booking_id=$booking_id
-        ");
-
-        mysqli_query($conn,"
-        UPDATE payments SET 
-        payment_status='Rejected'
-        WHERE payment_id=$id
-        ");
-    }
-
-    header("Location: payment_details.php?id=$id&final_done=1");
+    header("Location: manage_payments.php");
     exit();
 }
 
-/* ===== FETCH ===== */
-
-$query = mysqli_query($conn,"
-SELECT p.*,u.college_name,b.payment_status 
-FROM payments p
-JOIN users u ON p.user_id=u.user_id
-JOIN bookings b ON p.booking_id=b.booking_id
-WHERE p.payment_id=$id
-");
-
-if(!$query){
-    die("Query Error: " . mysqli_error($conn));
-}
-
-$row = mysqli_fetch_assoc($query);
-
-if(!$row){
-    die("No data found");
-}
+$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM payments WHERE payment_id=$id"));
 ?>
 
 <!DOCTYPE html>
@@ -136,279 +50,207 @@ if(!$row){
 <meta charset="UTF-8">
 <title>Payment Details</title>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <style>
 
-body{
+/* GLOBAL */
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:'Poppins',sans-serif;
+}
+
+/* BACKGROUND SAME AS GALLERY */
+body{
 background:linear-gradient(135deg,#0f172a,#020617);
-color:#e5e7eb;
+color:white;
 }
 
 /* CONTAINER */
 .container{
-max-width:1100px;
+max-width:700px;
 margin:auto;
-padding:30px;
+padding:40px;
+text-align:center;
 }
 
-/* HEADER */
-.header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:30px;
-}
-
-.header h2{
-font-size:24px;
-}
-
-/* GRID */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
-gap:20px;
-}
-
-/* CARD */
+/* CARD GLASS EFFECT */
 .card{
 background:rgba(255,255,255,0.05);
 border:1px solid rgba(255,255,255,0.1);
-border-radius:16px;
+border-radius:18px;
 padding:20px;
 backdrop-filter:blur(10px);
+box-shadow:0 10px 30px rgba(0,0,0,0.4);
 transition:0.3s;
 }
 
 .card:hover{
-transform:translateY(-5px);
-box-shadow:0 10px 30px rgba(0,0,0,0.4);
+transform:translateY(-6px);
 }
 
 /* IMAGE */
-.preview{
+.slider img{
 width:100%;
-height:220px;
+height:260px;
+object-fit:cover;
 border-radius:12px;
-overflow:hidden;
-margin-top:10px;
+transition:0.3s;
 }
 
-.preview img{
-width:100%;
-height:100%;
-object-fit:cover;
-cursor:pointer;
+.slider img:hover{
+transform:scale(1.03);
+}
+
+/* TITLE */
+h3{
+margin-top:15px;
+font-size:20px;
 }
 
 /* BUTTONS */
 .actions{
 margin-top:15px;
-display:flex;
-gap:10px;
 }
 
 .btn{
-padding:8px 14px;
+padding:8px 16px;
+border:none;
 border-radius:20px;
-text-decoration:none;
+cursor:pointer;
+margin:5px;
 font-size:13px;
-font-weight:500;
 transition:0.3s;
 }
 
 .approve{ background:#22c55e; color:white; }
 .reject{ background:#ef4444; color:white; }
-.final{ background:#6366f1; color:white; }
-.warn{ background:#f59e0b; color:white; }
 
 .btn:hover{
-transform:scale(1.05);
+transform:scale(1.08);
 }
 
-/* STATUS */
-.status{
-margin-top:12px;
-font-size:14px;
-font-weight:600;
+/* NAV */
+.nav{
+margin-top:15px;
+display:flex;
+justify-content:center;
+gap:20px;
 }
 
-.approved{color:#22c55e;}
-.rejected{color:#ef4444;}
-
-/* FINAL */
-.final-box{
-margin-top:30px;
-text-align:center;
-}
-
-/* MODAL */
-.modal{
-display:none;
-position:fixed;
-z-index:999;
-padding-top:50px;
-left:0;
-top:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.9);
-}
-
-.modal-content{
-margin:auto;
-display:block;
-max-width:90%;
-max-height:85%;
-border-radius:10px;
-}
-
-.close{
-position:absolute;
-top:20px;
-right:40px;
+.nav button{
+padding:10px 16px;
+background:#6366f1;
+border:none;
 color:white;
-font-size:35px;
+border-radius:10px;
 cursor:pointer;
+font-size:16px;
+transition:0.3s;
+}
+
+.nav button:hover{
+transform:scale(1.1);
+}
+
+/* PROGRESS */
+.progress{
+margin-top:10px;
+font-size:13px;
+color:#cbd5f5;
 }
 
 </style>
-
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="header">
-<h2><?php echo $row['college_name']; ?></h2>
-</div>
-
-<div class="grid">
-
-<!-- PAYMENT -->
 <div class="card">
-<h3>Payment Screenshot</h3>
-<div class="preview">
-<img src="../<?php echo $row['proof_image']; ?>" onclick="openImage(this.src)">
+
+<div class="slider">
+<img id="sliderImg" src="../<?php echo $row['proof_image']; ?>">
 </div>
 
-<?php if($row['payment_status']!='Approved' && $row['payment_status']!='Rejected'){ ?>
+<h3 id="docTitle">Payment Screenshot</h3>
+
+<div class="progress" id="progress">1 / 3</div>
+
 <div class="actions">
-<a href="?id=<?php echo $id ?>&action=proofA" class="btn approve">Approve</a>
-<a href="?id=<?php echo $id ?>&action=proofR" class="btn reject">Reject</a>
+<button class="btn approve" onclick="approveDoc()">Approve</button>
+<button class="btn reject" onclick="rejectDoc()">Reject</button>
 </div>
-<?php } ?>
 
-<div class="status <?php echo ($row['proof_status']==1 ? 'approved' : ($row['proof_status']==2 ? 'rejected' : '')); ?>">
-
-<?php 
-if($row['proof_status']==1) echo "✔ Approved";
-elseif($row['proof_status']==2) echo "✖ Rejected";
-else echo "⏳ Pending";
-?>
+<div class="nav">
+<button onclick="prevImg()">⬅</button>
+<button onclick="nextImg()">➡</button>
 </div>
 
 </div>
 
-<!-- AADHAAR -->
-<div class="card">
-<h3>Aadhaar</h3>
-<div class="preview">
-<img src="../<?php echo $row['aadhaar']; ?>" onclick="openImage(this.src)">
-</div>
-
-<?php if($row['payment_status']!='Approved' && $row['payment_status']!='Rejected'){ ?>
-<div class="actions">
-<a href="?id=<?php echo $id ?>&action=aadhaarA" class="btn approve">Approve</a>
-<a href="?id=<?php echo $id ?>&action=aadhaarR" class="btn reject">Reject</a>
-</div>
-<?php } ?>
-
-<div class="status <?php echo ($row['aadhaar_status']==1 ? 'approved' : ($row['aadhaar_status']==2 ? 'rejected' : '')); ?>">
-
-<?php 
-if($row['aadhaar_status']==1) echo "✔ Approved";
-elseif($row['aadhaar_status']==2) echo "✖ Rejected";
-else echo "⏳ Pending";
-?>
-</div>
-</div>
-
-<!-- PAN -->
-<div class="card">
-<h3>PAN Card</h3>
-<div class="preview">
-<img src="../<?php echo $row['pan']; ?>" onclick="openImage(this.src)">
-</div>
-
-<?php if($row['payment_status']!='Approved' && $row['payment_status']!='Rejected'){ ?>
-<div class="actions">
-<a href="?id=<?php echo $id ?>&action=panA" class="btn approve">Approve</a>
-<a href="?id=<?php echo $id ?>&action=panR" class="btn reject">Reject</a>
-</div>
-<?php } ?>
-
-<div class="status <?php echo ($row['pan_status']==1 ? 'approved' : ($row['pan_status']==2 ? 'rejected' : '')); ?>">
-
-<?php 
-if($row['pan_status']==1) echo "✔ Approved";
-elseif($row['pan_status']==2) echo "✖ Rejected";
-else echo "⏳ Pending";
-?>
-</div>
-</div>
-
-</div>
-
-<!-- FINAL -->
-<div class="final-box">
-
-<?php
-if($row['payment_status'] == 'Approved'){
-    echo "<div class='status approved'>✔ Booking Confirmed</div>";
-}
-else if($row['payment_status'] == 'Rejected'){
-    echo "<div class='status rejected'>✖ Re-upload Requested</div>";
-}
-else{
-    if(
-        $row['proof_status']!=0 &&
-        $row['aadhaar_status']!=0 &&
-        $row['pan_status']!=0
-    ){
-        if(
-            $row['proof_status']==1 &&
-            $row['aadhaar_status']==1 &&
-            $row['pan_status']==1
-        ){
-            echo "<a href='?id=$id&final=confirm' class='btn final'>Confirm Booking</a>";
-        } else{
-            echo "<a href='?id=$id&final=reject' class='btn warn'>Request Re-upload</a>";
-        }
-    }
-}
-?>
-
-</div>
-
-</div>
-
-<!-- MODAL -->
-<div id="imageModal" class="modal" onclick="closeImage()">
-<span class="close">&times;</span>
-<img class="modal-content" id="modalImg">
 </div>
 
 <script>
-function openImage(src){
-document.getElementById("imageModal").style.display="block";
-document.getElementById("modalImg").src=src;
+
+let current = 0;
+
+const docs = [
+    { img: "../<?php echo $row['proof_image']; ?>", title: "Payment Screenshot", type: "proof" },
+    { img: "../<?php echo $row['aadhaar']; ?>", title: "Aadhaar", type: "aadhaar" },
+    { img: "../<?php echo $row['pan']; ?>", title: "PAN Card", type: "pan" }
+];
+
+function showDoc(){
+    document.getElementById("sliderImg").src = docs[current].img;
+    document.getElementById("docTitle").innerText = docs[current].title;
+    document.getElementById("progress").innerText = (current+1)+" / "+docs.length;
 }
-function closeImage(){
-document.getElementById("imageModal").style.display="none";
+
+function nextImg(){
+    if(current < docs.length - 1){
+        current++;
+        showDoc();
+    } else {
+        showFinalAlert();
+    }
 }
+
+function prevImg(){
+    if(current > 0){
+        current--;
+        showDoc();
+    }
+}
+
+function approveDoc(){
+    let type = docs[current].type;
+    window.location.href = "?id=<?php echo $id ?>&action="+type+"A";
+}
+
+function rejectDoc(){
+    let type = docs[current].type;
+    window.location.href = "?id=<?php echo $id ?>&action="+type+"R";
+}
+
+function showFinalAlert(){
+    Swal.fire({
+        title: "Confirm Booking?",
+        text: "Are you sure you want to confirm?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#22c55e",
+        cancelButtonColor: "#ef4444",
+        confirmButtonText: "Yes Confirm"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "?id=<?php echo $id ?>&final=confirm";
+        }
+    });
+}
+
 </script>
 
 </body>

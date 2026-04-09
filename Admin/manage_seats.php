@@ -1,87 +1,63 @@
 <?php
+session_start();
 include("../db.php");
 
-// DELETE SEAT
+/* DELETE */
 if(isset($_GET['delete'])){
-    $id = $_GET['delete'];
+$id=$_GET['delete'];
 
-    // delete image
-    $res = mysqli_query($conn,"SELECT seat_images FROM seats WHERE seat_id=$id");
-    $img = mysqli_fetch_assoc($res);
+/* delete image */
+$res=mysqli_query($conn,"SELECT seat_images FROM seats WHERE seat_id=$id");
+$img=mysqli_fetch_assoc($res);
 
-    if($img && $img['seat_images']!=""){
-        @unlink("../uploads/images/seats/".$img['seat_images']);
-    }
-
-    mysqli_query($conn, "DELETE FROM seats WHERE seat_id=$id");
-    header("Location: manage_seats.php");
+if($img && $img['seat_images']!=""){
+@unlink("../uploads/images/seats/".$img['seat_images']);
 }
 
-// FETCH FOR EDIT
-$edit = null;
-if(isset($_GET['edit'])){
-    $id = $_GET['edit'];
-    $res = mysqli_query($conn, "SELECT * FROM seats WHERE seat_id=$id");
-    $edit = mysqli_fetch_assoc($res);
+mysqli_query($conn,"DELETE FROM seats WHERE seat_id=$id");
+$_SESSION['success']="Seat deleted!";
+header("Location: manage_seats.php");
+exit();
 }
 
-// ADD / UPDATE SEAT
+/* ADD / UPDATE */
 if(isset($_POST['save_seat'])){
 
-    $package_id = $_POST['package_id'];
-    $seat_type  = $_POST['seat_type'];
-    $price      = $_POST['price'];
+$event_id=$_POST['event_id'];
+$package_id=$_POST['package_id'];
+$seat_type=$_POST['seat_type'];
+$price=$_POST['price'];
 
-    /* GET EVENT ID */
-    $pkg = mysqli_fetch_assoc(mysqli_query($conn,"
-        SELECT event_id FROM packages WHERE package_id='$package_id'
-    "));
-    $event_id = $pkg['event_id'];
+$image="";
+if($_FILES['image']['name']!=""){
+$image=time()."_".$_FILES['image']['name'];
+$path="../uploads/images/seats/";
+if(!file_exists($path)){ mkdir($path,0777,true); }
+move_uploaded_file($_FILES['image']['tmp_name'],$path.$image);
+}
 
-    $image_name = "";
+if($_POST['seat_id']!=""){
+$id=$_POST['seat_id'];
 
-    // IMAGE UPLOAD
-    if(isset($_FILES['image']) && $_FILES['image']['name']!=""){
+mysqli_query($conn,"UPDATE seats SET
+event_id='$event_id',
+package_id='$package_id',
+seat_type='$seat_type',
+price='$price'
+".($image!=""?", seat_images='$image'":"")."
+WHERE seat_id=$id");
 
-        $image_name = time()."_".$_FILES['image']['name'];
+$_SESSION['success']="Seat updated!";
+}else{
 
-        $upload_path = "../uploads/images/seats/";
+mysqli_query($conn,"INSERT INTO seats(event_id,package_id,seat_type,price,seat_images)
+VALUES('$event_id','$package_id','$seat_type','$price','$image')");
 
-        if(!file_exists($upload_path)){
-            mkdir($upload_path,0777,true);
-        }
+$_SESSION['success']="Seat added!";
+}
 
-        move_uploaded_file($_FILES['image']['tmp_name'], $upload_path.$image_name);
-    }
-
-    // UPDATE
-    if($_POST['seat_id'] != ""){
-        $sid = $_POST['seat_id'];
-
-        if($image_name!=""){
-            mysqli_query($conn,"UPDATE seats SET 
-                event_id='$event_id',
-                package_id='$package_id',
-                seat_type='$seat_type',
-                price='$price',
-                seat_images='$image_name'
-                WHERE seat_id=$sid");
-        } else {
-            mysqli_query($conn,"UPDATE seats SET 
-                event_id='$event_id',
-                package_id='$package_id',
-                seat_type='$seat_type',
-                price='$price'
-                WHERE seat_id=$sid");
-        }
-    }
-    // INSERT
-    else{
-        mysqli_query($conn,"INSERT INTO seats(event_id,package_id,seat_type,price,seat_images)
-            VALUES('$event_id','$package_id','$seat_type','$price','$image_name')");
-    }
-
-    header("Location: manage_seats.php");
+header("Location: manage_seats.php");
+exit();
 }
 ?>
 
@@ -92,147 +68,29 @@ if(isset($_POST['save_seat'])){
 <title>Manage Seats</title>
 
 <style>
-
-/* YOUR ORIGINAL CSS — UNCHANGED */
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins', sans-serif;
-}
-
-body{
-background:linear-gradient(135deg,#f5f3ff,#ede9fe);
-}
-
-.main-content{
-margin-left:260px;
-padding:30px;
-}
-
-h2{
-text-align:center;
-color:#5b21b6;
-margin-bottom:25px;
-font-weight:600;
-}
-
-h3{
-color:#4c1d95;
-margin-bottom:10px;
-}
-
-form{
-background:white;
-padding:30px;
-border-radius:20px;
-box-shadow:0 15px 40px rgba(91,33,182,0.15);
-border:1px solid #e9d5ff;
-max-width:650px;
-margin:0 auto 40px auto;
-transition:0.3s;
-}
-
-form:hover{
-transform:translateY(-3px);
-}
-
-input,select{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:12px;
-border:1px solid #ddd;
-outline:none;
-transition:0.3s;
-font-size:14px;
-}
-
-input:focus, select:focus{
-border-color:#7c3aed;
-box-shadow:0 0 0 3px rgba(124,58,237,0.2);
-}
-
-button{
-margin-top:20px;
-padding:14px;
-border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
-color:white;
-cursor:pointer;
-font-weight:600;
-transition:0.3s;
-width:100%;
-font-size:15px;
-}
-
-button:hover{
-transform:scale(1.04);
-box-shadow:0 10px 25px rgba(124,58,237,0.4);
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-background:white;
-border-radius:20px;
-overflow:hidden;
-box-shadow:0 15px 40px rgba(91,33,182,0.15);
-margin-top:20px;
-}
-
-th{
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
-color:white;
-padding:16px;
-text-align:left;
-font-weight:600;
-}
-
-td{
-padding:16px;
-border-bottom:1px solid #eee;
-line-height:1.6;
-}
-
-tr:hover{
-background:#f5f3ff;
-}
-
-td:last-child{
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-.btn{
-padding:7px 16px;
-border-radius:25px;
-color:white;
-text-decoration:none;
-font-size:13px;
-font-weight:500;
-transition:0.3s;
-}
-
-.edit{
-background:linear-gradient(135deg,#a78bfa,#7c3aed);
-}
-
-.delete{
-background:linear-gradient(135deg,#f43f5e,#e11d48);
-}
-
-img{
-width:80px;
-height:60px;
-object-fit:cover;
-border-radius:10px;
-}
-
+body{background:linear-gradient(135deg,#f5f3ff,#ede9fe);font-family:'Poppins';}
+.main-content{margin-left:260px;padding:30px;}
+.top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+h2{color:#5b21b6;}
+.add-btn{padding:10px 20px;border:none;border-radius:25px;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:white;cursor:pointer;}
+.filters{display:flex;gap:10px;margin-bottom:20px;}
+select.filter{padding:10px;border-radius:12px;border:1px solid #ddd;}
+button.filter-btn{padding:8px 15px;border:none;border-radius:20px;background:#ddd;cursor:pointer;}
+button.active{background:#7c3aed;color:white;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+.card{background:white;border-radius:18px;padding:20px;box-shadow:0 10px 25px rgba(91,33,182,0.15);}
+.card img{width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;}
+.btn{padding:6px 12px;border-radius:8px;color:white;text-decoration:none;font-size:13px;}
+.edit{background:#7c3aed;}
+.delete{background:#e11d48;}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);}
+.modal-content{background:white;padding:30px;border-radius:20px;width:450px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.modal-content input,.modal-content select{width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px solid #ddd;}
+.modal-content button{margin-top:15px;padding:12px;border:none;border-radius:25px;background:#7c3aed;color:white;}
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 </head>
 <body>
@@ -241,94 +99,189 @@ border-radius:10px;
 
 <div class="main-content">
 
+<div class="top-bar">
 <h2>Manage Seats</h2>
+<button class="add-btn" onclick="openAddModal()">+ Add Seat</button>
+</div>
 
-<form method="post" enctype="multipart/form-data">
-<h3><?php echo isset($edit) && $edit ? "Edit Seating" : "Add Seating"; ?></h3>
-
-<input type="hidden" name="seat_id"
-value="<?php echo isset($edit['seat_id']) ? $edit['seat_id'] : ''; ?>">
-
-<select name="package_id" required>
-<option value="">Select Package</option>
-
+<div class="filters">
+<select class="filter" id="eventFilter" onchange="filterEvent()">
+<option value="all">All Events</option>
 <?php
-$packages = mysqli_query($conn,"
-SELECT packages.*, events.event_name 
-FROM packages 
-JOIN events ON packages.event_id = events.event_id
-");
-
-while($p = mysqli_fetch_assoc($packages)){
-$selected = (isset($edit['package_id']) && $edit['package_id']==$p['package_id']) ? "selected" : "";
-echo "<option value='{$p['package_id']}' $selected>
-{$p['event_name']} - {$p['package_name']}
-</option>";
+$ev=mysqli_query($conn,"SELECT * FROM events");
+while($e=mysqli_fetch_assoc($ev)){
+echo "<option value='{$e['event_name']}'>{$e['event_name']}</option>";
 }
 ?>
 </select>
 
-<input type="text" name="seat_type" placeholder="Seat Type"
-value="<?php echo isset($edit['seat_type']) ? $edit['seat_type'] : ''; ?>" required>
+<button type="button" class="filter-btn active" onclick="filterPackage('all',this)">All</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Basic',this)">Basic</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Standard',this)">Standard</button>
+<button type="button" class="filter-btn" onclick="filterPackage('Premium',this)">Premium</button>
+</div>
 
-<input type="number" name="price" placeholder="Seat Price"
-value="<?php echo isset($edit['price']) ? $edit['price'] : ''; ?>" required>
-
-<input type="file" name="image">
-
-<button type="submit" name="save_seat">
-<?php echo isset($edit) && $edit ? "Update Seating" : "Add Seating"; ?>
-</button>
-
-</form>
-
-<table>
-<tr>
-<th>ID</th>
-<th>Event</th>
-<th>Package</th>
-<th>Seat Type</th>
-<th>Price</th>
-<th>Image</th>
-<th>Action</th>
-</tr>
+<div class="grid">
 
 <?php
-$q = mysqli_query($conn,"
-SELECT seats.*, packages.package_name, events.event_name
+$q=mysqli_query($conn,"
+SELECT seats.*,packages.package_name,events.event_name
 FROM seats
-JOIN packages ON seats.package_id = packages.package_id
-JOIN events ON seats.event_id = events.event_id
+JOIN packages ON seats.package_id=packages.package_id
+JOIN events ON seats.event_id=events.event_id
 ");
 
-while($row = mysqli_fetch_assoc($q)){
+while($row=mysqli_fetch_assoc($q)){
 ?>
-<tr>
-<td><?php echo $row['seat_id']; ?></td>
-<td><?php echo $row['event_name']; ?></td>
-<td><?php echo $row['package_name']; ?></td>
-<td><?php echo $row['seat_type']; ?></td>
-<td>₹ <?php echo $row['price']; ?></td>
 
-<td>
-<?php if(isset($row['seat_images']) && $row['seat_images']!=""){ ?>
+<div class="card" data-event="<?php echo $row['event_name']; ?>" data-package="<?php echo $row['package_name']; ?>">
+
+<?php if($row['seat_images']!=""){ ?>
 <img src="../uploads/images/seats/<?php echo $row['seat_images']; ?>">
-<?php } else { ?>
-<span style="color:#999;">No Image</span>
-<?php } ?>
-</td>
-
-<td>
-<a href="manage_seats.php?edit=<?php echo $row['seat_id']; ?>" class="btn edit">Edit</a>
-<a href="manage_seats.php?delete=<?php echo $row['seat_id']; ?>"
-class="btn delete"
-onclick="return confirm('Delete this seating option?');">Delete</a>
-</td>
-</tr>
 <?php } ?>
 
-</table>
+<h3><?php echo $row['seat_type']; ?></h3>
+<p><b>Event:</b> <?php echo $row['event_name']; ?></p>
+<p><b>Package:</b> <?php echo $row['package_name']; ?></p>
+<p><b>₹ <?php echo $row['price']; ?></b></p>
+
+<a href="#" class="btn edit"
+onclick="openEditModal('<?php echo $row['seat_id']; ?>','<?php echo $row['event_id']; ?>','<?php echo $row['package_id']; ?>','<?php echo $row['seat_type']; ?>','<?php echo $row['price']; ?>')">Edit</a>
+
+<a href="?delete=<?php echo $row['seat_id']; ?>" class="btn delete">Delete</a>
 
 </div>
+
+<?php } ?>
+
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal">
+<div class="modal-content">
+
+<h3 id="modal_title">Add Seat</h3>
+
+<form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+
+<input type="hidden" name="seat_id" id="edit_id">
+<input type="hidden" name="event_id" id="hidden_event">
+<input type="hidden" name="package_id" id="hidden_package">
+
+<select id="event_select" onchange="filterPackages()">
+<option value="">Select Event</option>
+<?php
+$events=mysqli_query($conn,"SELECT * FROM events");
+while($e=mysqli_fetch_assoc($events)){
+echo "<option value='{$e['event_id']}'>{$e['event_name']}</option>";
+}
+?>
+</select>
+
+<select id="package_select">
+<option value="">Select Package</option>
+<?php
+$packages=mysqli_query($conn,"SELECT * FROM packages");
+while($p=mysqli_fetch_assoc($packages)){
+echo "<option value='{$p['package_id']}' data-event='{$p['event_id']}'>{$p['package_name']}</option>";
+}
+?>
+</select>
+
+<input type="text" name="seat_type" id="edit_name" placeholder="Seat Type">
+<input type="number" name="price" id="edit_price" placeholder="Price">
+<input type="file" name="image">
+
+<button name="save_seat">Save</button>
+
+</form>
+</div>
+</div>
+
+<script>
+
+let selectedEvent="all";
+let selectedPackage="all";
+
+function filterEvent(){
+selectedEvent=document.getElementById("eventFilter").value;
+applyFilters();
+}
+
+function filterPackage(type,btn){
+selectedPackage=type;
+document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+applyFilters();
+}
+
+function applyFilters(){
+document.querySelectorAll(".card").forEach(c=>{
+let e=(selectedEvent=="all"||c.dataset.event==selectedEvent);
+let p=(selectedPackage=="all"||c.dataset.package==selectedPackage);
+c.style.display=(e&&p)?"block":"none";
+});
+}
+
+function filterPackages(){
+let e=event_select.value;
+package_select.value="";
+document.querySelectorAll("#package_select option").forEach(o=>{
+o.hidden=!(o.value==""||o.dataset.event==e);
+});
+}
+
+function openAddModal(){
+modal.style.display="block";
+modal_title.innerText="Add Seat";
+edit_id.value="";
+edit_name.value="";
+edit_price.value="";
+event_select.disabled=false;
+package_select.disabled=false;
+}
+
+function openEditModal(id,event,pkg,name,price){
+modal.style.display="block";
+modal_title.innerText="Edit Seat";
+
+edit_id.value=id;
+event_select.value=event;
+filterPackages();
+package_select.value=pkg;
+
+edit_name.value=name;
+edit_price.value=price;
+
+event_select.disabled=true;
+package_select.disabled=true;
+
+hidden_event.value=event;
+hidden_package.value=pkg;
+}
+
+function validateForm(){
+hidden_event.value=event_select.value;
+hidden_package.value=package_select.value;
+
+if(hidden_event.value==""){alert("Select Event");return false;}
+if(hidden_package.value==""){alert("Select Package");return false;}
+return true;
+}
+
+window.onclick=function(e){
+if(e.target==modal) modal.style.display="none";
+}
+</script>
+
+<?php if(isset($_SESSION['success'])){ ?>
+<script>
+Swal.fire({title:'Success 🎉',text:'<?php echo $_SESSION['success']; ?>',icon:'success',timer:2000,showConfirmButton:false});
+confetti({particleCount:120,spread:100});
+</script>
+<?php unset($_SESSION['success']); } ?>
+
 </body>
 </html>

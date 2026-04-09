@@ -20,7 +20,6 @@ $approved = [];
 $rejected = [];
 
 while($row=mysqli_fetch_assoc($q)){
-
 $status = strtolower($row['payment_status']);
 
 if(strpos($status,'pending') !== false){
@@ -32,7 +31,6 @@ elseif(strpos($status,'reject') !== false){
 else{
     $approved[] = $row;
 }
-
 }
 ?>
 
@@ -51,99 +49,123 @@ font-family:'Poppins', sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#f5f3ff,#ede9fe);
+background:#f9f7ff;
 }
 
+/* MAIN */
 .main-content{
 margin-left:260px;
 padding:30px;
 }
 
+/* TITLE */
 h2{
 text-align:center;
-margin-bottom:25px;
-font-size:26px;
+margin-bottom:15px;
+font-size:22px;
 color:#5b21b6;
 font-weight:600;
 }
 
-.board{
+/* FILTER */
+.filter-bar{
 display:flex;
-gap:25px;
 justify-content:center;
+gap:10px;
+margin-bottom:20px;
 flex-wrap:wrap;
 }
 
-.column{
-flex:1;
-min-width:300px;
-background:#ede9fe;
-border-radius:18px;
-padding:18px;
-box-shadow:0 12px 30px rgba(91,33,182,0.15);
-}
-
-.column h3{
-margin-bottom:15px;
-font-size:15px;
-display:flex;
-justify-content:space-between;
-color:#5b21b6;
-font-weight:600;
-}
-
-.count{
-background:#7c3aed;
-padding:5px 12px;
+.filter-btn{
+padding:6px 14px;
+border:none;
 border-radius:20px;
+background:#ede9fe;
+color:#5b21b6;
 font-size:12px;
-color:white;
-font-weight:600;
+cursor:pointer;
 }
 
+.filter-btn.active{
+background:#7c3aed;
+color:white;
+}
+
+/* 🔥 GRID FIX */
+.tab{
+display:none;
+}
+
+.tab.active{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+gap:15px;
+animation:fade 0.3s ease;
+}
+
+@keyframes fade{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+/* CARD */
 .card{
 background:white;
-padding:16px;
-border-radius:14px;
-margin-bottom:14px;
-border-left:6px solid #7c3aed;
-box-shadow:0 10px 25px rgba(0,0,0,0.08);
+padding:12px;
+border-radius:10px;
+border-left:4px solid #7c3aed;
+font-size:13px;
+transition:0.2s;
 }
 
+.card:hover{
+transform:translateY(-2px);
+}
+
+/* STATUS */
 .pending-card{border-color:#facc15;}
 .approved-card{border-color:#22c55e;}
 .rejected-card{border-color:#ef4444;}
 
+/* TEXT */
 .name{
 font-weight:600;
-margin-bottom:6px;
-color:#1f2937;
-font-size:15px;
+font-size:13px;
 }
 
 .amount{
-font-size:17px;
-font-weight:700;
+font-size:14px;
+font-weight:600;
 color:#5b21b6;
-margin-bottom:5px;
 }
 
 .method{
-font-size:12px;
+font-size:11px;
 color:#6b7280;
-margin-bottom:5px;
 }
 
+/* BUTTON */
 .btn{
 display:inline-block;
-margin-top:8px;
-padding:7px 14px;
-font-size:12px;
-border-radius:20px;
-text-decoration:none;
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
+margin-top:6px;
+padding:4px 10px;
+font-size:11px;
+border-radius:15px;
+background:#7c3aed;
 color:white;
-font-weight:500;
+text-decoration:none;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+.main-content{
+margin-left:0;
+padding:15px;
+}
+
+.tab.active{
+grid-template-columns:1fr;
+}
 }
 </style>
 </head>
@@ -156,11 +178,14 @@ font-weight:500;
 
 <h2>💳 Payment Board</h2>
 
-<div class="board">
+<div class="filter-bar">
+<button class="filter-btn active" onclick="showTab('pending',event)">Pending</button>
+<button class="filter-btn" onclick="showTab('approved',event)">Approved</button>
+<button class="filter-btn" onclick="showTab('rejected',event)">Rejected</button>
+</div>
 
-<div class="column">
-<h3>Pending <span class="count"><?php echo count($pending); ?></span></h3>
-
+<!-- PENDING -->
+<div class="tab active" id="pendingTab">
 <?php foreach($pending as $row){ ?>
 <div class="card pending-card">
 <div class="name"><?php echo htmlspecialchars($row['payer_name']); ?></div>
@@ -171,9 +196,8 @@ font-weight:500;
 <?php } ?>
 </div>
 
-<div class="column">
-<h3>Confirmed <span class="count"><?php echo count($approved); ?></span></h3>
-
+<!-- APPROVED -->
+<div class="tab" id="approvedTab">
 <?php foreach($approved as $row){ ?>
 <div class="card approved-card">
 <div class="name"><?php echo htmlspecialchars($row['payer_name']); ?></div>
@@ -184,9 +208,8 @@ font-weight:500;
 <?php } ?>
 </div>
 
-<div class="column">
-<h3>Rejected <span class="count"><?php echo count($rejected); ?></span></h3>
-
+<!-- REJECTED -->
+<div class="tab" id="rejectedTab">
 <?php foreach($rejected as $row){ ?>
 <div class="card rejected-card">
 <div class="name"><?php echo htmlspecialchars($row['payer_name']); ?></div>
@@ -198,6 +221,23 @@ font-weight:500;
 </div>
 
 </div>
-</div>
+
+<script>
+function showTab(type,e){
+
+document.querySelectorAll('.tab').forEach(tab=>{
+tab.classList.remove('active');
+});
+
+document.getElementById(type+'Tab').classList.add('active');
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+btn.classList.remove('active');
+});
+
+e.target.classList.add('active');
+}
+</script>
+
 </body>
 </html>
