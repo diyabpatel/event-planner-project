@@ -105,50 +105,53 @@ if(isset($_POST['pay']))
 <style>
 body{
 margin:0;
-font-family:'Poppins',sans-serif;
-background:linear-gradient(135deg,#0f172a,#020617);
+font-family:'Poppins', sans-serif;
+background:#faf7ff;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
-color:white;
 }
 
 .popup{
-background:#1e293b;
+background:#ffffff;
 padding:30px;
 border-radius:16px;
 text-align:center;
 max-width:400px;
-box-shadow:0 20px 50px rgba(0,0,0,0.5);
+box-shadow:0 10px 30px rgba(124,58,237,0.15);
 animation:fadeIn 0.5s ease;
 }
 
+/* Heading */
 h2{
-color:#22c55e;
+color:#7c3aed;
 margin-bottom:10px;
 }
 
+/* Text */
 p{
-color:#cbd5f5;
+color:#555;
 font-size:14px;
 margin-bottom:20px;
 }
 
+/* Button */
 button{
 padding:12px 20px;
 border:none;
 border-radius:10px;
-background:linear-gradient(135deg,#7c3aed,#5b21b6);
+background:#7c3aed;
 color:white;
 cursor:pointer;
 font-weight:500;
 }
 
 button:hover{
-transform:scale(1.05);
+background:#6d28d9;
 }
 
+/* Animation */
 @keyframes fadeIn{
 from{opacity:0; transform:translateY(20px);}
 to{opacity:1; transform:translateY(0);}
@@ -184,55 +187,100 @@ exit();
 <style>
 body{
 margin:0;
-font-family:Segoe UI;
-background:#0f172a;
+font-family:'Segoe UI', sans-serif;
+background:#faf7ff;
 display:flex;
 justify-content:center;
-padding:30px;
-color:white;
+align-items:flex-start;
+padding:40px;
 }
 
 .card{
 width:100%;
 max-width:500px;
-background:#1e293b;
+background:#ffffff;
 padding:25px;
-border-radius:10px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(124,58,237,0.15);
+}
+
+h2{
+color:#7c3aed;
+margin-bottom:15px;
 }
 
 .section{
-background:#020617;
+background:#f3e8ff;
 padding:15px;
 margin-bottom:15px;
-border-radius:6px;
+border-radius:10px;
 }
 
 .row{
 display:flex;
 justify-content:space-between;
 margin:8px 0;
+color:#555;
+}
+
+.row span:last-child{
+color:#7c3aed;
+font-weight:600;
+}
+
+form{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+label{
+color:#555;
 }
 
 input{
 width:100%;
 padding:10px;
-margin-top:10px;
-border-radius:6px;
-border:none;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+input:focus{
+border-color:#7c3aed;
+box-shadow:0 0 5px rgba(124,58,237,0.3);
+outline:none;
 }
 
 button{
 width:100%;
 padding:12px;
-background:#3b82f6;
+background:#7c3aed;
 border:none;
 color:white;
-margin-top:20px;
+border-radius:8px;
 cursor:pointer;
 }
 
-.qr{text-align:center;}
-.small{font-size:12px;color:#94a3b8;text-align:center;}
+button:hover{
+background:#6d28d9;
+}
+
+.qr{
+text-align:center;
+margin-top:10px;
+}
+
+.qr img{
+border-radius:10px;
+border:2px solid #7c3aed;
+}
+
+.small{
+text-align:center;
+font-size:12px;
+color:#7c3aed;
+margin-top:5px;
+}
 </style>
 
 </head>
