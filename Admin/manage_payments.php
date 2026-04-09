@@ -91,7 +91,7 @@ background:#7c3aed;
 color:white;
 }
 
-/* 🔥 GRID FIX */
+/* GRID */
 .tab{
 display:none;
 }
@@ -119,13 +119,35 @@ transition:0.2s;
 }
 
 .card:hover{
-transform:translateY(-2px);
+transform:translateY(-4px);
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
 }
 
 /* STATUS */
 .pending-card{border-color:#facc15;}
 .approved-card{border-color:#22c55e;}
 .rejected-card{border-color:#ef4444;}
+
+/* IMAGE GRID 🔥 */
+.img-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:5px;
+margin-bottom:8px;
+}
+
+.img-grid img{
+width:100%;
+height:60px;
+object-fit:cover;
+border-radius:6px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.img-grid img:hover{
+transform:scale(1.05);
+}
 
 /* TEXT */
 .name{
@@ -154,6 +176,11 @@ border-radius:15px;
 background:#7c3aed;
 color:white;
 text-decoration:none;
+transition:0.3s;
+}
+
+.btn:hover{
+background:#5b21b6;
 }
 
 /* MOBILE */
@@ -188,10 +215,32 @@ grid-template-columns:1fr;
 <div class="tab active" id="pendingTab">
 <?php foreach($pending as $row){ ?>
 <div class="card pending-card">
+
+<div class="img-grid">
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['proof_image']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['aadhaar']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['pan']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+</div>
+
 <div class="name"><?php echo htmlspecialchars($row['payer_name']); ?></div>
 <div class="amount">₹ <?php echo number_format($row['amount'],2); ?></div>
 <div class="method"><?php echo htmlspecialchars($row['payment_method']); ?></div>
+
 <a href="payment_details.php?id=<?php echo $row['payment_id']; ?>" class="btn">View</a>
+
 </div>
 <?php } ?>
 </div>
@@ -200,10 +249,32 @@ grid-template-columns:1fr;
 <div class="tab" id="approvedTab">
 <?php foreach($approved as $row){ ?>
 <div class="card approved-card">
+
+<div class="img-grid">
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['proof_image']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['aadhaar']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['pan']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+</div>
+
 <div class="name"><?php echo htmlspecialchars($row['payer_name']); ?></div>
 <div class="amount">₹ <?php echo number_format($row['amount'],2); ?></div>
 <div class="method"><?php echo htmlspecialchars($row['payment_method']); ?></div>
+
 <a href="payment_details.php?id=<?php echo $row['payment_id']; ?>" class="btn">View</a>
+
 </div>
 <?php } ?>
 </div>
@@ -212,10 +283,32 @@ grid-template-columns:1fr;
 <div class="tab" id="rejectedTab">
 <?php foreach($rejected as $row){ ?>
 <div class="card rejected-card">
+
+<div class="img-grid">
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['proof_image']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['aadhaar']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+<a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
+<img src="/event-planner-project/<?php echo $row['pan']; ?>" 
+onerror="this.src='https://via.placeholder.com/60'">
+</a>
+
+</div>
+
 <div class="name"><?php echo htmlspecialchars($row['payer_name']); ?></div>
 <div class="amount">₹ <?php echo number_format($row['amount'],2); ?></div>
 <div class="method"><?php echo htmlspecialchars($row['payment_method']); ?></div>
+
 <a href="payment_details.php?id=<?php echo $row['payment_id']; ?>" class="btn">View</a>
+
 </div>
 <?php } ?>
 </div>
