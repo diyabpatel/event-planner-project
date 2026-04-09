@@ -22,7 +22,7 @@ if($filter == 'pending'){
     $status_condition = "AND (b.payment_status = 'Approved' OR b.payment_status = 'Full Payment Done')";
 }
 
-/* ✅ IMPORTANT: ADD is_completed FROM SQL */
+/* QUERY */
 $query = "
 SELECT b.*, e.event_name, e.image, p.package_name,
 CASE 
@@ -94,7 +94,7 @@ if(mysqli_num_rows($result)>0){
 while($row=mysqli_fetch_assoc($result)){
 
 $booking_id = $row['booking_id'];
-$is_completed = $row['is_completed']; // ✅ FROM SQL
+$is_completed = $row['is_completed'];
 
 /* PAYMENT */
 $paidData = mysqli_fetch_assoc(mysqli_query($conn,"
@@ -118,6 +118,12 @@ else if($status == 'Approved'){
 else{
     $payment_status = "<span class='status payment-pending'>Pending</span>";
 }
+
+/* ✅ EDIT WINDOW LOGIC (ADDED BACK) */
+$event_date = $row['event_date'];
+$today = date("Y-m-d");
+$change_last_date = date("Y-m-d", strtotime($event_date . " -2 days"));
+$is_edit_allowed = ($today <= $change_last_date);
 
 $event_name = isset($row['event_name']) ? $row['event_name'] : "Event Deleted";
 $image = isset($row['image']) ? $row['image'] : "default.jpg";
@@ -143,18 +149,29 @@ $package_name = isset($row['package_name']) ? $row['package_name'] : "Package De
 
 <div class="info-grid">
 <div><span>Capacity</span><b><?php echo $row['capacity']; ?></b></div>
-<div><span>Event Date</span><b><?php echo $row['event_date']; ?></b></div>
+<div><span>Event Date</span><b><?php echo $event_date; ?></b></div>
 <div><span>Total Price</span><b>₹ <?php echo number_format($row['total_price'],2); ?></b></div>
 <div><span>Advance Paid</span><b>₹ <?php echo number_format($totalPaid,2); ?></b></div>
 <div><span>Remaining</span><b>₹ <?php echo number_format($remaining,2); ?></b></div>
 </div>
 
+<!-- ✅ EDIT TIMELINE -->
+<div class="edit-window">
+Editable till: <b><?php echo $change_last_date; ?></b>
+</div>
+
 <div class="actions">
+
+<!-- ✅ EDIT BUTTON -->
+<?php if($is_edit_allowed){ ?>
+<a href="edit_booking.php?id=<?php echo $booking_id; ?>" class="btn">Edit</a>
+<?php } else { ?>
+<a class="btn disabled">Edit Closed</a>
+<?php } ?>
 
 <a href="receipt.php?booking_id=<?php echo $booking_id; ?>" class="btn receipt">Receipt</a>
 
 <?php
-/* ✅ FINAL FEEDBACK (NOW 100% WORKS) */
 if($is_completed){
 
 $check=mysqli_query($conn,"
