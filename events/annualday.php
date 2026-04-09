@@ -32,7 +32,6 @@ $feedback_error = mysqli_error($conn);
 
 <style>
 
-
 /* ===== GLOBAL ===== */
 body{
 margin:0;
@@ -53,7 +52,6 @@ align-items:center;
 text-align:center;
 }
 
-/* ✅ CLEAR IMAGE + LIGHT GRADIENT */
 .hero::after{
 content:"";
 position:absolute;
@@ -66,7 +64,6 @@ rgba(0,0,0,0.25)
 );
 }
 
-/* TEXT IMPROVE */
 .hero-content{
 position:relative;
 z-index:2;
@@ -77,8 +74,6 @@ text-shadow:0 6px 25px rgba(0,0,0,0.7);
 animation:fadeUp 1s ease;
 }
 
-/* BUTTON PREMIUM */
-/* BUTTON PREMIUM (UPDATED BLACK) */
 .hero button{
 margin-top:25px;
 padding:15px 35px;
@@ -144,15 +139,15 @@ margin-top:80px;
 .service-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:30px;
+gap:20px; /* reduced gap */
 }
 
 .service-card{
 background:white;
-padding:25px;
+padding:15px; /* reduced padding */
 border-radius:20px;
 text-align:center;
-box-shadow:0 10px 30px rgba(124,58,237,0.15);
+box-shadow:0 10px 25px rgba(124,58,237,0.12);
 transition:0.4s;
 opacity:0;
 transform:translateY(40px);
@@ -164,15 +159,33 @@ transform:translateY(0);
 }
 
 .service-card:hover{
-transform:translateY(-10px);
-box-shadow:0 15px 40px rgba(124,58,237,0.3);
+transform:translateY(-8px);
+box-shadow:0 20px 45px rgba(124,58,237,0.25);
 }
 
-.service-card img{
+/* smaller text */
+.service-card h3{
+font-size:16px;
+margin-top:10px;
+}
+
+/* ===== IMAGE STYLE (SQUARE + PREMIUM) ===== */
+.service-card img,
+.gallery-grid img{
 width:100%;
-height:200px;
+aspect-ratio:1/1;
 object-fit:cover;
-border-radius:15px;
+border-radius:14px;
+transition:0.4s ease;
+cursor:pointer;
+}
+
+/* premium hover */
+.service-card img:hover,
+.gallery-grid img:hover{
+transform:scale(1.06);
+box-shadow:0 15px 35px rgba(124,58,237,0.35);
+filter:brightness(1.08);
 }
 
 /* stagger */
@@ -191,20 +204,7 @@ margin-top:80px;
 .gallery-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:20px;
-}
-
-.gallery-grid img{
-width:100%;
-height:220px;
-object-fit:cover;
-border-radius:15px;
-transition:0.4s;
-}
-
-.gallery-grid img:hover{
-transform:scale(1.08);
-box-shadow:0 10px 30px rgba(124,58,237,0.3);
+gap:100px; /* tighter */
 }
 
 /* ===== FEEDBACK ===== */
@@ -260,7 +260,6 @@ transform:translateY(0);
 
 <?php include("../navbar.php"); ?>
 
-<!-- HERO -->
 <div class="hero">
 <div class="hero-content">
 Annual Day Event
@@ -280,9 +279,8 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="container">
 
-<!-- ABOUT -->
 <div class="about reveal">
-<img src="../uploads/images/annual/annualday_about.jpg">
+<img src="../uploads/images/annual/annualday_about.png">
 <div>
 <h2>About Annual Day</h2>
 <p>Annual Day is the biggest celebration event...</p>
@@ -293,12 +291,12 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 <div class="services reveal">
 <h2>Services Provided</h2>
 <div class="service-grid">
-<div class="service-card"><img src="../uploads/images/annual/venue.png"><h3>Venue Setup</h3></div>
-<div class="service-card"><img src="../uploads/images/annual/decoration.png"><h3>Decoration</h3></div>
-<div class="service-card"><img src="../uploads/images/annual/catering.png"><h3>Catering</h3></div>
-<div class="service-card"><img src="../uploads/images/annual/photography.png"><h3>Photography</h3></div>
-<div class="service-card"><img src="../uploads/images/annual/videography.jpg"><h3>Videography</h3></div>
-<div class="service-card"><img src="../uploads/images/annual/sound.png"><h3>Sound & Lighting</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/venue.PNG" onclick="openImage(this.src)"><h3>Venue Setup</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/decoration.PNG" onclick="openImage(this.src)"><h3>Decoration</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/catering.PNG" onclick="openImage(this.src)"><h3>Catering</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/photography.PNG" onclick="openImage(this.src)"><h3>Photography</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/videography.PNG" onclick="openImage(this.src)"><h3>Videography</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/sound.PNG" onclick="openImage(this.src)"><h3>Sound & Lighting</h3></div>
 </div>
 </div>
 
@@ -306,16 +304,15 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 <div class="gallery reveal">
 <h2>Our Previous Works</h2>
 <div class="gallery-grid">
-<img src="../uploads/images/annual/image1.webp">
-<img src="../uploads/images/annual/image2.jpg">
-<img src="../uploads/images/annual/image3.jpg">
-<img src="../uploads/images/annual/image4.jpg">
-<img src="../uploads/images/annual/image5.jpg">
-<img src="../uploads/images/annual/image6.jpg">
+<img src="../uploads/images/annual/annualday1.png" onclick="openImage(this.src)">
+<img src="../uploads/images/annual/annualday2.png" onclick="openImage(this.src)">
+<img src="../uploads/images/annual/annualday3.png" onclick="openImage(this.src)">
+<img src="../uploads/images/annual/annualday4.png" onclick="openImage(this.src)">
+<img src="../uploads/images/annual/annualday5.png" onclick="openImage(this.src)">
+<img src="../uploads/images/annual/annualday6.png" onclick="openImage(this.src)">
 </div>
 </div>
 
-<!-- FEEDBACK -->
 <div class="feedback-section reveal">
 <h2>What Our Customers Say</h2>
 <div class="feedback-grid">
@@ -347,7 +344,12 @@ echo "<p>No feedback available yet.</p>";
 Event Management System
 </footer>
 
-<!-- SCROLL JS -->
+<!-- IMAGE MODAL -->
+<div id="imgModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;z-index:9999;">
+<span onclick="closeImage()" style="position:absolute;top:30px;right:40px;font-size:40px;color:white;cursor:pointer;">&times;</span>
+<img id="modalImg" style="max-width:90%;max-height:90%;border-radius:15px;">
+</div>
+
 <script>
 window.addEventListener("scroll", function(){
 let reveals = document.querySelectorAll(".reveal");
@@ -359,6 +361,15 @@ reveals[i].classList.add("active");
 }
 }
 });
+
+function openImage(src){
+document.getElementById("imgModal").style.display="flex";
+document.getElementById("modalImg").src = src;
+}
+
+function closeImage(){
+document.getElementById("imgModal").style.display="none";
+}
 </script>
 
 </body>
