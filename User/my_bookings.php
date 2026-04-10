@@ -365,6 +365,11 @@ $is_edit_allowed = ($today <= $change_last_date);
 <div class="info-grid">
 
 <div class="info-box">
+<span>Package</span>
+<b><?php echo $row['package_name']; ?></b>
+</div>
+
+<div class="info-box">
 <span>Capacity</span>
 <b><?php echo $row['capacity']; ?></b>
 </div>
@@ -437,6 +442,12 @@ $is_edit_allowed = ($today <= $change_last_date);
     <?php } ?>
 
     <a href="receipt.php?booking_id=<?php echo $booking_id; ?>" class="btn receipt">Receipt</a>
+
+    <?php 
+    // OPTIONAL: event complete hone ke baad hi feedback
+    if($event_date < date("Y-m-d")){ ?>
+        <a href="feedback.php?booking_id=<?php echo $booking_id; ?>" class="btn feedback">Feedback</a>
+    <?php } ?>
 
 <?php } else { ?>
 

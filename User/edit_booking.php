@@ -23,6 +23,22 @@ $package_id = $booking['package_id'];
 
 $event = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM events WHERE event_id=$event_id"));
 
+// PACKAGE NAME
+$p = mysqli_fetch_assoc(mysqli_query($conn,"SELECT package_name FROM packages WHERE package_id=".$booking['package_id']));
+$package_name = strtolower($p['package_name']);
+
+// MAX CAPACITY
+if($package_name == "basic"){
+    $max_capacity = 200;
+}elseif($package_name == "standard"){
+    $max_capacity = 400;
+}else{
+    $max_capacity = 600;
+}
+
+$min_date = date('Y-m-d', strtotime('+2 days'));
+$max_date = date('Y-m-d', strtotime('+30 days'));
+
 $venues = mysqli_query($conn,"SELECT * FROM venues WHERE event_id=$event_id AND package_id=$package_id");
 $decor  = mysqli_query($conn,"SELECT * FROM decorations WHERE event_id=$event_id AND package_id=$package_id");
 $seats  = mysqli_query($conn,"SELECT * FROM seats WHERE event_id=$event_id AND package_id=$package_id");
@@ -30,6 +46,21 @@ $foods  = mysqli_query($conn,"SELECT * FROM food WHERE event_id=$event_id AND pa
 $coverage = mysqli_query($conn,"SELECT * FROM coverage WHERE event_id=$event_id AND package_id=$package_id");
 
 if(isset($_POST['update'])){
+
+$capacity = $_POST['capacity'];
+$date     = $_POST['event_date'];
+
+// CAPACITY VALIDATION
+if($capacity > $max_capacity){
+    echo "<script>alert('Max capacity for $package_name is $max_capacity');</script>";
+    exit();
+}
+
+// DATE VALIDATION
+if($date < $min_date || $date > $max_date){
+    echo "<script>alert('Date must be between 2 to 30 days from today');</script>";
+    exit();
+}
 
 $venue = $_POST['venue_id'];
 $dec   = $_POST['decoration_id'];
@@ -50,7 +81,147 @@ capacity='$capacity',
 event_date='$date'
 WHERE booking_id=$booking_id");
 
-echo "<script>alert('Updated Successfully');window.location='my_bookings.php';</script>";
+// calculate NEW total same logic
+// 🔥 RE-CALCULATE AFTER UPDATE
+
+// venue
+$v = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM venues WHERE venue_id=$venue"));
+$venue_price = isset($v['price']) ? $v['price'] : 0;
+
+$d = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM decorations WHERE decoration_id=$dec"));
+$dec_price = isset($d['price']) ? $d['price'] : 0;
+
+$s = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM seats WHERE seat_id=$seat"));
+$seat_price = isset($s['price']) ? $s['price'] : 0;
+$seat_price = $seat_price * $capacity;
+
+// food
+$food_total = 0;
+if(!empty($food)){
+    $ids = implode(",", $food);
+    $res = mysqli_query($conn,"SELECT price FROM food WHERE food_id IN($ids)");
+    while($f=mysqli_fetch_assoc($res)){
+        $food_total += $f['price'] * $capacity;
+    }
+}
+
+// coverage
+$cov_total = 0;
+if(!empty($cover)){
+    $ids = implode(",", $cover);
+    $res = mysqli_query($conn,"SELECT price FROM coverage WHERE coverage_id IN($ids)");
+    while($c=mysqli_fetch_assoc($res)){
+        $cov_total += $c['price'];
+    }
+}
+
+// total
+$new_total = $venue_price + $dec_price + $seat_price + $food_total + $cov_total;
+
+// advance SAME rahega
+$advance = isset($booking['advance_paid']) ? $booking['advance_paid'] : 0;
+
+// remaining
+$new_remaining = $new_total - $advance;
+echo "
+<style>
+.popup-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(6px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    animation:fadeIn 0.3s ease;
+}
+
+.popup-box{
+    background:linear-gradient(135deg,#ffffff,#f3f0ff);
+    padding:30px;
+    border-radius:20px;
+    width:350px;
+    text-align:center;
+    box-shadow:0 25px 60px rgba(124,58,237,0.3);
+    animation:scaleIn 0.3s ease;
+}
+
+.popup-title{
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:15px;
+    color:#4c1d95;
+}
+
+.popup-info{
+    margin:8px 0;
+    font-size:15px;
+    color:#374151;
+}
+
+.popup-info b{
+    color:#111827;
+}
+
+.popup-btn{
+    margin-top:20px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,#7c3aed,#a78bfa);
+    color:white;
+    font-size:14px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.popup-btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 10px 25px rgba(124,58,237,0.4);
+}
+
+/* animations */
+@keyframes fadeIn{
+    from{opacity:0;}
+    to{opacity:1;}
+}
+
+@keyframes scaleIn{
+    from{transform:scale(0.8);opacity:0;}
+    to{transform:scale(1);opacity:1;}
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+
+let popup = document.createElement('div');
+popup.classList.add('popup-overlay');
+
+popup.innerHTML = `
+<div class='popup-box'>
+
+<div class='popup-title'>Booking Updated</div>
+
+<div class='popup-info'><b>Updated Total Price:</b> &#8377; ".number_format($new_total,2)."</div>
+<div class='popup-info'><b>Earlier Paid:</b> &#8377; ".number_format($advance,2)."</div>
+<div class='popup-info'><b>Remaining Amount:</b> &#8377; ".number_format($new_remaining,2)."</div>
+
+<button class='popup-btn' onclick='window.location=\"my_bookings.php\"'>OK</button>
+
+</div>
+`;
+
+document.body.appendChild(popup);
+
+});
+</script>
+";
 }
 ?>
 <!DOCTYPE html>
@@ -288,13 +459,99 @@ button:hover{
         padding:30px 15px;
     }
 }
+.price-summary{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.price-summary div{
+    flex:1;
+    background:#f3f0ff;
+    padding:15px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.price-summary span{
+    font-size:12px;
+    color:#6b6b8a;
+}
+
+.price-summary b{
+    display:block;
+    margin-top:5px;
+    font-size:18px;
+}
+#updateBtn:disabled{
+    background:#9ca3af;
+    cursor:not-allowed;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container">
+<?php
+/* CURRENT PRICE CALCULATION */
+
+// venue price
+$venue_price = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM venues WHERE venue_id=".$booking['venue_id']))['price'];
+
+// decoration price
+$dec_price = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM decorations WHERE decoration_id=".$booking['decoration_id']))['price'];
+
+// seat price
+$seat_data = mysqli_fetch_assoc(mysqli_query($conn,"SELECT price FROM seats WHERE seat_id=".$booking['seat_id']));
+$seat_price = $seat_data['price'] * $booking['capacity'];
+
+// food price
+$food_total = 0;
+if(!empty($booking['food_ids'])){
+    $food_res = mysqli_query($conn,"SELECT price FROM food WHERE food_id IN(".$booking['food_ids'].")");
+    while($f=mysqli_fetch_assoc($food_res)){
+        $food_total += $f['price'] * $booking['capacity'];
+    }
+}
+
+// coverage price
+$cov_total = 0;
+if(!empty($booking['coverage_ids'])){
+    $cov_res = mysqli_query($conn,"SELECT price FROM coverage WHERE coverage_id IN(".$booking['coverage_ids'].")");
+    while($c=mysqli_fetch_assoc($cov_res)){
+        $cov_total += $c['price'];
+    }
+}
+
+// TOTAL
+$current_total = $venue_price + $dec_price + $seat_price + $food_total + $cov_total;
+
+// advance
+$advance = $booking['advance_paid'];
+$remaining = $current_total - $advance;
+?>
 <h2>Edit <?= $event['event_name'] ?> Booking</h2>
+<div class="price-summary">
+
+<div>
+<span>Total Price</span>
+<b>₹ <?= number_format($current_total,2) ?></b>
+</div>
+
+<div>
+<span>Advance Paid</span>
+<b>₹ <?= number_format($advance,2) ?></b>
+</div>
+
+<div>
+<span>Remaining</span>
+<b>₹ <?= number_format($remaining,2) ?></b>
+</div>
+
+</div>
+
 
 <form method="POST">
 
@@ -305,13 +562,26 @@ button:hover{
 <!-- ✅ RESTORED -->
 <div class="input">
 <label>Capacity</label>
-<input type="number" name="capacity" value="<?= $booking['capacity'] ?>" required>
+<input type="number"
+       name="capacity"
+       value="<?= $booking['capacity'] ?>"
+       min="1"
+       max="<?= $max_capacity ?>"
+       required>
+       <div id="capacityError" style="color:red;font-size:12px;margin-top:5px;"></div>
 </div>
 
 <div class="input">
 <label>Date</label>
-<input type="date" name="event_date" value="<?= $booking['event_date'] ?>" required>
+<input type="date"
+       name="event_date"
+       value="<?= $booking['event_date'] ?>"
+       min="<?= $min_date ?>"
+       max="<?= $max_date ?>"
+       required>
+    <div id="dateError" style="color:red;font-size:12px;margin-top:5px;"></div>
 </div>
+
 <!-- ================= VENUE ================= -->
 <div class="input">
 <label>Select Venue</label>
@@ -459,7 +729,7 @@ echo "
 </div>
 
 
-<button name="update">Update Booking</button>
+<button name="update" id="updateBtn">Update Booking</button>
 
 </form>
 </div>
@@ -568,5 +838,43 @@ html += `<input type="hidden" name="coverage_id[]" value="${c}">`;
 });
 document.getElementById("coverageInputs").innerHTML = html;
 }
+/* ================= LIVE VALIDATION ================= */
 
+const capacityInput = document.querySelector('input[name="capacity"]');
+const dateInput = document.querySelector('input[name="event_date"]');
+
+const capacityError = document.getElementById("capacityError");
+const dateError = document.getElementById("dateError");
+const updateBtn = document.getElementById("updateBtn");
+
+// PHP values pass to JS
+const maxCapacity = <?= $max_capacity ?>;
+const minDate = "<?= $min_date ?>";
+const maxDate = "<?= $max_date ?>";
+
+/* CAPACITY VALIDATION */
+capacityInput.addEventListener("input", function(){
+
+    if(this.value > maxCapacity){
+        capacityError.innerText = "Max allowed capacity is " + maxCapacity;
+        updateBtn.disabled = true;
+    }else{
+        capacityError.innerText = "";
+        updateBtn.disabled = false;
+    }
+
+});
+
+/* DATE VALIDATION */
+dateInput.addEventListener("input", function(){
+
+    if(this.value < minDate || this.value > maxDate){
+        dateError.innerText = "Select date between allowed range";
+        updateBtn.disabled = true;
+    }else{
+        dateError.innerText = "";
+        updateBtn.disabled = false;
+    }
+
+});
 </script>

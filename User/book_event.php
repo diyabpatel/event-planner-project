@@ -602,28 +602,7 @@ selectedCoverage.forEach(cid=>{
 });
 }
 </script>
-<script>
-const packageLimits = {
-    1: 200, // Basic
-    2: 400, // Standard
-    3: 600  // Premium
-};
 
-const currentPackage = <?= $package_id ?>;
-const capacityInput = document.getElementById("capacityInput");
-const capacityMsg = document.getElementById("capacityMsg");
-
-capacityInput.addEventListener("input", function(){
-    let max = packageLimits[currentPackage] || 200;
-
-    if(this.value > max){
-        capacityMsg.innerText = "Max capacity allowed: " + max;
-        this.value = max;
-    }else{
-        capacityMsg.innerText = "";
-    }
-});
-</script>
 <?php
 $pkg = mysqli_fetch_assoc(mysqli_query($conn,"SELECT package_name FROM packages WHERE package_id=$package_id"));
 ?>

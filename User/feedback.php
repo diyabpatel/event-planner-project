@@ -39,83 +39,140 @@ window.location='my_bookings.php';
 
 <style>
 
+:root{
+    --purple-main:#7c3aed;
+    --purple-light:#a78bfa;
+    --purple-soft:#ede9fe;
+    --purple-bg:#f8f7ff;
+    --purple-glow:rgba(124,58,237,0.25);
+
+    --text-dark:#1e1b4b;
+    --text-muted:#6d6aa3;
+}
+
+/* BODY */
 body{
-font-family:Segoe UI,Arial;
-background:#f4f6f8;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-margin:0;
+    font-family:'Poppins',sans-serif;
+    background:
+        radial-gradient(circle at 10% 20%, #f3f0ff 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, #ede9fe 0%, transparent 40%),
+        #ffffff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    margin:0;
 }
 
 /* CARD */
-
 .card{
-background:white;
-padding:35px;
-width:420px;
-border-radius:12px;
-box-shadow:0 12px 30px rgba(0,0,0,0.2);
-text-align:center;
+    width:420px;
+    padding:35px;
+    border-radius:24px;
+    background:linear-gradient(135deg,#ffffff,#faf9ff);
+    border:1px solid rgba(124,58,237,0.1);
+    box-shadow:0 25px 60px rgba(124,58,237,0.15);
+    text-align:center;
+    position:relative;
 }
 
+/* GLOW BORDER */
+.card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:24px;
+    padding:1px;
+    background:linear-gradient(135deg,transparent,var(--purple-light),transparent);
+    -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;
+            mask-composite:exclude;
+    
+    pointer-events:none;   /* 🔥 THIS FIX */
+}
+
+/* HEADING */
 h2{
-margin-bottom:20px;
+    margin-bottom:20px;
+    font-size:24px;
+    font-weight:700;
+    background:linear-gradient(135deg,var(--purple-main),var(--purple-light));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
 }
 
-/* STAR RATING */
+/* LABEL */
+label{
+    display:block;
+    margin-top:10px;
+    font-size:13px;
+    color:var(--text-muted);
+}
 
+/* STARS */
 .stars{
-display:flex;
-justify-content:center;
-gap:10px;
-font-size:36px;
-cursor:pointer;
-margin:15px 0;
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    font-size:34px;
+    cursor:pointer;
+    margin:18px 0;
 }
 
 .star{
-color:#d1d5db;
-transition:0.2s;
+    color:#d1d5db;
+    transition:0.2s;
 }
 
 .star:hover,
 .star.hover{
-color:#facc15;
+    color:var(--purple-light);
+    transform:scale(1.2);
 }
 
 .star.active{
-color:#facc15;
+    color:var(--purple-main);
+    transform:scale(1.2);
 }
 
 /* TEXTAREA */
-
 textarea{
-width:100%;
-padding:12px;
-margin-top:10px;
-border-radius:6px;
-border:1px solid #ccc;
-resize:none;
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:12px;
+    border:1px solid #e5e7eb;
+    font-size:14px;
+    resize:none;
+    background:#fff;
+}
+
+textarea:focus{
+    outline:none;
+    border-color:var(--purple-main);
+    box-shadow:0 0 0 4px var(--purple-glow);
 }
 
 /* BUTTON */
-
 button{
-width:100%;
-padding:12px;
-margin-top:18px;
-background:#007bff;
-border:none;
-color:white;
-border-radius:6px;
-cursor:pointer;
-font-size:15px;
+    width:100%;
+    padding:14px;
+    margin-top:20px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--purple-main),var(--purple-light));
+    color:white;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 10px 25px rgba(124,58,237,0.25);
 }
 
 button:hover{
-background:#0056b3;
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 18px 40px rgba(124,58,237,0.35);
 }
 
 </style>
@@ -130,8 +187,8 @@ background:#0056b3;
 
 <form method="POST">
 
-<label>Rating</label>
 
+<div style="font-size:12px;color:#6d6aa3;">Tap to rate your experience</div>
 <div class="stars">
 
 <span class="star" data-value="1">&#9733;</span>
