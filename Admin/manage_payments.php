@@ -41,6 +41,10 @@ else{
 <title>Manage Payments</title>
 
 <style>
+
+/* IMPORT FONT */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 *{
 margin:0;
 padding:0;
@@ -48,47 +52,65 @@ box-sizing:border-box;
 font-family:'Poppins', sans-serif;
 }
 
+/* BODY */
 body{
-background:#f9f7ff;
+background:linear-gradient(135deg,#fdfbff,#f3f0ff);
 }
 
 /* MAIN */
 .main-content{
 margin-left:260px;
 padding:30px;
+animation:fadePage 0.6s ease;
+}
+
+@keyframes fadePage{
+from{opacity:0; transform:translateY(20px);}
+to{opacity:1; transform:translateY(0);}
 }
 
 /* TITLE */
 h2{
 text-align:center;
-margin-bottom:15px;
-font-size:22px;
-color:#5b21b6;
-font-weight:600;
+margin-bottom:20px;
+font-size:26px;
+font-weight:700;
+color:#4c1d95;
+letter-spacing:0.5px;
 }
 
-/* FILTER */
+/* FILTER BAR */
 .filter-bar{
 display:flex;
 justify-content:center;
-gap:10px;
-margin-bottom:20px;
+gap:12px;
+margin-bottom:25px;
 flex-wrap:wrap;
 }
 
 .filter-btn{
-padding:6px 14px;
+padding:8px 18px;
 border:none;
-border-radius:20px;
-background:#ede9fe;
-color:#5b21b6;
-font-size:12px;
+border-radius:30px;
+background:rgba(124,58,237,0.08);
+color:#6d28d9;
+font-size:13px;
 cursor:pointer;
+transition:all 0.3s ease;
+backdrop-filter:blur(10px);
+}
+
+.filter-btn:hover{
+background:#7c3aed;
+color:#fff;
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(124,58,237,0.3);
 }
 
 .filter-btn.active{
-background:#7c3aed;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
+box-shadow:0 10px 25px rgba(124,58,237,0.4);
 }
 
 /* GRID */
@@ -98,9 +120,9 @@ display:none;
 
 .tab.active{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:15px;
-animation:fade 0.3s ease;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+animation:fade 0.4s ease;
 }
 
 @keyframes fade{
@@ -108,79 +130,99 @@ from{opacity:0; transform:translateY(10px);}
 to{opacity:1; transform:translateY(0);}
 }
 
-/* CARD */
+/* CARD (GLASS STYLE) */
 .card{
-background:white;
-padding:12px;
-border-radius:10px;
-border-left:4px solid #7c3aed;
-font-size:13px;
-transition:0.2s;
+background:rgba(255,255,255,0.8);
+padding:14px;
+border-radius:16px;
+border:1px solid rgba(255,255,255,0.3);
+backdrop-filter:blur(12px);
+box-shadow:0 8px 30px rgba(0,0,0,0.06);
+transition:all 0.3s ease;
+position:relative;
+overflow:hidden;
+}
+
+/* GLOW EFFECT */
+.card::before{
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:4px;
+background:linear-gradient(90deg,#7c3aed,#c4b5fd);
 }
 
 .card:hover{
-transform:translateY(-4px);
-box-shadow:0 10px 20px rgba(0,0,0,0.1);
+transform:translateY(-6px) scale(1.02);
+box-shadow:0 15px 40px rgba(124,58,237,0.2);
 }
 
-/* STATUS */
-.pending-card{border-color:#facc15;}
-.approved-card{border-color:#22c55e;}
-.rejected-card{border-color:#ef4444;}
+/* STATUS COLORS */
+.pending-card::before{background:linear-gradient(90deg,#facc15,#fde68a);}
+.approved-card::before{background:linear-gradient(90deg,#22c55e,#86efac);}
+.rejected-card::before{background:linear-gradient(90deg,#ef4444,#fca5a5);}
 
-/* IMAGE GRID 🔥 */
+/* IMAGE GRID */
 .img-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:5px;
-margin-bottom:8px;
+gap:6px;
+margin-bottom:10px;
 }
 
 .img-grid img{
 width:100%;
-height:60px;
+height:65px;
 object-fit:cover;
-border-radius:6px;
+border-radius:10px;
 cursor:pointer;
-transition:0.3s;
+transition:all 0.3s ease;
 }
 
 .img-grid img:hover{
-transform:scale(1.05);
+transform:scale(1.08);
+box-shadow:0 6px 15px rgba(0,0,0,0.15);
 }
 
 /* TEXT */
 .name{
 font-weight:600;
-font-size:13px;
+font-size:14px;
+color:#2e1065;
+margin-bottom:3px;
 }
 
 .amount{
-font-size:14px;
-font-weight:600;
-color:#5b21b6;
+font-size:16px;
+font-weight:700;
+color:#6d28d9;
+margin-bottom:2px;
 }
 
 .method{
-font-size:11px;
+font-size:12px;
 color:#6b7280;
+margin-bottom:6px;
 }
 
 /* BUTTON */
 .btn{
 display:inline-block;
 margin-top:6px;
-padding:4px 10px;
-font-size:11px;
-border-radius:15px;
-background:#7c3aed;
+padding:6px 14px;
+font-size:12px;
+border-radius:20px;
+background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
 text-decoration:none;
-transition:0.3s;
+transition:all 0.3s ease;
 }
 
 .btn:hover{
-background:#5b21b6;
+transform:scale(1.08);
+box-shadow:0 8px 20px rgba(124,58,237,0.4);
 }
 
 /* MOBILE */
@@ -194,6 +236,7 @@ padding:15px;
 grid-template-columns:1fr;
 }
 }
+
 </style>
 </head>
 

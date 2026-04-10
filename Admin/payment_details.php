@@ -4,6 +4,8 @@ include("../db.php");
 
 $id = intval($_GET['id']);
 $row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM payments WHERE payment_id=$id"));
+
+$status = strtolower($row['payment_status']); // 🔥 status check
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +20,7 @@ $row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM payments WHERE payme
 
 body{
 margin:0;
-background:rgba(0,0,0,0.95);
+background:linear-gradient(135deg,#0f0c29,#1e1b4b,#312e81);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -38,24 +40,29 @@ align-items:center;
 max-width:80vw;
 max-height:70vh;
 border-radius:18px;
-box-shadow:0 0 50px rgba(255,255,255,0.15);
+box-shadow:0 0 60px rgba(124,58,237,0.4);
+transition:0.3s;
 }
 
-/* 🔥 CROSS → SCREEN EDGE */
+.viewer img:hover{
+transform:scale(1.02);
+}
+
+/* CLOSE */
 .close{
 position:fixed;
 top:20px;
 right:30px;
-font-size:32px;
+font-size:30px;
 color:white;
 cursor:pointer;
 z-index:9999;
-background:rgba(0,0,0,0.4);
+background:rgba(124,58,237,0.3);
 border-radius:50%;
 padding:6px 12px;
 }
 
-/* 🔥 ARROWS → SCREEN EDGE */
+/* NAV */
 .nav{
 position:fixed;
 top:50%;
@@ -63,7 +70,7 @@ transform:translateY(-50%);
 font-size:35px;
 color:white;
 cursor:pointer;
-background:rgba(0,0,0,0.4);
+background:rgba(124,58,237,0.25);
 padding:12px;
 border-radius:50%;
 z-index:9999;
@@ -71,35 +78,69 @@ transition:0.3s;
 }
 
 .nav:hover{
-background:rgba(0,0,0,0.7);
+background:#7c3aed;
 }
 
-.prev{ left:20px; }   /* LEFT EDGE */
-.next{ right:20px; }  /* RIGHT EDGE */
+.prev{ left:20px; }
+.next{ right:20px; }
 
 /* TITLE */
 .title{
-color:white;
-margin-top:12px;
-font-size:18px;
+color:#e0d4ff;
+margin-top:14px;
+font-size:20px;
+font-weight:500;
 }
 
-/* BUTTONS */
+/* ACTIONS */
 .actions{
-margin-top:12px;
+margin-top:14px;
 }
 
+/* BUTTON */
 .btn{
-padding:10px 18px;
+padding:10px 20px;
 border:none;
 border-radius:25px;
-margin:5px;
+margin:6px;
 font-size:14px;
 cursor:pointer;
+transition:0.3s;
 }
 
-.approve{ background:#22c55e; color:white; }
-.reject{ background:#ef4444; color:white; }
+.approve{
+background:linear-gradient(135deg,#22c55e,#16a34a);
+color:white;
+}
+
+.reject{
+background:linear-gradient(135deg,#ef4444,#dc2626);
+color:white;
+}
+
+.btn:hover{
+transform:scale(1.08);
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* STATUS BADGE */
+.status-badge{
+margin-top:12px;
+padding:6px 14px;
+border-radius:20px;
+font-size:13px;
+font-weight:500;
+}
+
+.approved-badge{
+background:#22c55e;
+color:white;
+}
+
+.rejected-badge{
+background:#ef4444;
+color:white;
+}
 
 </style>
 </head>
@@ -108,7 +149,6 @@ cursor:pointer;
 
 <div class="viewer">
 
-<!-- 🔥 EDGE CONTROLS -->
 <div class="close" onclick="goBack()">✕</div>
 <div class="nav prev" onclick="prevImg()">❮</div>
 <div class="nav next" onclick="nextImg()">❯</div>
@@ -117,10 +157,18 @@ cursor:pointer;
 
 <div class="title" id="title"></div>
 
+<?php if(strpos($status,'pending') !== false){ ?>
+<!-- ✅ ONLY FOR PENDING -->
 <div class="actions">
 <button class="btn approve" onclick="approveDoc()">Approve</button>
 <button class="btn reject" onclick="rejectDoc()">Reject</button>
 </div>
+<?php } else { ?>
+<!-- ❌ FOR APPROVED / REJECTED -->
+<div class="status-badge <?php echo strpos($status,'reject')!==false ? 'rejected-badge':'approved-badge'; ?>">
+<?php echo ucfirst($row['payment_status']); ?>
+</div>
+<?php } ?>
 
 </div>
 
@@ -139,17 +187,17 @@ document.getElementById("img").src = docs[current].img;
 document.getElementById("title").innerText = docs[current].title;
 }
 
-/* NEXT */
 function nextImg(){
 if(current < docs.length-1){
 current++;
 show();
 }else{
-finalConfirm();
+<?php if(strpos($status,'pending') !== false){ ?>
+finalConfirm(); // 🔥 only pending ma final confirm
+<?php } ?>
 }
 }
 
-/* PREV */
 function prevImg(){
 if(current > 0){
 current--;
@@ -157,7 +205,6 @@ show();
 }
 }
 
-/* AJAX */
 function updateStatus(action){
 fetch(`payment_action.php?id=<?php echo $id ?>&action=${action}`)
 .then(res => res.text())
@@ -166,7 +213,6 @@ nextImg();
 });
 }
 
-/* APPROVE */
 function approveDoc(){
 let type = docs[current].type;
 
@@ -182,7 +228,6 @@ updateStatus(type+"A");
 });
 }
 
-/* REJECT */
 function rejectDoc(){
 let type = docs[current].type;
 
@@ -199,7 +244,6 @@ updateStatus(type+"R");
 });
 }
 
-/* FINAL */
 function finalConfirm(){
 Swal.fire({
 title:"Confirm Payment?",
@@ -214,12 +258,10 @@ window.location.href="?id=<?php echo $id ?>&final=confirm";
 });
 }
 
-/* CLOSE */
 function goBack(){
 window.location.href="manage_payments.php";
 }
 
-/* ESC CLOSE */
 document.addEventListener("keydown",(e)=>{
 if(e.key==="Escape"){
 goBack();
