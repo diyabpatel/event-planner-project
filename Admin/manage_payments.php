@@ -113,15 +113,20 @@ color:white;
 box-shadow:0 10px 25px rgba(124,58,237,0.4);
 }
 
-/* GRID */
+/* GRID FIXED ✅ */
 .tab{
 display:none;
 }
 
 .tab.active{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+
+/* 🔥 MAIN FIX HERE */
+grid-template-columns:repeat(auto-fill,260px);
+
 gap:20px;
+justify-content:center; /* center alignment */
+
 animation:fade 0.4s ease;
 }
 
@@ -130,8 +135,10 @@ from{opacity:0; transform:translateY(10px);}
 to{opacity:1; transform:translateY(0);}
 }
 
-/* CARD (GLASS STYLE) */
+/* CARD (SQUARE FIX) */
 .card{
+width:260px;
+height:260px; /* 🔥 square */
 background:rgba(255,255,255,0.8);
 padding:14px;
 border-radius:16px;
@@ -141,6 +148,9 @@ box-shadow:0 8px 30px rgba(0,0,0,0.06);
 transition:all 0.3s ease;
 position:relative;
 overflow:hidden;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
 }
 
 /* GLOW EFFECT */
@@ -232,8 +242,15 @@ margin-left:0;
 padding:15px;
 }
 
+/* mobile ma 1 column */
 .tab.active{
-grid-template-columns:1fr;
+grid-template-columns:repeat(auto-fill,200px);
+justify-content:center;
+}
+
+.card{
+width:200px;
+height:200px;
 }
 }
 

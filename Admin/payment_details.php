@@ -3,9 +3,58 @@ session_start();
 include("../db.php");
 
 $id = intval($_GET['id']);
-$row = mysqli_fetch_assoc(mysqli_query($conn,"SELECT * FROM payments WHERE payment_id=$id"));
 
-$status = strtolower($row['payment_status']); // 🔥 status check
+/* 🔥 SIMPLE + SAFE FETCH */
+$row = mysqli_fetch_assoc(mysqli_query($conn,"
+SELECT * FROM payments WHERE payment_id=$id
+"));
+
+$booking_id = $row['booking_id'];
+
+/* 🔥 FINAL ACTION */
+if(isset($_GET['final'])){
+
+if($_GET['final']=="confirm"){
+
+mysqli_query($conn,"UPDATE payments SET payment_status='Approved' WHERE payment_id=$id");
+
+$msg = "Your payment has been successfully approved.";
+
+/* 🔥 FIXED UPDATE */
+mysqli_query($conn,"
+UPDATE bookings 
+SET notification='$msg', payment_status='Approved'
+WHERE booking_id IN (
+SELECT booking_id FROM payments WHERE payment_id=$id
+)
+");
+
+header("Location: manage_payments.php");
+exit();
+}
+
+if($_GET['final']=="reject"){
+
+mysqli_query($conn,"UPDATE payments SET payment_status='Rejected' WHERE payment_id=$id");
+
+$msg = "Your payment was rejected. Please re-upload documents.";
+
+/* 🔥 FIXED UPDATE */
+mysqli_query($conn,"
+UPDATE bookings 
+SET notification='$msg', payment_status='Rejected'
+WHERE booking_id IN (
+SELECT booking_id FROM payments WHERE payment_id=$id
+)
+");
+
+header("Location: manage_payments.php");
+exit();
+}
+
+}
+
+$status = strtolower($row['payment_status']);
 ?>
 
 <!DOCTYPE html>
@@ -13,11 +62,9 @@ $status = strtolower($row['payment_status']); // 🔥 status check
 <head>
 <meta charset="UTF-8">
 <title>Payment Details</title>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-
 body{
 margin:0;
 background:linear-gradient(135deg,#0f0c29,#1e1b4b,#312e81);
@@ -28,7 +75,6 @@ height:100vh;
 font-family:'Poppins',sans-serif;
 }
 
-/* VIEWER */
 .viewer{
 display:flex;
 flex-direction:column;
@@ -41,14 +87,9 @@ max-width:80vw;
 max-height:70vh;
 border-radius:18px;
 box-shadow:0 0 60px rgba(124,58,237,0.4);
-transition:0.3s;
 }
 
-.viewer img:hover{
-transform:scale(1.02);
-}
-
-/* CLOSE */
+/* NAV + CLOSE */
 .close{
 position:fixed;
 top:20px;
@@ -56,13 +97,11 @@ right:30px;
 font-size:30px;
 color:white;
 cursor:pointer;
-z-index:9999;
 background:rgba(124,58,237,0.3);
 border-radius:50%;
 padding:6px 12px;
 }
 
-/* NAV */
 .nav{
 position:fixed;
 top:50%;
@@ -73,27 +112,13 @@ cursor:pointer;
 background:rgba(124,58,237,0.25);
 padding:12px;
 border-radius:50%;
-z-index:9999;
-transition:0.3s;
-}
-
-.nav:hover{
-background:#7c3aed;
 }
 
 .prev{ left:20px; }
 .next{ right:20px; }
 
-/* TITLE */
 .title{
 color:#e0d4ff;
-margin-top:14px;
-font-size:20px;
-font-weight:500;
-}
-
-/* ACTIONS */
-.actions{
 margin-top:14px;
 }
 
@@ -103,45 +128,22 @@ padding:10px 20px;
 border:none;
 border-radius:25px;
 margin:6px;
-font-size:14px;
 cursor:pointer;
-transition:0.3s;
 }
 
-.approve{
-background:linear-gradient(135deg,#22c55e,#16a34a);
-color:white;
+.approve{background:#22c55e;color:white;}
+.reject{background:#ef4444;color:white;}
+
+/* STATUS */
+.status-text{
+margin-top:10px;
+font-weight:600;
+font-size:15px;
 }
 
-.reject{
-background:linear-gradient(135deg,#ef4444,#dc2626);
-color:white;
-}
-
-.btn:hover{
-transform:scale(1.08);
-box-shadow:0 8px 20px rgba(0,0,0,0.3);
-}
-
-/* STATUS BADGE */
-.status-badge{
-margin-top:12px;
-padding:6px 14px;
-border-radius:20px;
-font-size:13px;
-font-weight:500;
-}
-
-.approved-badge{
-background:#22c55e;
-color:white;
-}
-
-.rejected-badge{
-background:#ef4444;
-color:white;
-}
-
+.approved-text{color:#22c55e;}
+.rejected-text{color:#ef4444;}
+.pending-text{color:#c4b5fd;}
 </style>
 </head>
 
@@ -149,24 +151,20 @@ color:white;
 
 <div class="viewer">
 
+<!-- 🔥 NAV BACK -->
 <div class="close" onclick="goBack()">✕</div>
 <div class="nav prev" onclick="prevImg()">❮</div>
 <div class="nav next" onclick="nextImg()">❯</div>
 
 <img id="img">
-
 <div class="title" id="title"></div>
 
+<div id="docStatus" class="status-text pending-text">Pending</div>
+
 <?php if(strpos($status,'pending') !== false){ ?>
-<!-- ✅ ONLY FOR PENDING -->
-<div class="actions">
+<div id="actions">
 <button class="btn approve" onclick="approveDoc()">Approve</button>
 <button class="btn reject" onclick="rejectDoc()">Reject</button>
-</div>
-<?php } else { ?>
-<!-- ❌ FOR APPROVED / REJECTED -->
-<div class="status-badge <?php echo strpos($status,'reject')!==false ? 'rejected-badge':'approved-badge'; ?>">
-<?php echo ucfirst($row['payment_status']); ?>
 </div>
 <?php } ?>
 
@@ -175,6 +173,17 @@ color:white;
 <script>
 
 let current = 0;
+let finalStatus = "<?php echo $row['payment_status']; ?>";
+
+/* 🔥 SET BASED ON DB */
+let docStatus = ["Pending","Pending","Pending"];
+
+if(finalStatus.toLowerCase() === "approved"){
+docStatus = ["Approved","Approved","Approved"];
+}
+else if(finalStatus.toLowerCase() === "rejected"){
+docStatus = ["Rejected","Rejected","Rejected"];
+}
 
 const docs = [
 { img: "/event-planner-project/<?php echo $row['proof_image']; ?>", title:"Payment Screenshot", type:"proof"},
@@ -185,6 +194,20 @@ const docs = [
 function show(){
 document.getElementById("img").src = docs[current].img;
 document.getElementById("title").innerText = docs[current].title;
+
+let el = document.getElementById("docStatus");
+let statusText = docStatus[current];
+
+el.innerText = statusText;
+el.className = "status-text " + 
+(statusText==="Approved" ? "approved-text" :
+statusText==="Rejected" ? "rejected-text" : "pending-text");
+
+if(statusText !== "Pending"){
+document.getElementById("actions").style.display="none";
+}else{
+document.getElementById("actions").style.display="block";
+}
 }
 
 function nextImg(){
@@ -192,9 +215,7 @@ if(current < docs.length-1){
 current++;
 show();
 }else{
-<?php if(strpos($status,'pending') !== false){ ?>
-finalConfirm(); // 🔥 only pending ma final confirm
-<?php } ?>
+finalDecision();
 }
 }
 
@@ -206,10 +227,17 @@ show();
 }
 
 function updateStatus(action){
+
+if(action.includes("A")){
+docStatus[current] = "Approved";
+}else{
+docStatus[current] = "Rejected";
+}
+
 fetch(`payment_action.php?id=<?php echo $id ?>&action=${action}`)
-.then(res => res.text())
 .then(()=>{
-nextImg();
+show();
+setTimeout(nextImg,400);
 });
 }
 
@@ -217,12 +245,11 @@ function approveDoc(){
 let type = docs[current].type;
 
 Swal.fire({
-title: "Approve this document?",
-icon: "question",
-showCancelButton: true,
-confirmButtonColor: "#22c55e"
-}).then((result)=>{
-if(result.isConfirmed){
+title:"Approve this document?",
+icon:"question",
+showCancelButton:true
+}).then(r=>{
+if(r.isConfirmed){
 updateStatus(type+"A");
 }
 });
@@ -232,41 +259,53 @@ function rejectDoc(){
 let type = docs[current].type;
 
 Swal.fire({
-title: "Reject this document?",
-text: "User will need to re-upload",
-icon: "warning",
-showCancelButton: true,
-confirmButtonColor: "#ef4444"
-}).then((result)=>{
-if(result.isConfirmed){
+title:"Reject this document?",
+text:"User will need to re-upload",
+icon:"warning",
+showCancelButton:true
+}).then(r=>{
+if(r.isConfirmed){
 updateStatus(type+"R");
 }
 });
 }
 
-function finalConfirm(){
+function finalDecision(){
+
+let hasReject = docStatus.includes("Rejected");
+
+if(hasReject){
+
+Swal.fire({
+title:"Reject Payment?",
+text:"User will need to re-upload documents",
+icon:"warning",
+showCancelButton:true
+}).then(r=>{
+if(r.isConfirmed){
+window.location.href="?id=<?php echo $id ?>&final=reject";
+}
+});
+
+}else{
+
 Swal.fire({
 title:"Confirm Payment?",
-text:"All documents verified?",
+text:"All documents verified",
 icon:"question",
-showCancelButton:true,
-confirmButtonColor:"#22c55e"
-}).then((r)=>{
+showCancelButton:true
+}).then(r=>{
 if(r.isConfirmed){
 window.location.href="?id=<?php echo $id ?>&final=confirm";
 }
 });
+
+}
 }
 
 function goBack(){
 window.location.href="manage_payments.php";
 }
-
-document.addEventListener("keydown",(e)=>{
-if(e.key==="Escape"){
-goBack();
-}
-});
 
 show();
 
