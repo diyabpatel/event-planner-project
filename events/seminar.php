@@ -47,7 +47,7 @@ background:#f4f6f8;
 .hero{
 background:
 linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-url("../uploads/images/seminar/s1.jpg");
+url("../uploads/images/seminar/seminar_bg.png");
 height:700px;
 background-size:cover;
 background-position:center;
@@ -232,7 +232,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="about">
 
-<img src="../uploads/images/seminar/s2.jpeg">
+<img src="../uploads/images/seminar/seminar_about.png">
 
 <div>
 
@@ -262,32 +262,32 @@ coordination.
 <div class="service-grid">
 
 <div class="service-card">
-<img src="../uploads/images/seminar/s3.jpeg">
+<img src="../uploads/images/seminar/seminar_stage.png">
 <h3>Stage Setup</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/seminar/s4.jpeg">
-<h3>Guest Speakers</h3>
+<img src="../uploads/images/seminar/speaker_setup.png">
+<h3>Speaker Setup</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/seminar/s5.jpeg">
+<img src="../uploads/images/seminar/presentation_setup.png">
 <h3>Presentation Setup</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/seminar/s6.jpeg">
+<img src="../uploads/images/seminar/photography.png">
 <h3>Photography</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/seminar/s7.jpeg">
-<h3>Networking</h3>
+<img src="../uploads/images/seminar/videography.png">
+<h3>Videography</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/seminar/s3.jpeg">
+<img src="../uploads/images/seminar/sound.png">
 <h3>Sound System</h3>
 </div>
 
@@ -305,12 +305,12 @@ coordination.
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/seminar/image.png">
-<img src="../uploads/images/seminar/s3.jpeg">
-<img src="../uploads/images/seminar/s4.jpeg">
-<img src="../uploads/images/seminar/s5.jpeg">
-<img src="../uploads/images/seminar/s6.jpeg">
-<img src="../uploads/images/seminar/s7.jpeg">
+<img src="../uploads/images/seminar/seminar1.png">
+<img src="../uploads/images/seminar/seminar2.png">
+<img src="../uploads/images/seminar/seminar3.png">
+<img src="../uploads/images/seminar/seminar4.png">
+<img src="../uploads/images/seminar/seminar5.png">
+<img src="../uploads/images/seminar/seminar6.png">
 
 </div>
 

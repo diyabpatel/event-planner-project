@@ -316,12 +316,12 @@ decoration, sound system, photography, and lighting.
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/freshers/fresher1.jpg">
-<img src="../uploads/images/freshers/fresher2.jpg">
-<img src="../uploads/images/freshers/fresher3.jpg">
-<img src="../uploads/images/freshers/fresher4.jpg">
-<img src="../uploads/images/freshers/fresher5.jpg">
-<img src="../uploads/images/freshers/fresher7.jpg">
+<img src="../uploads/images/freshers/fresher1.png">
+<img src="../uploads/images/freshers/fresher2.png">
+<img src="../uploads/images/freshers/fresher3.png">
+<img src="../uploads/images/freshers/fresher4.png">
+<img src="../uploads/images/freshers/fresher5.png">
+<img src="../uploads/images/freshers/fresher6.png">
 
 </div>
 

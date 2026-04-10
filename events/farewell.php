@@ -47,7 +47,7 @@ background:#f4f6f8;
 .hero{
 background:
 linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),
-url("../uploads/images/farewell/farewell2.jpg");
+url("../uploads/images/farewell/farewell_bg.png");
 height:700px;
 background-size:cover;
 background-position:center;
@@ -232,7 +232,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="about">
 
-<img src="../uploads/images/farewell/f1.png">
+<img src="../uploads/images/farewell/farewell_about.png">
 
 <div>
 
@@ -266,27 +266,27 @@ and joyful moments shared by students and faculty.
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/farewell/decoration.jpg">
+<img src="../uploads/images/farewell/decoration.png">
 <h3>Decoration</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/farewell/food.jpg">
+<img src="../uploads/images/farewell/catering.png">
 <h3>Catering</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/farewell/farewell3.jpg">
+<img src="../uploads/images/farewell/dance_performance.png">
 <h3>Dance Performances</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/farewell/farewell4.jpg">
+<img src="../uploads/images/farewell/photography.png">
 <h3>Photography</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/farewell/sound.jpg">
+<img src="../uploads/images/farewell/sound.png">
 <h3>Sound & Lighting</h3>
 </div>
 
@@ -304,12 +304,12 @@ and joyful moments shared by students and faculty.
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/farewell/farewell1.jpg">
-<img src="../uploads/images/farewell/farewell2.jpg">
-<img src="../uploads/images/farewell/farewell3.jpg">
-<img src="../uploads/images/farewell/farewell4.jpg">
-<img src="../uploads/images/farewell/farewell5.jpg">
-<img src="../uploads/images/farewell/farewell6.jpeg">
+<img src="../uploads/images/farewell/farewell1.png">
+<img src="../uploads/images/farewell/farewell2.png">
+<img src="../uploads/images/farewell/farewell3.png">
+<img src="../uploads/images/farewell/farewell4.png">
+<img src="../uploads/images/farewell/farewell5.png">
+<img src="../uploads/images/farewell/farewell6.png">
 
 </div>
 

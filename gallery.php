@@ -163,19 +163,19 @@ padding:10px;
 <!-- ANNUAL DAY -->
 <div class="card">
 <div class="open-gallery" data-images='[
-"uploads/images/annual/image1.webp",
-"uploads/images/annual/image2.jpg",
-"uploads/images/annual/image3.jpg",
-"uploads/images/annual/image4.jpg",
-"uploads/images/annual/image5.jpg",
-"uploads/images/annual/image6.jpg"
+"uploads/images/annual/annualday1.png",
+"uploads/images/annual/annualday2.png",
+"uploads/images/annual/annualday3.png",
+"uploads/images/annual/annualday4.png",
+"uploads/images/annual/annualday5.png",
+"uploads/images/annual/annualday6.png"
 ]'>
-<img src="uploads/images/annual/image1.webp">
-<img src="uploads/images/annual/image2.jpg">
-<img src="uploads/images/annual/image3.jpg">
-<img src="uploads/images/annual/image4.jpg">
-<img src="uploads/images/annual/image5.jpg">
-<img src="uploads/images/annual/image6.jpg">
+<img src="uploads/images/annual/annualday1.png">
+<img src="uploads/images/annual/annualday2.png">
+<img src="uploads/images/annual/annualday3.png">
+<img src="uploads/images/annual/annualday4.png">
+<img src="uploads/images/annual/annualday5.png">
+<img src="uploads/images/annual/annualday6.png">
 <h3>Annual Day</h3>
 </div>
 </div>
@@ -183,19 +183,19 @@ padding:10px;
 <!-- CONVOCATION -->
 <div class="card">
 <div class="open-gallery" data-images='[
-"uploads/images/convocation/convocation1.jpg",
-"uploads/images/convocation/convocation2.jpg",
-"uploads/images/convocation/convocation3.jpg",
-"uploads/images/convocation/convocation4.jpg",
-"uploads/images/convocation/convocation5.jpg",
-"uploads/images/convocation/convocation6.jpg"
+"uploads/images/convocation/convocation1.png",
+"uploads/images/convocation/convocation2.png",
+"uploads/images/convocation/convocation3.png",
+"uploads/images/convocation/convocation4.png",
+"uploads/images/convocation/convocation5.png",
+"uploads/images/convocation/convocation6.png"
 ]'>
-<img src="uploads/images/convocation/convocation1.jpg">
-<img src="uploads/images/convocation/convocation2.jpg">
-<img src="uploads/images/convocation/convocation3.jpg">
-<img src="uploads/images/convocation/convocation4.jpg">
-<img src="uploads/images/convocation/convocation5.jpg">
-<img src="uploads/images/convocation/convocation6.jpg">
+<img src="uploads/images/convocation/convocation1.png">
+<img src="uploads/images/convocation/convocation2.png">
+<img src="uploads/images/convocation/convocation3.png">
+<img src="uploads/images/convocation/convocation4.png">
+<img src="uploads/images/convocation/convocation5.png">
+<img src="uploads/images/convocation/convocation6.png">
 <h3>Convocation</h3>
 </div>
 </div>
@@ -203,19 +203,19 @@ padding:10px;
 <!-- FAREWELL -->
 <div class="card">
 <div class="open-gallery" data-images='[
-"uploads/images/farewell/farewell1.jpg",
-"uploads/images/farewell/farewell2.jpg",
-"uploads/images/farewell/farewell3.jpg",
-"uploads/images/farewell/farewell4.jpg",
-"uploads/images/farewell/farewell5.jpg",
-"uploads/images/farewell/farewell6.jpeg"
+"uploads/images/farewell/farewell1.png",
+"uploads/images/farewell/farewell2.png",
+"uploads/images/farewell/farewell3.png",
+"uploads/images/farewell/farewell4.png",
+"uploads/images/farewell/farewell5.png",
+"uploads/images/farewell/farewell6.png"
 ]'>
-<img src="uploads/images/farewell/farewell1.jpg">
-<img src="uploads/images/farewell/farewell2.jpg">
-<img src="uploads/images/farewell/farewell3.jpg">
-<img src="uploads/images/farewell/farewell4.jpg">
-<img src="uploads/images/farewell/farewell5.jpg">
-<img src="uploads/images/farewell/farewell6.jpeg">
+<img src="uploads/images/farewell/farewell1.png">
+<img src="uploads/images/farewell/farewell2.png">
+<img src="uploads/images/farewell/farewell3.png">
+<img src="uploads/images/farewell/farewell4.png">
+<img src="uploads/images/farewell/farewell5.png">
+<img src="uploads/images/farewell/farewell6.png">
 <h3>Farewell Party</h3>
 </div>
 </div>
@@ -223,19 +223,19 @@ padding:10px;
 <!-- FRESHERS -->
 <div class="card">
 <div class="open-gallery" data-images='[
-"uploads/images/freshers/fresher1.jpg",
-"uploads/images/freshers/fresher2.jpg",
-"uploads/images/freshers/fresher3.jpg",
-"uploads/images/freshers/fresher4.jpg",
-"uploads/images/freshers/fresher5.jpg",
-"uploads/images/freshers/fresher7.jpg"
+"uploads/images/freshers/fresher1.png",
+"uploads/images/freshers/fresher2.png",
+"uploads/images/freshers/fresher3.png",
+"uploads/images/freshers/fresher4.png",
+"uploads/images/freshers/fresher5.png",
+"uploads/images/freshers/fresher6.png"
 ]'>
-<img src="uploads/images/freshers/fresher1.jpg">
-<img src="uploads/images/freshers/fresher2.jpg">
-<img src="uploads/images/freshers/fresher3.jpg">
-<img src="uploads/images/freshers/fresher4.jpg">
-<img src="uploads/images/freshers/fresher5.jpg">
-<img src="uploads/images/freshers/fresher7.jpg">
+<img src="uploads/images/freshers/fresher1.png">
+<img src="uploads/images/freshers/fresher2.png">
+<img src="uploads/images/freshers/fresher3.png">
+<img src="uploads/images/freshers/fresher4.png">
+<img src="uploads/images/freshers/fresher5.png">
+<img src="uploads/images/freshers/fresher6.png">
 <h3>Freshers Party</h3>
 </div>
 </div>
@@ -243,19 +243,19 @@ padding:10px;
 <!-- SEMINAR -->
 <div class="card">
 <div class="open-gallery" data-images='[
-"uploads/images/seminar/s1.jpg",
-"uploads/images/seminar/s2.jpeg",
-"uploads/images/seminar/s3.jpeg",
-"uploads/images/seminar/s4.jpeg",
-"uploads/images/seminar/s5.jpeg",
-"uploads/images/seminar/s6.jpeg"
+"uploads/images/seminar/seminar1.png",
+"uploads/images/seminar/seminar2.png",
+"uploads/images/seminar/seminar3.png",
+"uploads/images/seminar/seminar4.png",
+"uploads/images/seminar/seminar5.png",
+"uploads/images/seminar/seminar6.png"
 ]'>
-<img src="uploads/images/seminar/s1.jpg">
-<img src="uploads/images/seminar/s2.jpeg">
-<img src="uploads/images/seminar/s3.jpeg">
-<img src="uploads/images/seminar/s4.jpeg">
-<img src="uploads/images/seminar/s5.jpeg">
-<img src="uploads/images/seminar/s6.jpeg">
+<img src="uploads/images/seminar/seminar1.png">
+<img src="uploads/images/seminar/seminar2.png">
+<img src="uploads/images/seminar/seminar3.png">
+<img src="uploads/images/seminar/seminar4.png">
+<img src="uploads/images/seminar/seminar5.png">
+<img src="uploads/images/seminar/seminar6.png">
 <h3>Seminar</h3>
 </div>
 </div>
@@ -263,19 +263,19 @@ padding:10px;
 <!-- SPORTS DAY -->
 <div class="card">
 <div class="open-gallery" data-images='[
-"uploads/images/sports day/sports day1.jpg",
-"uploads/images/sports day/sports day2.jpg",
-"uploads/images/sports day/sports day3.jpg",
-"uploads/images/sports day/sports day4.jpg",
-"uploads/images/sports day/sports day5.jpg",
-"uploads/images/sports day/sports day6.jpg"
+"uploads/images/sports day/sports_day1.png",
+"uploads/images/sports day/sports_day2.png",
+"uploads/images/sports day/sports_day3.png,
+"uploads/images/sports day/sports_day4.png",
+"uploads/images/sports day/sports_day5.png",
+"uploads/images/sports day/sports_day6.png"
 ]'>
-<img src="uploads/images/sports day/sports day1.jpg">
-<img src="uploads/images/sports day/sports day2.jpg">
-<img src="uploads/images/sports day/sports day3.jpg">
-<img src="uploads/images/sports day/sports day4.jpg">
-<img src="uploads/images/sports day/sports day5.jpg">
-<img src="uploads/images/sports day/sports day6.jpg">
+<img src="uploads/images/sports day/sports_day1.png">
+<img src="uploads/images/sports day/sports_day2.png">
+<img src="uploads/images/sports day/sports_day3.png">
+<img src="uploads/images/sports day/sports_day4.png">
+<img src="uploads/images/sports day/sports_day5.png">
+<img src="uploads/images/sports day/sports_day6.png">
 <h3>Sports Day</h3>
 </div>
 </div>

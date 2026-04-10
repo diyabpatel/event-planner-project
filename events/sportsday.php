@@ -47,7 +47,7 @@ background:#f4f6f8;
 .hero{
 background:
 linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-url("../uploads/images/sports day/sports day.jpg");
+url("../uploads/images/sports day/sports_day_bg.jpg");
 height:700px;
 background-size:cover;
 background-position:center;
@@ -232,7 +232,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="about">
 
-<img src="../uploads/images/sports day/sports day1.jpg">
+<img src="../uploads/images/sports day/sports_day_about.png">
 
 <div>
 
@@ -263,33 +263,33 @@ photography, and complete sports event coordination.
 <div class="service-grid">
 
 <div class="service-card">
-<img src="../uploads/images/sports day/venues.jpg">
+<img src="../uploads/images/sports day/venue.png">
 <h3>Venue Setup</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/sports day/decoration.jpg">
+<img src="../uploads/images/sports day/decoration.png">
 <h3>Decoration</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/sports day/food.jpg">
+<img src="../uploads/images/sports day/prize_distribution.png">
+<h3>Price Distribution</h3>
+</div>
+
+<div class="service-card">
+<img src="../uploads/images/sports day/food_stalls.png">
 <h3>Food Stalls</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/sports day/photography.jpg">
+<img src="../uploads/images/sports day/photography.png">
 <h3>Photography</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/sports day/food1.jpg">
-<h3>Catering</h3>
-</div>
-
-<div class="service-card">
-<img src="../uploads/images/sports day/decoration1.jpg">
-<h3>Stage Setup</h3>
+<img src="../uploads/images/sports day/videography.png">
+<h3>Videography</h3>
 </div>
 
 </div>
@@ -306,12 +306,12 @@ photography, and complete sports event coordination.
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/sports day/sports day1.jpg">
-<img src="../uploads/images/sports day/sports day2.jpg">
-<img src="../uploads/images/sports day/sports day3.jpg">
-<img src="../uploads/images/sports day/sports day4.jpg">
-<img src="../uploads/images/sports day/sports day5.jpg">
-<img src="../uploads/images/sports day/sports day2.jpg">
+<img src="../uploads/images/sports day/sports_day1.png">
+<img src="../uploads/images/sports day/sports_day2.png">
+<img src="../uploads/images/sports day/sports_day3.png">
+<img src="../uploads/images/sports day/sports_day4.png">
+<img src="../uploads/images/sports day/sports_day5.png">
+<img src="../uploads/images/sports day/sports_day2.png">
 
 </div>
 
