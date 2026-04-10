@@ -45,7 +45,7 @@ background:#f4f6f8;
 /* HERO */
 
 .hero{
-background-image:url("../uploads/images/convocation/c1.jpg");
+background-image:url("../uploads/images/convocation/c1.png");
 height:700px;
 background-size:cover;
 background-position:center;
@@ -231,7 +231,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <div class="about">
 
-<img src="../uploads/images/convocation/convocation1.jpg">
+<img src="../uploads/images/convocation/convocation_about.png">
 
 <div>
 
@@ -260,32 +260,32 @@ degree distribution, guest management, photography, catering, and sound system.
 <div class="service-grid">
 
 <div class="service-card">
-<img src="../uploads/images/convocation/venue.jpg">
+<img src="../uploads/images/convocation/venue.png">
 <h3>Venue Setup</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/convocation/decoration.jpg">
+<img src="../uploads/images/convocation/decoration.png">
 <h3>Decoration</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/convocation/food.jpg">
+<img src="../uploads/images/convocation/catering.png">
 <h3>Catering</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/convocation/convocation4.jpg">
+<img src="../uploads/images/convocation/degree_distribution.png">
 <h3>Degree Distribution</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/convocation/convocation5.jpg">
+<img src="../uploads/images/convocation/photography.png">
 <h3>Photography</h3>
 </div>
 
 <div class="service-card">
-<img src="../uploads/images/convocation/sound.jpg">
+<img src="../uploads/images/convocation/sound.png">
 <h3>Sound & Lighting</h3>
 </div>
 
@@ -303,12 +303,12 @@ degree distribution, guest management, photography, catering, and sound system.
 
 <div class="gallery-grid">
 
-<img src="../uploads/images/convocation/convocation1.jpg">
-<img src="../uploads/images/convocation/convocation2.jpg">
-<img src="../uploads/images/convocation/convocation3.jpg">
-<img src="../uploads/images/convocation/convocation4.jpg">
-<img src="../uploads/images/convocation/convocation5.jpg">
-<img src="../uploads/images/convocation/convocation6.jpg">
+<img src="../uploads/images/convocation/convocation1.png">
+<img src="../uploads/images/convocation/convocation2.png">
+<img src="../uploads/images/convocation/convocation3.png">
+<img src="../uploads/images/convocation/convocation4.png">
+<img src="../uploads/images/convocation/convocation5.png">
+<img src="../uploads/images/convocation/convocation6.png">
 
 </div>
 
