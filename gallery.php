@@ -121,10 +121,11 @@ flex-direction:column;
 }
 
 #lightbox img{
-max-width:90%;
-max-height:80%;
+width:100%;
+height:100%;
+object-fit:contain;
 border-radius:12px;
-box-shadow:0 0 30px rgba(255,255,255,0.2);
+box-shadow:0 0 40px rgba(255,255,255,0.3);
 }
 
 #closeBtn{
@@ -265,7 +266,7 @@ padding:10px;
 <div class="open-gallery" data-images='[
 "uploads/images/sports day/sports_day1.png",
 "uploads/images/sports day/sports_day2.png",
-"uploads/images/sports day/sports_day3.png,
+"uploads/images/sports day/sports_day3.png",
 "uploads/images/sports day/sports_day4.png",
 "uploads/images/sports day/sports_day5.png",
 "uploads/images/sports day/sports_day6.png"

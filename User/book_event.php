@@ -60,9 +60,15 @@ if(isset($_POST['book'])){
     "package_id"=>$package_id,
     "event_date"=>$event_date,
     "capacity"=>$capacity,
+
+    // ✅ ADD THESE (IMPORTANT)
+    "venue_id"=>$venue_id,
+    "decoration_id"=>$decoration_id,
+    "seat_id"=>$seat_id,
+
     "total_price"=>$total,
-    "food_ids"=>implode(',', $food_ids),         // 🔥 ADD
-    "coverage_ids"=>implode(',', $coverage_ids)  // 🔥 ADD
+    "food_ids"=>implode(',', $food_ids),
+    "coverage_ids"=>implode(',', $coverage_ids)
 ];
 
     header("Location: payment_new.php");

@@ -74,15 +74,22 @@ if(isset($_POST['pay']))
             $pan="uploads/payment_docs/".$file;
         }
 
-        /* ✅ BOOKINGS (FIXED - REMOVED upi_id) */
+        /* ✅ SAFE VALUES (ADDED) */
+        $venue_id = isset($data['venue_id']) ? $data['venue_id'] : 0;
+        $decoration_id = isset($data['decoration_id']) ? $data['decoration_id'] : 0;
+        $seat_id = isset($data['seat_id']) ? $data['seat_id'] : 0;
+
+        /* ✅ BOOKINGS (FIXED) */
         mysqli_query($conn,"INSERT INTO bookings
         (user_id,event_id,package_id,capacity,event_date,total_price,
+        venue_id,decoration_id,seat_id,
         advance_paid,remaining_amount,payment_status,food_ids,coverage_ids)
         VALUES
         ('$user_id','".$data['event_id']."','".$data['package_id']."',
         '".$data['capacity']."','".$data['event_date']."','$total',
+        '$venue_id','$decoration_id','$seat_id',
         '$advance','$remaining','Pending',
-        '".$data['food_ids']."','".$data['coverage_ids']."')");
+        '".$data['food_ids']."','".$data['coverage_ids']."')"); // ✅ FIXED
 
         $booking_id = mysqli_insert_id($conn);
 
@@ -123,20 +130,17 @@ box-shadow:0 10px 30px rgba(124,58,237,0.15);
 animation:fadeIn 0.5s ease;
 }
 
-/* Heading */
 h2{
 color:#7c3aed;
 margin-bottom:10px;
 }
 
-/* Text */
 p{
 color:#555;
 font-size:14px;
 margin-bottom:20px;
 }
 
-/* Button */
 button{
 padding:12px 20px;
 border:none;
@@ -151,7 +155,6 @@ button:hover{
 background:#6d28d9;
 }
 
-/* Animation */
 @keyframes fadeIn{
 from{opacity:0; transform:translateY(20px);}
 to{opacity:1; transform:translateY(0);}
