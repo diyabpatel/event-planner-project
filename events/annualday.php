@@ -283,7 +283,11 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 <img src="../uploads/images/annual/annualday_about.png">
 <div>
 <h2>About Annual Day</h2>
-<p>Annual Day is the biggest celebration event...</p>
+Annual Day is one of the most anticipated and grand celebrations in any institution, bringing together students, faculty, and guests for a day filled with joy, creativity, and achievement. It serves as a platform to showcase the talents, hard work, and accomplishments of students throughout the year.
+
+The event typically includes a variety of performances such as cultural dances, music, drama, and award ceremonies, recognizing excellence in academics, sports, and extracurricular activities. It is not just an event but a celebration of unity, teamwork, and the vibrant spirit of the institution.
+
+Annual Day also provides students with an opportunity to build confidence, express themselves, and create unforgettable memories. With beautiful decorations, engaging performances, and enthusiastic participation, it becomes a truly memorable experience for everyone involved.
 </div>
 </div>
 
@@ -303,13 +307,13 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 <!-- GALLERY -->
 <div class="gallery reveal">
 <h2>Our Previous Works</h2>
-<div class="gallery-grid">
-<img src="../uploads/images/annual/annualday1.png" onclick="openImage(this.src)">
-<img src="../uploads/images/annual/annualday2.png" onclick="openImage(this.src)">
-<img src="../uploads/images/annual/annualday3.png" onclick="openImage(this.src)">
-<img src="../uploads/images/annual/annualday4.png" onclick="openImage(this.src)">
-<img src="../uploads/images/annual/annualday5.png" onclick="openImage(this.src)">
-<img src="../uploads/images/annual/annualday6.png" onclick="openImage(this.src)">
+<div class="service-grid">
+<div class="service-card"><img src="../uploads/images/annual/annualday1.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/annual/annualday2.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/annual/annualday3.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/annual/annualday4.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/annual/annualday5.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/annual/annualday6.png" onclick="openImage(this.src)"></div>
 </div>
 </div>
 
