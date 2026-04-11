@@ -2,15 +2,10 @@
 session_start();
 include("../db.php");
 
-/* ===== FETCH EVENT ===== */
-
 $query = "SELECT * FROM events WHERE event_name='Seminar'";
 $result = mysqli_query($conn,$query);
 $event = mysqli_fetch_assoc($result);
-
 $event_id = $event['event_id'];
-
-/* ===== FETCH FEEDBACK ===== */
 
 $feedback_query = mysqli_query($conn,"
 SELECT f.rating,f.comment,u.college_name
@@ -30,116 +25,198 @@ $feedback_error = mysqli_error($conn);
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
 <title>Seminar Event</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
 <style>
 
+/* ===== GLOBAL ===== */
 body{
 margin:0;
-font-family:Arial;
-background:#f4f6f8;
+font-family:'Poppins',sans-serif;
+background:#f9f7ff;
+color:#2d1b69;
+scroll-behavior:smooth;
 }
 
-/* HERO */
-
+/* ===== HERO ===== */
 .hero{
-background:
-linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),
-url("../uploads/images/seminar/seminar_bg.png");
+position:relative;
 height:700px;
-background-size:cover;
-background-position:center;
+background:url("../uploads/images/seminar/seminar_bg.png") center/cover no-repeat;
 display:flex;
 justify-content:center;
 align-items:center;
 text-align:center;
 }
 
+.hero::after{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:linear-gradient(rgba(124,58,237,0.2),rgba(0,0,0,0.3));
+}
+
 .hero-content{
+position:relative;
+z-index:2;
+font-size:55px;
+font-weight:700;
 color:white;
-font-size:50px;
-font-weight:bold;
+text-shadow:0 6px 25px rgba(0,0,0,0.7);
 }
 
 .hero button{
-margin-top:20px;
-padding:15px 30px;
-font-size:18px;
-background:#2563eb;
+margin-top:25px;
+padding:15px 35px;
 border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#000,#1f1f1f);
 color:white;
+font-size:18px;
 cursor:pointer;
+transition:0.4s;
 }
 
-/* CONTAINER */
+.hero button:hover{
+transform:translateY(-5px) scale(1.05);
+}
 
+/* ===== CONTAINER ===== */
 .container{
-padding:60px;
+padding:80px;
 }
 
-/* ABOUT */
+/* ===== REVEAL ===== */
+.reveal{
+opacity:0;
+transform:translateY(60px);
+transition:1s;
+}
 
+.reveal.active{
+opacity:1;
+transform:translateY(0);
+}
+
+/* ===== ABOUT ===== */
 .about{
 display:flex;
-gap:40px;
+gap:50px;
 align-items:center;
+background:white;
+padding:40px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(124,58,237,0.15);
 }
 
 .about img{
 width:500px;
-border-radius:10px;
+border-radius:20px;
 }
 
-/* SERVICES */
-
+/* ===== SERVICES ===== */
 .services{
-margin-top:60px;
+margin-top:80px;
 }
 
 .service-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:30px;
+gap:20px; /* reduced gap */
 }
 
 .service-card{
 background:white;
-padding:20px;
-border-radius:10px;
+padding:15px; /* reduced padding */
+border-radius:20px;
 text-align:center;
-box-shadow:0px 0px 10px gray;
+box-shadow:0 10px 25px rgba(124,58,237,0.12);
+transition:0.4s;
+opacity:0;
+transform:translateY(40px);
 }
 
-.service-card img{
+.reveal.active .service-card{
+opacity:1;
+transform:translateY(0);
+}
+
+.service-card:hover{
+transform:translateY(-8px);
+box-shadow:0 20px 45px rgba(124,58,237,0.25);
+}
+
+/* smaller text */
+.service-card h3{
+font-size:16px;
+margin-top:10px;
+}
+
+/* ===== IMAGE STYLE (SQUARE + PREMIUM) ===== */
+.service-card img,
+.gallery-grid img{
 width:100%;
-height:200px;
+aspect-ratio:1/1;
 object-fit:cover;
+border-radius:14px;
+transition:0.4s ease;
+cursor:pointer;
 }
 
-/* GALLERY */
+/* premium hover */
+.service-card img:hover,
+.gallery-grid img:hover{
+transform:scale(1.06);
+box-shadow:0 15px 35px rgba(124,58,237,0.35);
+filter:brightness(1.08);
+}
 
+/* stagger */
+.service-card:nth-child(1){transition-delay:0.1s;}
+.service-card:nth-child(2){transition-delay:0.2s;}
+.service-card:nth-child(3){transition-delay:0.3s;}
+.service-card:nth-child(4){transition-delay:0.4s;}
+.service-card:nth-child(5){transition-delay:0.5s;}
+.service-card:nth-child(6){transition-delay:0.6s;}
+
+
+/* ===== GALLERY ===== */
 .gallery{
-margin-top:60px;
+margin-top:80px;
 }
 
 .gallery-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:20px;
+gap:25px;
 }
 
-.gallery-grid img{
+.gallery-card{
+background:white;
+border-radius:20px;
+overflow:hidden;
+box-shadow:0 10px 25px rgba(124,58,237,0.12);
+transition:0.4s;
+}
+
+.gallery-card img{
 width:100%;
-height:200px;
+aspect-ratio:1/1;
 object-fit:cover;
 }
 
-/* FEEDBACK */
+.gallery-card:hover{
+transform:translateY(-10px);
+box-shadow:0 20px 50px rgba(124,58,237,0.35);
+}
 
+/* ===== FEEDBACK ===== */
 .feedback-section{
-margin-top:80px;
+margin-top:100px;
 text-align:center;
 }
 
@@ -153,39 +230,16 @@ gap:30px;
 .feedback-card{
 background:white;
 padding:25px;
-border-radius:12px;
-box-shadow:0 10px 25px rgba(0,0,0,0.15);
-position:relative;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(124,58,237,0.15);
 }
 
-.feedback-card:before{
-content:"“";
-font-size:60px;
-color:#2563eb;
-position:absolute;
-top:-10px;
-left:15px;
-}
-
-.feedback-stars{
-color:#facc15;
-font-size:18px;
-margin:10px 0;
-}
-
-.feedback-user{
-margin-top:15px;
-font-weight:bold;
-color:#333;
-}
-
-/* FOOTER */
-
+/* ===== FOOTER ===== */
 footer{
-background:black;
+background:#2d1b69;
 color:white;
 padding:40px;
-margin-top:60px;
+margin-top:80px;
 text-align:center;
 }
 
@@ -197,182 +251,124 @@ text-align:center;
 <?php include("../navbar.php"); ?>
 
 <!-- HERO -->
-
 <div class="hero">
-
 <div class="hero-content">
-
 Seminar Event
-
 <br>
-
 <?php
-
-if(isset($_SESSION['user_id']))
-{
+if(isset($_SESSION['user_id'])){
 echo "<button onclick=\"location.href='../user/book_event.php?event_id=$event_id'\">Book Now</button>";
-}
-else
-{
+}else{
 echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 }
-
 ?>
-
 </div>
-
 </div>
-
-
 
 <div class="container">
 
-
 <!-- ABOUT -->
-
-<div class="about">
-
+<div class="about reveal">
 <img src="../uploads/images/seminar/seminar_about.png">
-
 <div>
-
 <h2>About Seminar</h2>
+Seminar events are important academic and professional gatherings that focus on knowledge sharing, learning, and skill development. They bring together experts, speakers, students, and professionals to exchange ideas and gain insights on various topics. It serves as a platform to enhance understanding, awareness, and intellectual growth.
 
-<p>
+The event typically includes presentations, discussions, and interactive sessions that encourage participation and engagement. It is not just a learning event but a valuable opportunity to explore new perspectives, develop critical thinking, and stay updated with current trends.
 
-Seminars provide a platform for students and professionals to gain knowledge,
-share ideas, and learn from industry experts. Our seminar event management
-includes stage setup, guest management, audio systems, and professional
-coordination.
-
-</p>
-
+Seminars also help participants improve their confidence, communication skills, and practical knowledge. With informative sessions, expert guidance, and active involvement, they become a meaningful and enriching experience for everyone involved.
 </div>
-
 </div>
-
-
 
 <!-- SERVICES -->
-
-<div class="services">
-
+<div class="services reveal">
 <h2>Services Provided</h2>
-
 <div class="service-grid">
 
-<div class="service-card">
-<img src="../uploads/images/seminar/seminar_stage.png">
-<h3>Stage Setup</h3>
-</div>
-
-<div class="service-card">
-<img src="../uploads/images/seminar/speaker_setup.png">
-<h3>Speaker Setup</h3>
-</div>
-
-<div class="service-card">
-<img src="../uploads/images/seminar/presentation_setup.png">
-<h3>Presentation Setup</h3>
-</div>
-
-<div class="service-card">
-<img src="../uploads/images/seminar/photography.png">
-<h3>Photography</h3>
-</div>
-
-<div class="service-card">
-<img src="../uploads/images/seminar/videography.png">
-<h3>Videography</h3>
-</div>
-
-<div class="service-card">
-<img src="../uploads/images/seminar/sound.png">
-<h3>Sound System</h3>
-</div>
+<div class="service-card"><img src="../uploads/images/seminar/seminar_stage.png" onclick="openImage(this.src)"><h3>Stage Setup</h3></div>
+<div class="service-card"><img src="../uploads/images/seminar/speaker_setup.png" onclick="openImage(this.src)"><h3>Speaker Setup</h3></div>
+<div class="service-card"><img src="../uploads/images/seminar/presentation_setup.png" onclick="openImage(this.src)"><h3>Presentation Setup</h3></div>
+<div class="service-card"><img src="../uploads/images/seminar/photography.png" onclick="openImage(this.src)"><h3>Photography</h3></div>
+<div class="service-card"><img src="../uploads/images/seminar/videography.png" onclick="openImage(this.src)"><h3>Videography</h3></div>
+<div class="service-card"><img src="../uploads/images/seminar/sound.png" onclick="openImage(this.src)"><h3>Sound System</h3></div>
 
 </div>
-
 </div>
-
-
 
 <!-- GALLERY -->
+<div class="gallery reveal">
+<h2>Our Previous Works</h2>
+<div class="service-grid">
 
-<div class="gallery">
-
-<h2>Seminar Moments</h2>
-
-<div class="gallery-grid">
-
-<img src="../uploads/images/seminar/seminar1.png">
-<img src="../uploads/images/seminar/seminar2.png">
-<img src="../uploads/images/seminar/seminar3.png">
-<img src="../uploads/images/seminar/seminar4.png">
-<img src="../uploads/images/seminar/seminar5.png">
-<img src="../uploads/images/seminar/seminar6.png">
+<div class="service-card"><img src="../uploads/images/seminar/seminar1.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/seminar/seminar2.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/seminar/seminar3.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/seminar/seminar4.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/seminar/seminar5.png" onclick="openImage(this.src)"></div>
+<div class="service-card"><img src="../uploads/images/seminar/seminar6.png" onclick="openImage(this.src)"></div>
 
 </div>
-
 </div>
-
-
 
 <!-- FEEDBACK -->
-
-<div class="feedback-section">
-
+<div class="feedback-section reveal">
 <h2>What Our Customers Say</h2>
-
 <div class="feedback-grid">
 
 <?php
-
 if(isset($feedback_error)){
-echo "<p>Feedback Error: $feedback_error</p>";
+echo "<p>$feedback_error</p>";
 }
-
 else if(mysqli_num_rows($feedback_query)>0){
-
 while($f=mysqli_fetch_assoc($feedback_query)){
-
 $stars = str_repeat("⭐",$f['rating']);
-
-echo "
-
-<div class='feedback-card'>
-
-<div class='feedback-stars'>$stars</div>
-
+echo "<div class='feedback-card'>
+<div>$stars</div>
 <p>".$f['comment']."</p>
-
-<div class='feedback-user'>- ".$f['college_name']."</div>
-
-</div>
-
-";
-
+<b>".$f['college_name']."</b>
+</div>";
 }
-
-}
-
-else{
+}else{
 echo "<p>No feedback available yet.</p>";
 }
-
 ?>
 
 </div>
-
 </div>
 
 </div>
-
-
 
 <footer>
 Event Management System
 </footer>
+
+<!-- IMAGE MODAL -->
+<div id="imgModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;">
+<span onclick="closeImage()" style="position:absolute;top:30px;right:40px;font-size:40px;color:white;cursor:pointer;">&times;</span>
+<img id="modalImg" style="max-width:90%;max-height:90%;border-radius:15px;">
+</div>
+
+<script>
+window.addEventListener("scroll", function(){
+let reveals = document.querySelectorAll(".reveal");
+for(let i=0;i<reveals.length;i++){
+let windowHeight = window.innerHeight;
+let elementTop = reveals[i].getBoundingClientRect().top;
+if(elementTop < windowHeight - 100){
+reveals[i].classList.add("active");
+}
+}
+});
+
+function openImage(src){
+document.getElementById("imgModal").style.display="flex";
+document.getElementById("modalImg").src = src;
+}
+
+function closeImage(){
+document.getElementById("imgModal").style.display="none";
+}
+</script>
 
 </body>
 </html>
