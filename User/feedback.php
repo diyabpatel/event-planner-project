@@ -261,4 +261,5 @@ stars.forEach(s=>s.classList.remove("hover"));
 </script>
 
 </body>
+<?php include("footer.php"); ?>
 </html>

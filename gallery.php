@@ -333,4 +333,5 @@ lightbox.style.display = "none";
 </script>
 
 </body>
+<?php include("footer.php"); ?>
 </html>

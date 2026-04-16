@@ -155,4 +155,5 @@ value="<?php echo $data['payer_name']; ?>" required>
 </div>
 
 </body>
+<?php include("footer.php"); ?>
 </html>
