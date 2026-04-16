@@ -35,7 +35,7 @@ if(isset($_SESSION['user_id'])){
 
 /* 📌 FIXED NAVBAR */
 .navbar{
-    height:72px;
+    height:85px;
     background:linear-gradient(135deg,#ffffff,#f6f4ff);
     display:flex;
     align-items:center;
@@ -72,9 +72,15 @@ body{
 
 /* LOGO */
 .nav-logo{
-    color:var(--accent);
-    font-size:22px;
-    font-weight:700;
+    display:flex;
+    align-items:center;   /* 🔥 centers vertically */
+    height:100%;
+}
+.nav-logo img{
+    height:82px;   /* adjust size as needed */
+    width:auto;
+    display:block;
+    object-fit:contain;
 }
 
 /* MENU */
@@ -234,7 +240,9 @@ body{
 
 <div class="navbar">
 
-    <div class="nav-logo">EventHub</div>
+    <div class="nav-logo">
+    <img src="/event-planner-project/uploads/images/logo/eventhub_logo.png" alt="EventHub Logo">
+</div>
 
     <div class="nav-menu">
 
