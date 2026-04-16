@@ -164,10 +164,6 @@ body{
         <i class="fas fa-chair"></i> Seats
     </a>
 
-    <a href="manage_bookings.php" class="<?= ($current_page=='manage_bookings.php')?'active':'' ?>">
-        <i class="fas fa-file"></i> Bookings
-    </a>
-
     <a href="manage_colleges.php" class="<?= ($current_page=='manage_colleges.php')?'active':'' ?>">
         <i class="fas fa-school"></i> Colleges
     </a>
@@ -176,8 +172,8 @@ body{
         <i class="fas fa-credit-card"></i> Payments
     </a>
 
-    <a href="revenue_history.php" class="<?= ($current_page=='revenue_history.php')?'active':'' ?>">
-        <i class="fas fa-chart-line"></i> Revenue
+    <a href="manage_feedback.php" class="<?= ($current_page=='manage_feedback.php')?'active':'' ?>">
+        <i class="fas fa-comment"></i> Feedback
     </a>
 
     <!-- 🔥 LOGOUT INSIDE MENU -->
