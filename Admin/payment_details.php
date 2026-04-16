@@ -4,52 +4,98 @@ include("../db.php");
 
 $id = intval($_GET['id']);
 
-/* 🔥 FETCH WITH EVENT NAME */
+/* ✅ ACTION HANDLE (NEW ADDITION - IMPORTANT FIX) */
+if(isset($_GET['action'])){
+    $action = $_GET['action'];
+
+    if($action == "proofA"){
+        mysqli_query($conn,"UPDATE payments SET proof_status=1 WHERE payment_id=$id");
+    }
+    elseif($action == "proofR"){
+        mysqli_query($conn,"UPDATE payments SET proof_status=2 WHERE payment_id=$id");
+    }
+    elseif($action == "aadhaarA"){
+        mysqli_query($conn,"UPDATE payments SET aadhaar_status=1 WHERE payment_id=$id");
+    }
+    elseif($action == "aadhaarR"){
+        mysqli_query($conn,"UPDATE payments SET aadhaar_status=2 WHERE payment_id=$id");
+    }
+    elseif($action == "panA"){
+        mysqli_query($conn,"UPDATE payments SET pan_status=1 WHERE payment_id=$id");
+    }
+    elseif($action == "panR"){
+        mysqli_query($conn,"UPDATE payments SET pan_status=2 WHERE payment_id=$id");
+    }
+
+    echo "done";
+    exit();
+}
+
+/* 🔥 FETCH DATA */
 $row = mysqli_fetch_assoc(mysqli_query($conn,"
-    SELECT p.*, b.event_id, e.event_name 
-    FROM payments p
-    JOIN bookings b ON p.booking_id = b.booking_id
-    JOIN events e ON b.event_id = e.event_id
-    WHERE p.payment_id = $id
+SELECT p.*, b.event_id, e.event_name 
+FROM payments p
+JOIN bookings b ON p.booking_id = b.booking_id
+JOIN events e ON b.event_id = e.event_id
+WHERE p.payment_id = $id
 "));
 
 $booking_id = $row['booking_id'];
 $event_name = $row['event_name'];
-/* 🔥 FINAL ACTION */
+
+/* 🔥 FINAL ACTION (FIXED LOGIC) */
 if(isset($_GET['final'])){
 
-if($_GET['final']=="confirm"){
+    $check = mysqli_fetch_assoc(mysqli_query($conn,"
+        SELECT proof_status,aadhaar_status,pan_status 
+        FROM payments WHERE payment_id=$id
+    "));
 
-    mysqli_query($conn,"UPDATE payments SET payment_status='Approved' WHERE payment_id=$id");
+    $statuses = [
+        $check['proof_status'],
+        $check['aadhaar_status'],
+        $check['pan_status']
+    ];
 
-    $msg = "Your booking for the event \"$event_name\" has been successfully confirmed. Thank you for your payment.";
+    $allApproved = true;
+    $hasReject = false;
 
-    mysqli_query($conn,"
-        UPDATE bookings 
-        SET notification='$msg', payment_status='Approved'
-        WHERE booking_id=$booking_id
-    ");
+    foreach($statuses as $s){
+        if($s != 1) $allApproved = false;
+        if($s == 2) $hasReject = true;
+    }
 
-    header("Location: manage_payments.php");
-    exit();
-}
+    if($_GET['final']=="confirm" && $allApproved){
 
-if($_GET['final']=="reject"){
+        mysqli_query($conn,"UPDATE payments SET payment_status='Approved' WHERE payment_id=$id");
 
-    mysqli_query($conn,"UPDATE payments SET payment_status='Rejected' WHERE payment_id=$id");
+        $msg = "Your booking for the event \"$event_name\" has been successfully confirmed.";
 
-    $msg = "Your payment for the event \"$event_name\" was not approved. Please re-upload valid payment details to proceed with your booking.";
+        mysqli_query($conn,"
+            UPDATE bookings 
+            SET notification='$msg', payment_status='Approved'
+            WHERE booking_id=$booking_id
+        ");
 
-    mysqli_query($conn,"
-        UPDATE bookings 
-        SET notification='$msg', payment_status='Rejected'
-        WHERE booking_id=$booking_id
-    ");
+        header("Location: manage_payments.php");
+        exit();
+    }
 
-    header("Location: manage_payments.php");
-    exit();
-}
+    if($_GET['final']=="reject" && $hasReject){
 
+        mysqli_query($conn,"UPDATE payments SET payment_status='Rejected' WHERE payment_id=$id");
+
+        $msg = "Your payment was not approved. Please re-upload only rejected documents.";
+
+        mysqli_query($conn,"
+            UPDATE bookings 
+            SET notification='$msg', payment_status='Rejected'
+            WHERE booking_id=$booking_id
+        ");
+
+        header("Location: manage_payments.php");
+        exit();
+    }
 }
 
 $status = strtolower($row['payment_status']);
@@ -60,9 +106,12 @@ $status = strtolower($row['payment_status']);
 <head>
 <meta charset="UTF-8">
 <title>Payment Details</title>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
+
+/* 🔥 SAME ORIGINAL STYLING (RESTORED) */
 body{
 margin:0;
 background:linear-gradient(135deg,#0f0c29,#1e1b4b,#312e81);
@@ -79,7 +128,6 @@ flex-direction:column;
 align-items:center;
 }
 
-/* IMAGE */
 .viewer img{
 max-width:80vw;
 max-height:70vh;
@@ -87,7 +135,6 @@ border-radius:18px;
 box-shadow:0 0 60px rgba(124,58,237,0.4);
 }
 
-/* NAV + CLOSE */
 .close{
 position:fixed;
 top:20px;
@@ -120,7 +167,6 @@ color:#e0d4ff;
 margin-top:14px;
 }
 
-/* BUTTON */
 .btn{
 padding:10px 20px;
 border:none;
@@ -132,7 +178,6 @@ cursor:pointer;
 .approve{background:#22c55e;color:white;}
 .reject{background:#ef4444;color:white;}
 
-/* STATUS */
 .status-text{
 margin-top:10px;
 font-weight:600;
@@ -142,6 +187,7 @@ font-size:15px;
 .approved-text{color:#22c55e;}
 .rejected-text{color:#ef4444;}
 .pending-text{color:#c4b5fd;}
+
 </style>
 </head>
 
@@ -149,7 +195,6 @@ font-size:15px;
 
 <div class="viewer">
 
-<!-- 🔥 NAV BACK -->
 <div class="close" onclick="goBack()">✕</div>
 <div class="nav prev" onclick="prevImg()">❮</div>
 <div class="nav next" onclick="nextImg()">❯</div>
@@ -171,17 +216,19 @@ font-size:15px;
 <script>
 
 let current = 0;
-let finalStatus = "<?php echo $row['payment_status']; ?>";
 
-/* 🔥 SET BASED ON DB */
-let docStatus = ["Pending","Pending","Pending"];
+/* ✅ FIXED: REAL STATUS LOAD */
+let docStatus = [
+<?php echo (int)$row['proof_status']; ?>,
+<?php echo (int)$row['aadhaar_status']; ?>,
+<?php echo (int)$row['pan_status']; ?>
+];
 
-if(finalStatus.toLowerCase() === "approved"){
-docStatus = ["Approved","Approved","Approved"];
-}
-else if(finalStatus.toLowerCase() === "rejected"){
-docStatus = ["Rejected","Rejected","Rejected"];
-}
+docStatus = docStatus.map(s=>{
+    if(s==1) return "Approved";
+    if(s==2) return "Rejected";
+    return "Pending";
+});
 
 const docs = [
 { img: "/event-planner-project/<?php echo $row['proof_image']; ?>", title:"Payment Screenshot", type:"proof"},
@@ -224,6 +271,7 @@ show();
 }
 }
 
+/* ✅ FIXED BACKEND CALL */
 function updateStatus(action){
 
 if(action.includes("A")){
@@ -232,13 +280,14 @@ docStatus[current] = "Approved";
 docStatus[current] = "Rejected";
 }
 
-fetch(`payment_action.php?id=<?php echo $id ?>&action=${action}`)
+fetch(`payment_details.php?id=<?php echo $id ?>&action=${action}`)
 .then(()=>{
 show();
 setTimeout(nextImg,400);
 });
 }
 
+/* 🔥 SAME SWEET ALERTS RESTORED */
 function approveDoc(){
 let type = docs[current].type;
 
@@ -268,15 +317,30 @@ updateStatus(type+"R");
 });
 }
 
+/* ✅ FIXED FINAL LOGIC */
 function finalDecision(){
 
+let allApproved = docStatus.every(s => s==="Approved");
 let hasReject = docStatus.includes("Rejected");
 
-if(hasReject){
+if(allApproved){
+
+Swal.fire({
+title:"Confirm Payment?",
+icon:"question",
+showCancelButton:true
+}).then(r=>{
+if(r.isConfirmed){
+window.location.href="?id=<?php echo $id ?>&final=confirm";
+}
+});
+
+}
+else if(hasReject){
 
 Swal.fire({
 title:"Reject Payment?",
-text:"User will need to re-upload documents",
+text:"User will re-upload only rejected documents",
 icon:"warning",
 showCancelButton:true
 }).then(r=>{
@@ -285,17 +349,13 @@ window.location.href="?id=<?php echo $id ?>&final=reject";
 }
 });
 
-}else{
+}
+else{
 
 Swal.fire({
-title:"Confirm Payment?",
-text:"All documents verified",
-icon:"question",
-showCancelButton:true
-}).then(r=>{
-if(r.isConfirmed){
-window.location.href="?id=<?php echo $id ?>&final=confirm";
-}
+title:"Pending Documents",
+text:"Please verify all documents",
+icon:"info"
 });
 
 }

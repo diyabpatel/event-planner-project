@@ -30,103 +30,105 @@ overflow-x:hidden;
 
 /* ===== HERO (UNCHANGED) ===== */
 /* HERO SECTION */
+/* HERO LAYOUT */
 /* HERO */
-/* HERO MAIN */
 .hero{
-    height:100vh;
     display:flex;
-    align-items:center;
+    align-items:flex-start;   /* 🔥 TOP ALIGN */
     justify-content:space-between;
-    padding:0 8%;
-    background:linear-gradient(135deg,#ffffff,#f5f3ff);
+    padding:50px 8% 0;       /* 🔥 less top space */
+    height:100vh;
+    background:linear-gradient(135deg,#fdfbff,#f3f0ff);
 }
 
-/* LEFT SIDE */
+/* LEFT */
 .hero-left{
-    width:50%;
+    width:45%;
+    padding: 100px 0 0 0px;
 }
 
 .hero-left h1{
-    font-size:52px;
-    color:#3b0764;
-    margin-bottom:20px;
+    font-size:42px;
     font-weight:700;
+    color:#4c1d95;
 }
 
 .hero-left p{
-    font-size:18px;
+    margin-top:10px;
     color:#6d28d9;
 }
 
-/* RIGHT SIDE */
+/* RIGHT */
 .hero-right{
     width:50%;
-    height:80%;
-    position:relative;
-    border-radius:20px;
+    perspective:1200px;
     overflow:hidden;
-    box-shadow:0 15px 40px rgba(0,0,0,0.15);
+}
+
+/* SLIDER */
+.slides{
+    position:relative;
+    height:460px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
 /* SLIDES */
-.slides{
-    position:absolute;
-    width:100%;
-    height:100%;
-}
-
-/* EACH SLIDE */
 .slide{
     position:absolute;
-    width:100%;
-    height:100%;
+    width:360px;          /* equal width */
+    aspect-ratio:1/1;     /* 🔥 PERFECT SQUARE */
+    border-radius:20px;
     background-size:cover;
     background-position:center;
-    opacity:0;
-    animation:slideShow 30s infinite;
-
-    /* 🔥 CLEAN IMAGE LOOK */
-    filter:brightness(1.1) contrast(1.05);
+    transition:0.6s ease;
+    box-shadow:0 15px 40px rgba(124,58,237,0.25);
 }
 
-/* IMAGES */
-.slide:nth-child(1){background-image:url('uploads/images/annual/annualday_bg02.jpg'); animation-delay:0s;}
-.slide:nth-child(2){background-image:url('uploads/images/convocation/convocation1.jpg'); animation-delay:3s;}
-.slide:nth-child(3){background-image:url('uploads/images/farewell/farewell2.jpg'); animation-delay:6s;}
-.slide:nth-child(4){background-image:url('uploads/images/freshers/fresher5.jpg'); animation-delay:9s;}
-.slide:nth-child(5){background-image:url('uploads/images/seminar/s2.jpeg'); animation-delay:12s;}
-.slide:nth-child(6){background-image:url('uploads/images/sports day/sports day1.jpg'); animation-delay:15s;}
-
-/* ANIMATION */
-@keyframes slideShow{
-0%{opacity:0}
-5%{opacity:1}
-20%{opacity:1}
-25%{opacity:0}
-100%{opacity:0}
+/* CENTER */
+.slide.active{
+    transform:translateX(0) scale(1.2);
+    z-index:5;
 }
 
-/* RESPONSIVE */
-@media(max-width:900px){
-    .hero{
-        flex-direction:column;
-        justify-content:center;
-        text-align:center;
-    }
+.slide img{
+    width:100%;
+    height:100%;
+    object-fit:cover; /* 🔥 no stretch */
+    border-radius:20px;
+}
 
-    .hero-left,
-    .hero-right{
-        width:100%;
-    }
+/* LEFT */
+.slide.left{
+    transform:translateX(-260px) rotateY(35deg) scale(0.9);
+    opacity:0.6;
+}
 
-    .hero-right{
-        margin-top:30px;
-        height:300px;
-    }
+/* RIGHT */
+.slide.right{
+    transform:translateX(260px) rotateY(-35deg) scale(0.9);
+    opacity:0.6;
+}
 
-    .hero-left h1{
-        font-size:36px;
-    }
+/* FAR */
+.slide.far-left{
+    transform:translateX(-420px) scale(0.7);
+    opacity:0.3;
+}
+
+.slide.far-right{
+    transform:translateX(420px) scale(0.7);
+    opacity:0.3;
+}
+
+/* OPTIONAL GLOW */
+.slide::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    border-radius:20px;
+    background:linear-gradient(180deg,transparent,rgba(124,58,237,0.25));
 }
 
 /* ===== PREMIUM HOW IT WORKS (UPDATED) ===== */
@@ -262,102 +264,102 @@ overflow-x:hidden;
 }
 
 /* ===== EVENT CATEGORIES ===== */
-/* SECTION */
-/* 🔥 FULL SCREEN SECTION */
+/* ===== SECTION ===== */
 .event-section{
     height:100vh;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 6%;
+    padding:20px 5%;
     background:linear-gradient(135deg,#ffffff,#f5f3ff);
+    overflow:hidden; /* 🔥 important */
 }
 
-/* LEFT GRID */
+/* ===== GRID ===== */
 .event-grid{
-    width:55%;
+    width:35%;
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:18px;
+    grid-template-columns:repeat(3,1fr);
+    gap:14px; /* reduced */
 }
 
-/* CARD */
+/* ===== CARD ===== */
 .event-card{
     background:#fff;
     border-radius:16px;
     overflow:hidden;
-    box-shadow:0 10px 25px rgba(0,0,0,0.08);
+    box-shadow:0 8px 20px rgba(0,0,0,0.07);
     transition:0.3s;
     text-align:center;
+    text-decoration:none;
+    color:inherit;
+    width: 250px;
+    height: 250px;
+    padding: 17px 27px 27px ;
+}
+
+/* 🔥 SQUARE IMAGE (SMALLER FOR FIT) */
+.img-box{
+    width:120px;
+    height:120px;   /* 🔥 smaller image */
 }
 
 /* IMAGE */
-.event-card img{
-    width:100%;
-    height:130px; /* 👈 reduced to fit screen */
+.img-box img{
+    width:200px;
+    height:200px;
     object-fit:cover;
 }
 
 /* TITLE */
 .event-card h3{
-    padding:10px;
+    position:static;   /* 🔥 important */
+    margin-top:85px;
+    text-align:center;
+    width:100%;
     color:#4c1d95;
     font-size:14px;
 }
 
 /* HOVER */
 .event-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 15px 35px rgba(124,58,237,0.2);
+    transform:translateY(-4px);
+    box-shadow:0 12px 25px rgba(124,58,237,0.18);
 }
 
-/* RIGHT TEXT */
+/* ===== TEXT SIDE ===== */
 .event-text{
     width:40%;
 }
 
 /* HEADING */
 .event-text h2{
-    font-size:34px;
+    font-size:28px; /* reduced */
     color:#3b0764;
-    margin-bottom:15px;
+    margin-bottom:12px;
 }
 
 /* TAGLINE */
 .tagline{
     color:#7c3aed;
     font-weight:600;
-    margin-bottom:15px;
-    font-size:16px;
+    margin-bottom:10px;
+    font-size:14px;
 }
 
 /* DESCRIPTION */
 .desc{
-    color:#6b7280;
-    margin-bottom:20px;
-    line-height:1.6;
+    color:#6d28d9 !important;  /* 🔥 force override */
+    margin-bottom:12px;
+    line-height:1.5;
+    font-size:13px;
 }
 
 /* FEATURES */
-.features{
-    margin-bottom:20px;
-}
-
 .features div{
-    margin-bottom:8px;
+    margin-bottom:6px;
     color:#4c1d95;
-    font-size:14px;
-}
-
-/* BUTTON */
-.explore-btn{
-    padding:12px 22px;
-    border:none;
-    background:#7c3aed;
-    color:#fff;
-    border-radius:25px;
-    cursor:pointer;
-    font-weight:600;
+    font-size:13px;
 }
 
 /* RESPONSIVE */
@@ -365,7 +367,7 @@ overflow-x:hidden;
     .event-section{
         flex-direction:column;
         height:auto;
-        padding:50px 5%;
+        overflow:visible;
     }
 
     .event-grid,
@@ -373,97 +375,7 @@ overflow-x:hidden;
         width:100%;
     }
 }
-.event-card{
-    text-decoration:none;   /* ❗ removes underline */
-    color:inherit;          /* ❗ keeps text color */
-    display:block;          /* ❗ makes full card clickable */
-}
 
-/* ===== FEEDBACK===== */
-/* SECTION */
-.feedback-section{
-    padding:80px 8%;
-    padding:50px 8%;
-    background:linear-gradient(135deg,#ffffff,#f5f3ff,#ede9fe);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-}
-
-/* HEADING */
-.feedback-section h2{
-    font-size:34px;
-    color:#3b0764;
-    margin-bottom:40px;
-    font-weight:700;
-}
-
-/* GRID */
-.feedback-grid{
-    width:100%;
-    max-width:1100px;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:25px;
-}
-
-/* CARD */
-.feedback-card{
-    background:#ffffff;
-    padding:22px;
-    border-radius:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.06);
-    border:1px solid #ede9fe;
-    transition:0.3s;
-}
-
-/* HOVER */
-.feedback-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 40px rgba(124,58,237,0.15);
-}
-
-/* STARS */
-.stars{
-    font-size:16px;
-    font-weight:600;
-    color:#7c3aed;
-    margin-bottom:12px;
-}
-
-/* TEXT */
-.feedback-text{
-    font-size:14px;
-    color:#4b5563;
-    line-height:1.6;
-    margin-bottom:15px;
-}
-
-/* EVENT NAME */
-.event-name{
-    color:#5b21b6;
-    font-weight:600;
-}
-
-/* RESPONSIVE */
-@media(max-width:1000px){
-    .feedback-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
-}
-
-@media(max-width:600px){
-    .feedback-section{
-        height:auto;
-        padding:60px 5%;
-    }
-
-    .feedback-grid{
-        grid-template-columns:1fr;
-    }
-}
 
 
 /* ===== BEST SELLER FULL SCREEN ===== */
@@ -595,89 +507,109 @@ overflow-x:hidden;
 /* ===== FEEDBACK===== */
 /* SECTION */
 .feedback-section{
-    padding:80px 8%;
-    padding:50px 8%;
-    background:linear-gradient(135deg,#ffffff,#f5f3ff,#ede9fe);
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
     text-align:center;
+    padding:60px 5%;
+    background:#fdfbff;
 }
 
-/* HEADING */
 .feedback-section h2{
-    font-size:34px;
-    color:#3b0764;
-    margin-bottom:40px;
-    font-weight:700;
+    color:#4c1d95;
+    margin-bottom:30px;
 }
 
-/* GRID */
-.feedback-grid{
+/* SLIDER WRAPPER */
+/* SLIDER WRAPPER */
+.feedback-slider{
+    position:relative;
     width:100%;
-    max-width:1100px;
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:25px;
+    margin:auto;
+    overflow:hidden;
 }
 
-/* CARD */
+/* CONTAINER */
+.feedback-container{
+    display:flex;
+    width:100%;
+    transition:transform 0.5s ease;
+}
+
+/* 🔥 CARD FIX */
 .feedback-card{
-    background:#ffffff;
-    padding:22px;
-    border-radius:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.06);
-    border:1px solid #ede9fe;
-    transition:0.3s;
-}
-
-/* HOVER */
-.feedback-card:hover{
-    transform:translateY(-6px);
-    box-shadow:0 20px 40px rgba(124,58,237,0.15);
-}
-
-/* STARS */
-.stars{
-    font-size:16px;
-    font-weight:600;
-    color:#7c3aed;
-    margin-bottom:12px;
+    width:100%;
+    min-width:100%;
+    flex:0 0 100%;   /* 🔥 VERY IMPORTANT */
+    
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(124,58,237,0.15);
 }
 
 /* TEXT */
 .feedback-text{
+    margin:15px 0;
+    color:#374151;
     font-size:14px;
-    color:#4b5563;
-    line-height:1.6;
-    margin-bottom:15px;
 }
 
-/* EVENT NAME */
+/* EVENT */
 .event-name{
-    color:#5b21b6;
-    font-weight:600;
+    color:#7c3aed;
 }
 
-/* RESPONSIVE */
-@media(max-width:1000px){
-    .feedback-grid{
-        grid-template-columns:repeat(2,1fr);
-    }
+/* NAV BUTTONS */
+.nav{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:linear-gradient(135deg,#7c3aed,#5b21b6);
+    color:white;
+    border:none;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:20px;
+    z-index:10; /* 🔥 important */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 20px rgba(124,58,237,0.3);
 }
 
-@media(max-width:600px){
-    .feedback-section{
-        height:auto;
-        padding:60px 5%;
-    }
+.prev{ left:10px; }
+.next{ right:10px; }
 
-    .feedback-grid{
-        grid-template-columns:1fr;
-    }
+.nav:hover{
+    background:#5b21b6;
 }
 
+/* animationnnnnnnn */
+
+/* ===== SCROLL ANIMATION ===== */
+.fade-up{
+    opacity:0;
+    transform:translateY(60px);
+    transition:all 0.8s ease;
+}
+
+.fade-left{
+    opacity:0;
+    transform:translateX(-60px);
+    transition:all 0.8s ease;
+}
+
+.fade-right{
+    opacity:0;
+    transform:translateX(60px);
+    transition:all 0.8s ease;
+}
+
+/* ACTIVE */
+.show{
+    opacity:1;
+    transform:translate(0,0);
+}
 </style>
 </head>
 
@@ -690,62 +622,117 @@ overflow-x:hidden;
 
     <!-- LEFT CONTENT -->
     <div class="hero-left">
-        <h1>Powering Unforgettable College Events</h1>
-        <p>Plan, manage and execute college events professionally.</p>
-    </div>
+
+    <h1>
+        Powering <span class="highlight">Unforgettable</span><br>
+        College Events
+    </h1>
+
+    <p class="sub-text">
+        Plan, manage and execute college events professionally — 
+        from concept to celebration.
+    </p>
+
+    <p class="tagline">
+        ✨ From Freshers to Farewells — we make every moment extraordinary.
+    </p>
+
+   
+
+</div>
 
     <!-- RIGHT SLIDER -->
     <div class="hero-right">
         <div class="slides">
-            <div class="slide"></div>
-            <div class="slide"></div>
-            <div class="slide"></div>
-            <div class="slide"></div>
-            <div class="slide"></div>
-            <div class="slide"></div>
-        </div>
+    <div class="slide" style="background-image:url('uploads/images/events_images/convocation.png')"></div>
+    <div class="slide" style="background-image:url('uploads/images/events_images/annualday.png')"></div>
+    <div class="slide" style="background-image:url('uploads/images/farewell/farewell5.png')"></div>
+    <div class="slide" style="background-image:url('uploads/images/seminar/speaker_setup.png')"></div>
+    <div class="slide" style="background-image:url('uploads/images/sports day/sport_day_about.png')"></div>
+</div>
     </div>
 
 </div>
 
-<!-- EVENT CATEGORIES -->
-<div class="event-section">
+<script>
+let slides = document.querySelectorAll(".slide");
+let index = 0;
 
-    <!-- LEFT SIDE (EVENTS) -->
+function updateSlider(){
+
+    slides.forEach(s=>{
+        s.className = "slide";
+    });
+
+    let total = slides.length;
+
+    slides[index].classList.add("active");
+    slides[(index-1+total)%total].classList.add("left");
+    slides[(index+1)%total].classList.add("right");
+    slides[(index-2+total)%total].classList.add("far-left");
+    slides[(index+2)%total].classList.add("far-right");
+}
+
+function autoSlide(){
+    index = (index+1)%slides.length;
+    updateSlider();
+}
+
+updateSlider();
+setInterval(autoSlide,3000);
+</script>
+
+<!-- EVENT CATEGORIES -->
+<div class="event-section" fade-up>
+
+    <!-- LEFT SIDE -->
     <div class="event-grid">
 
-    <a href="events/annualday.php" class="event-card">
-        <img src="uploads/images/events_images/annualday.png">
-        <h3>Annual Day</h3>
-    </a>
+        <a href="events/annualday.php" class="event-card">
+            <div class="img-box">
+                <img src="uploads/images/events_images/annualday.png">
+            </div>
+            <h3>Annual Day</h3>
+        </a>
 
-    <a href="events/convocation.php" class="event-card">
-        <img src="uploads/images/events_images/convocation.png">
-        <h3>Convocation</h3>
-    </a>
+        <a href="events/convocation.php" class="event-card">
+            <div class="img-box">
+                <img src="uploads/images/events_images/convocation.png">
+            </div>
+            <h3>Convocation</h3>
+        </a>
 
-    <a href="events/farewell.php" class="event-card">
-        <img src="uploads/images/events_images/farewell.png">
-        <h3>Farewell</h3>
-    </a>
+        <a href="events/farewell.php" class="event-card">
+            <div class="img-box">
+                <img src="uploads/images/events_images/farewell.PNG">
+            </div>
+            <h3>Farewell</h3>
+        </a>
 
-    <a href="events/fresher.php" class="event-card">
-        <img src="uploads/images/events_images/fresher.png">
-        <h3>Freshers</h3>
-    </a>
+        <a href="events/fresher.php" class="event-card">
+            <div class="img-box">
+                <img src="uploads/images/events_images/fresher.PNG">
+            </div>
+            <h3>Freshers</h3>
+        </a>
 
-    <a href="events/seminar.php" class="event-card">
-        <img src="uploads/images/events_images/seminar.png">
-        <h3>Seminar</h3>
-    </a>
+        <a href="events/seminar.php" class="event-card">
+            <div class="img-box">
+                <img src="uploads/images/events_images/seminar.PNG">
+            </div>
+            <h3>Seminar</h3>
+        </a>
 
-    <a href="events/sportsday.php" class="event-card">
-        <img src="uploads/images/events_images/sportsday.png">
-        <h3>Sports Day</h3>
-    </a>
+        <a href="events/sportsday.php" class="event-card">
+            <div class="img-box">
+                <img src="uploads/images/events_images/sportsday.PNG">
+            </div>
+            <h3>Sports Day</h3>
+        </a>
 
-</div>
-    <!-- RIGHT SIDE (TEXT) -->
+    </div>
+
+    <!-- RIGHT SIDE -->
     <div class="event-text">
 
         <h2>Crafting Memorable College Experiences</h2>
@@ -766,8 +753,6 @@ overflow-x:hidden;
             <div>✔ Budget Friendly Packages</div>
             <div>✔ Trusted by Colleges</div>
         </div>
-
-
 
     </div>
 
@@ -931,30 +916,65 @@ if(!$result){
 <div class="feedback-section">
     <h2>What Our Clients Say</h2>
 
-    <div class="feedback-grid">
+    <div class="feedback-slider">
 
-        <?php while($f=mysqli_fetch_assoc($result)){ ?>
+        <button class="nav prev" onclick="prevSlide()">❮</button>
 
-        <div class="feedback-card">
-            
-            <div class="stars">
-                ⭐ <?= $f['rating'] ?>/5
+        <div class="feedback-container">
+
+            <?php while($f=mysqli_fetch_assoc($result)){ ?>
+            <div class="feedback-card">
+
+                <div class="stars">
+                    ⭐ <?= $f['rating'] ?>/5
+                </div>
+
+                <p class="feedback-text">
+                    <?= $f['comment'] ?>
+                </p>
+
+                <h4 class="event-name">
+                    <?= $f['event_name'] ?>
+                </h4>
+
             </div>
-
-            <p class="feedback-text">
-                <?= $f['comment'] ?>
-            </p>
-
-            <h4 class="event-name">
-                <?= $f['event_name'] ?>
-            </h4>
+            <?php } ?>
 
         </div>
 
-        <?php } ?>
+        <button class="nav next" onclick="nextSlide()">❯</button>
 
     </div>
 </div>
+<script>
+let fIndex = 0;   // 🔥 अलग variable
+
+function showSlide(){
+    let slider = document.querySelector(".feedback-container");
+    let cards = document.querySelectorAll(".feedback-card");
+    let total = cards.length;
+
+    if(total === 0) return;
+
+    if(fIndex >= total) fIndex = 0;
+    if(fIndex < 0) fIndex = total - 1;
+
+    slider.style.transform = "translateX(" + (-fIndex * 100) + "%)";
+}
+
+function nextSlide(){
+    fIndex++;
+    showSlide();
+}
+
+function prevSlide(){
+    fIndex--;
+    showSlide();
+}
+
+/* INIT */
+showSlide();
+</script>
 </body>
 <?php include("footer.php"); ?>
 </html>

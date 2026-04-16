@@ -275,5 +275,4 @@ if($query && mysqli_num_rows($query) > 0){
 </div>
 
 </body>
-<?php include("footer.php"); ?>
 </html>

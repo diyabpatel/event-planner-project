@@ -5,9 +5,15 @@ include("../db.php");
 header('Content-Type: text/html; charset=utf-8');
 
 $q = mysqli_query($conn,"
-SELECT p.*,u.college_name
+SELECT 
+    p.*, 
+    u.college_name,
+    e.event_name,
+    e.image AS event_image
 FROM payments p
-JOIN users u ON p.user_id=u.user_id
+JOIN users u ON p.user_id = u.user_id
+JOIN bookings b ON p.booking_id = b.booking_id
+JOIN events e ON b.event_id = e.event_id
 ORDER BY p.payment_id DESC
 ");
 
@@ -76,7 +82,6 @@ margin-bottom:20px;
 font-size:26px;
 font-weight:700;
 color:#4c1d95;
-letter-spacing:0.5px;
 }
 
 /* FILTER BAR */
@@ -96,8 +101,7 @@ background:rgba(124,58,237,0.08);
 color:#6d28d9;
 font-size:13px;
 cursor:pointer;
-transition:all 0.3s ease;
-backdrop-filter:blur(10px);
+transition:0.3s;
 }
 
 .filter-btn:hover{
@@ -113,20 +117,16 @@ color:white;
 box-shadow:0 10px 25px rgba(124,58,237,0.4);
 }
 
-/* GRID FIXED ✅ */
+/* GRID FIX */
 .tab{
 display:none;
 }
 
 .tab.active{
 display:grid;
-
-/* 🔥 MAIN FIX HERE */
-grid-template-columns:repeat(auto-fill,260px);
-
-gap:20px;
-justify-content:center; /* center alignment */
-
+grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); /* 🔥 FIXED */
+gap:25px;
+justify-content:center;
 animation:fade 0.4s ease;
 }
 
@@ -135,60 +135,78 @@ from{opacity:0; transform:translateY(10px);}
 to{opacity:1; transform:translateY(0);}
 }
 
-/* CARD (SQUARE FIX) */
+/* CARD */
 .card{
-width:260px;
-height:260px; /* 🔥 square */
-background:rgba(255,255,255,0.8);
-padding:14px;
-border-radius:16px;
-border:1px solid rgba(255,255,255,0.3);
+width:100%;
+max-width:300px;
+min-height:340px;
+background:rgba(255,255,255,0.85);
+padding:15px;
+border-radius:18px;
 backdrop-filter:blur(12px);
-box-shadow:0 8px 30px rgba(0,0,0,0.06);
-transition:all 0.3s ease;
-position:relative;
-overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
+transition:0.3s;
 display:flex;
 flex-direction:column;
-justify-content:space-between;
+gap:10px;
 }
 
-/* GLOW EFFECT */
-.card::before{
+.card:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 45px rgba(124,58,237,0.2);
+}
+
+/* STATUS COLORS */
+.pending-card::before,
+.approved-card::before,
+.rejected-card::before{
 content:"";
 position:absolute;
 top:0;
 left:0;
 width:100%;
 height:4px;
-background:linear-gradient(90deg,#7c3aed,#c4b5fd);
 }
 
-.card:hover{
-transform:translateY(-6px) scale(1.02);
-box-shadow:0 15px 40px rgba(124,58,237,0.2);
+.pending-card::before{background:#facc15;}
+.approved-card::before{background:#22c55e;}
+.rejected-card::before{background:#ef4444;}
+
+/* 🔥 EVENT IMAGE (SQUARE FIX) */
+.event-img{
+width:100%;
+aspect-ratio:1/1;
+overflow:hidden;
+border-radius:14px;
 }
 
-/* STATUS COLORS */
-.pending-card::before{background:linear-gradient(90deg,#facc15,#fde68a);}
-.approved-card::before{background:linear-gradient(90deg,#22c55e,#86efac);}
-.rejected-card::before{background:linear-gradient(90deg,#ef4444,#fca5a5);}
+.event-img img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+/* EVENT NAME */
+.event-name{
+font-size:15px;
+font-weight:600;
+color:#5b21b6;
+margin-top:5px;
+}
 
 /* IMAGE GRID */
 .img-grid{
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:6px;
-margin-bottom:10px;
 }
 
 .img-grid img{
 width:100%;
-height:65px;
+height:70px;
 object-fit:cover;
 border-radius:10px;
-cursor:pointer;
-transition:all 0.3s ease;
+transition:0.3s;
 }
 
 .img-grid img:hover{
@@ -201,20 +219,17 @@ box-shadow:0 6px 15px rgba(0,0,0,0.15);
 font-weight:600;
 font-size:14px;
 color:#2e1065;
-margin-bottom:3px;
 }
 
 .amount{
 font-size:16px;
 font-weight:700;
 color:#6d28d9;
-margin-bottom:2px;
 }
 
 .method{
 font-size:12px;
 color:#6b7280;
-margin-bottom:6px;
 }
 
 /* BUTTON */
@@ -227,7 +242,7 @@ border-radius:20px;
 background:linear-gradient(135deg,#7c3aed,#5b21b6);
 color:white;
 text-decoration:none;
-transition:all 0.3s ease;
+transition:0.3s;
 }
 
 .btn:hover{
@@ -242,18 +257,14 @@ margin-left:0;
 padding:15px;
 }
 
-/* mobile ma 1 column */
 .tab.active{
-grid-template-columns:repeat(auto-fill,200px);
-justify-content:center;
+grid-template-columns:1fr;
 }
 
 .card{
-width:200px;
-height:200px;
+max-width:100%;
 }
 }
-
 </style>
 </head>
 
@@ -275,6 +286,15 @@ height:200px;
 <div class="tab active" id="pendingTab">
 <?php foreach($pending as $row){ ?>
 <div class="card pending-card">
+
+<div class="event-img">
+    <img src="/event-planner-project/uploads/images/events_images/<?php echo $row['event_image']; ?>" 
+    onerror="this.src='https://via.placeholder.com/300x150'">
+</div>
+
+<div class="event-name">
+    <?php echo htmlspecialchars($row['event_name']); ?>
+</div>
 
 <div class="img-grid">
 
@@ -310,6 +330,15 @@ onerror="this.src='https://via.placeholder.com/60'">
 <?php foreach($approved as $row){ ?>
 <div class="card approved-card">
 
+<div class="event-img">
+    <img src="/event-planner-project/uploads/images/events_images/<?php echo $row['event_image']; ?>" 
+    onerror="this.src='https://via.placeholder.com/300x150'">
+</div>
+
+<div class="event-name">
+    <?php echo htmlspecialchars($row['event_name']); ?>
+</div>
+
 <div class="img-grid">
 
 <a href="payment_details.php?id=<?php echo $row['payment_id']; ?>">
@@ -343,6 +372,15 @@ onerror="this.src='https://via.placeholder.com/60'">
 <div class="tab" id="rejectedTab">
 <?php foreach($rejected as $row){ ?>
 <div class="card rejected-card">
+
+<div class="event-img">
+    <img src="/event-planner-project/uploads/images/events_images/<?php echo $row['event_image']; ?>" 
+    onerror="this.src='https://via.placeholder.com/300x150'">
+</div>
+
+<div class="event-name">
+    <?php echo htmlspecialchars($row['event_name']); ?>
+</div>
 
 <div class="img-grid">
 
