@@ -258,4 +258,5 @@ Go to My Bookings
 </div>
 
 </body>
+<?php include("footer.php"); ?>
 </html>

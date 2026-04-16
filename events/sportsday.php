@@ -336,9 +336,6 @@ echo "<p>No feedback available yet.</p>";
 
 </div>
 
-<footer>
-Event Management System
-</footer>
 
 <!-- IMAGE MODAL -->
 <div id="imgModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;">
