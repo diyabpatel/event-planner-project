@@ -466,6 +466,217 @@ overflow-x:hidden;
 }
 
 
+/* ===== BEST SELLER FULL SCREEN ===== */
+/* ===== ULTRA PREMIUM BEST SELLER ===== */
+.bestseller-section{
+    position:relative;
+    height:100vh;
+    width:100%;
+    overflow:hidden;
+}
+
+/* 🎥 VIDEO BACKGROUND */
+.bg-video{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:1;
+}
+
+/* 🌑 DARK + GRADIENT OVERLAY */
+.overlay{
+    position:absolute;
+    width:100%;
+    height:100%;
+    background:linear-gradient(
+        to right,
+        rgba(0,0,0,0.75),
+        rgba(0,0,0,0.4),
+        rgba(0,0,0,0.75)
+    );
+    z-index:2;
+}
+
+/* CENTER CONTENT */
+.bestseller-content{
+    position:relative;
+    z-index:3;
+    height:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* 💎 GLASS CARD */
+.glass-card{
+    width:420px;
+    padding:30px;
+    border-radius:20px;
+    backdrop-filter:blur(15px);
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+    text-align:center;
+    color:#fff;
+
+    animation:fadeUp 1s ease;
+}
+
+/* IMAGE */
+.glass-card img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+    border-radius:12px;
+    margin-bottom:15px;
+}
+
+/* TEXT */
+.glass-card h2{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.rating{
+    color:#c4b5fd;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.desc{
+    font-size:14px;
+    color:#e5e7eb;
+    margin-bottom:20px;
+}
+
+/* BUTTON */
+.btn{
+    padding:12px 25px;
+    background:linear-gradient(135deg,#7c3aed,#a78bfa);
+    border:none;
+    color:#fff;
+    border-radius:30px;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+    box-shadow:0 10px 25px rgba(124,58,237,0.5);
+}
+
+/* ✨ ANIMATION */
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* 📱 MOBILE */
+@media(max-width:900px){
+    .glass-card{
+        width:90%;
+        padding:20px;
+    }
+
+    .glass-card h2{
+        font-size:22px;
+    }
+}
+/* ===== FEEDBACK===== */
+/* SECTION */
+.feedback-section{
+    padding:80px 8%;
+    padding:50px 8%;
+    background:linear-gradient(135deg,#ffffff,#f5f3ff,#ede9fe);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+/* HEADING */
+.feedback-section h2{
+    font-size:34px;
+    color:#3b0764;
+    margin-bottom:40px;
+    font-weight:700;
+}
+
+/* GRID */
+.feedback-grid{
+    width:100%;
+    max-width:1100px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:25px;
+}
+
+/* CARD */
+.feedback-card{
+    background:#ffffff;
+    padding:22px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
+    border:1px solid #ede9fe;
+    transition:0.3s;
+}
+
+/* HOVER */
+.feedback-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 20px 40px rgba(124,58,237,0.15);
+}
+
+/* STARS */
+.stars{
+    font-size:16px;
+    font-weight:600;
+    color:#7c3aed;
+    margin-bottom:12px;
+}
+
+/* TEXT */
+.feedback-text{
+    font-size:14px;
+    color:#4b5563;
+    line-height:1.6;
+    margin-bottom:15px;
+}
+
+/* EVENT NAME */
+.event-name{
+    color:#5b21b6;
+    font-weight:600;
+}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+    .feedback-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+    .feedback-section{
+        height:auto;
+        padding:60px 5%;
+    }
+
+    .feedback-grid{
+        grid-template-columns:1fr;
+    }
+}
 
 </style>
 </head>
@@ -504,32 +715,32 @@ overflow-x:hidden;
     <div class="event-grid">
 
     <a href="events/annualday.php" class="event-card">
-        <img src="uploads/images/annual/annualday_bg03.jpg">
+        <img src="uploads/images/events_images/annualday.png">
         <h3>Annual Day</h3>
     </a>
 
     <a href="events/convocation.php" class="event-card">
-        <img src="uploads/images/convocation/convocation1.jpg">
+        <img src="uploads/images/events_images/convocation.png">
         <h3>Convocation</h3>
     </a>
 
     <a href="events/farewell.php" class="event-card">
-        <img src="uploads/images/farewell/farewell1.jpg">
+        <img src="uploads/images/events_images/farewell.png">
         <h3>Farewell</h3>
     </a>
 
     <a href="events/fresher.php" class="event-card">
-        <img src="uploads/images/freshers/fresher1.jpg">
+        <img src="uploads/images/events_images/fresher.png">
         <h3>Freshers</h3>
     </a>
 
     <a href="events/seminar.php" class="event-card">
-        <img src="uploads/images/seminar/s1.jpg">
+        <img src="uploads/images/events_images/seminar.png">
         <h3>Seminar</h3>
     </a>
 
     <a href="events/sportsday.php" class="event-card">
-        <img src="uploads/images/sports day/sports day1.jpg">
+        <img src="uploads/images/events_images/sportsday.png">
         <h3>Sports Day</h3>
     </a>
 
@@ -660,9 +871,41 @@ overflow-x:hidden;
 
 </div>
 
+<!-- BEST SELLER SECTION -->
+<!-- ULTRA PREMIUM BEST SELLER -->
+<div class="bestseller-section">
 
+    <!-- BACKGROUND VIDEO -->
+    <video autoplay muted loop playsinline class="bg-video">
+        <source src="uploads/videos/convocation.mp4" type="video/mp4">
+    </video>
 
+    <!-- DARK OVERLAY -->
+    <div class="overlay"></div>
 
+    <!-- CONTENT -->
+    <div class="bestseller-content">
+
+        <div class="glass-card">
+
+            <img src="uploads/images/events_images/convocation.png" alt="Convocation">
+
+            <h2>Convocation</h2>
+
+            <p class="rating">⭐ 4.9 / 5 — Top Rated Experience</p>
+
+            <p class="desc">
+                Celebrate success with a premium convocation experience —
+                elegant stage design, cinematic lighting, and flawless execution.
+            </p>
+
+            <a href="events/convocation.php" class="btn">Explore Event</a>
+
+        </div>
+
+    </div>
+
+</div>
 
 <!-- CLIENT FEEDBACK -->
 <?php
@@ -685,8 +928,6 @@ if(!$result){
     die("Query Failed: " . mysqli_error($conn));
 }
 ?>
-
-<!-- CLIENT FEEDBACK -->
 <div class="feedback-section">
     <h2>What Our Clients Say</h2>
 
@@ -714,7 +955,6 @@ if(!$result){
 
     </div>
 </div>
-
 </body>
 <?php include("footer.php"); ?>
 </html>
