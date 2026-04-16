@@ -79,7 +79,20 @@ button.filter-btn{padding:8px 15px;border:none;border-radius:20px;background:#dd
 button.active{background:#7c3aed;color:white;}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
 .card{background:white;border-radius:18px;padding:20px;box-shadow:0 10px 25px rgba(91,33,182,0.15);}
-.card img{width:100%;height:160px;object-fit:cover;border-radius:12px;margin-bottom:10px;}
+.card img{
+    width:100%;
+    aspect-ratio:1/1;   /* 🔥 perfect square */
+    object-fit:cover;
+    object-position:center;
+
+    border-radius:12px;
+    margin-bottom:10px;
+
+    transition:0.3s;
+}
+.card:hover img{
+    transform:scale(1.05);
+}
 .btn{padding:6px 12px;border-radius:8px;color:white;text-decoration:none;font-size:13px;}
 .edit{background:#7c3aed;}
 .delete{background:#e11d48;}

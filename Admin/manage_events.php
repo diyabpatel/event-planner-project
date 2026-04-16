@@ -106,7 +106,10 @@ h2{color:#5b21b6;margin:0;}
 .event-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;}
 .event-card{background:white;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(91,33,182,0.2);transition:0.3s;display:flex;flex-direction:column;}
 .event-card:hover{transform:translateY(-6px);}
-.event-card img{width:100%;height:200px;object-fit:cover;}
+.event-card img{width:100%;
+    aspect-ratio:1/1;   /* 🔥 perfect square */
+    object-fit:cover;   /* crop properly */
+    object-position:center;}
 .event-body{padding:15px;display:flex;flex-direction:column;flex:1;}
 .event-body h3{color:#5b21b6;margin-bottom:8px;}
 .event-body p{font-size:14px;color:#555;line-height:1.5;margin-bottom:10px;}

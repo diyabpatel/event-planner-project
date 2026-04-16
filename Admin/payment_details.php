@@ -4,52 +4,50 @@ include("../db.php");
 
 $id = intval($_GET['id']);
 
-/* 🔥 SIMPLE + SAFE FETCH */
+/* 🔥 FETCH WITH EVENT NAME */
 $row = mysqli_fetch_assoc(mysqli_query($conn,"
-SELECT * FROM payments WHERE payment_id=$id
+    SELECT p.*, b.event_id, e.event_name 
+    FROM payments p
+    JOIN bookings b ON p.booking_id = b.booking_id
+    JOIN events e ON b.event_id = e.event_id
+    WHERE p.payment_id = $id
 "));
 
 $booking_id = $row['booking_id'];
-
+$event_name = $row['event_name'];
 /* 🔥 FINAL ACTION */
 if(isset($_GET['final'])){
 
 if($_GET['final']=="confirm"){
 
-mysqli_query($conn,"UPDATE payments SET payment_status='Approved' WHERE payment_id=$id");
+    mysqli_query($conn,"UPDATE payments SET payment_status='Approved' WHERE payment_id=$id");
 
-$msg = "Your payment has been successfully approved.";
+    $msg = "Your booking for the event \"$event_name\" has been successfully confirmed. Thank you for your payment.";
 
-/* 🔥 FIXED UPDATE */
-mysqli_query($conn,"
-UPDATE bookings 
-SET notification='$msg', payment_status='Approved'
-WHERE booking_id IN (
-SELECT booking_id FROM payments WHERE payment_id=$id
-)
-");
+    mysqli_query($conn,"
+        UPDATE bookings 
+        SET notification='$msg', payment_status='Approved'
+        WHERE booking_id=$booking_id
+    ");
 
-header("Location: manage_payments.php");
-exit();
+    header("Location: manage_payments.php");
+    exit();
 }
 
 if($_GET['final']=="reject"){
 
-mysqli_query($conn,"UPDATE payments SET payment_status='Rejected' WHERE payment_id=$id");
+    mysqli_query($conn,"UPDATE payments SET payment_status='Rejected' WHERE payment_id=$id");
 
-$msg = "Your payment was rejected. Please re-upload documents.";
+    $msg = "Your payment for the event \"$event_name\" was not approved. Please re-upload valid payment details to proceed with your booking.";
 
-/* 🔥 FIXED UPDATE */
-mysqli_query($conn,"
-UPDATE bookings 
-SET notification='$msg', payment_status='Rejected'
-WHERE booking_id IN (
-SELECT booking_id FROM payments WHERE payment_id=$id
-)
-");
+    mysqli_query($conn,"
+        UPDATE bookings 
+        SET notification='$msg', payment_status='Rejected'
+        WHERE booking_id=$booking_id
+    ");
 
-header("Location: manage_payments.php");
-exit();
+    header("Location: manage_payments.php");
+    exit();
 }
 
 }
