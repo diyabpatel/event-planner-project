@@ -266,7 +266,12 @@ form::before{
     border-radius:12px;
     margin-bottom:10px;
 }
-
+.seat-card img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:12px;
+}
 /* HOVER */
 .venue-card:hover,
 .seat-card:hover,
@@ -676,5 +681,5 @@ dateInput.addEventListener("change", function(){
 });
 </script>
 </body>
-<?php include("footer.php"); ?>
+
 </html>
