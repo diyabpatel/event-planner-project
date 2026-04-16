@@ -242,7 +242,7 @@ body{
 
         <div class="dropdown">
             
-            <a href="#" class="dropdown-toggle" id="eventToggle">Events ▾</a>
+           <a href="#" class="dropdown-toggle" id="eventToggle">Events &#9662;</a>
 
             <div class="dropdown-menu" id="eventMenu">
                 <?php
