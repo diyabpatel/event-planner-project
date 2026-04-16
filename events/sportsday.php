@@ -369,4 +369,5 @@ document.getElementById("imgModal").style.display="none";
 </script>
 
 </body>
+<?php include("../footer.php"); ?>
 </html>
