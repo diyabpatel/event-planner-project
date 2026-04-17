@@ -478,8 +478,4 @@ function closeModal(id){
 </script>
 
 </body>
-<<<<<<< HEAD
-=======
-<?php include("../footer.php"); ?>
->>>>>>> c061cc8dc8ccfb4dc4af8df3f7be62f7dfe337b7
 </html>
