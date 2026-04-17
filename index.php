@@ -538,18 +538,20 @@ overflow-x:hidden;
     height:100%;
     object-fit:cover;
     z-index:1;
-
-    filter: brightness(0.9) contrast(1.2) saturate(1.1);
 }
 
 /* 🌑 DARK + GRADIENT OVERLAY */
 .overlay{
+    position:absolute;
+    width:100%;
+    height:100%;
     background:linear-gradient(
         to right,
+        rgba(0,0,0,0.75),
         rgba(0,0,0,0.4),
-        rgba(0,0,0,0.2),
-        rgba(0,0,0,0.4)
+        rgba(0,0,0,0.75)
     );
+    z-index:2;
 }
 
 /* CENTER CONTENT */
@@ -567,7 +569,7 @@ overflow-x:hidden;
     width:420px;
     padding:30px;
     border-radius:20px;
-    backdrop-filter:blur(8px);
+    backdrop-filter:blur(15px);
     background:rgba(255,255,255,0.08);
     border:1px solid rgba(255,255,255,0.2);
     box-shadow:0 20px 60px rgba(0,0,0,0.4);
