@@ -438,8 +438,17 @@ dots.forEach(dot => dot.classList.remove("active"));
 cards[current].classList.add("active");
 dots[current].classList.add("active");
 
-const offset = current * 310;
-track.style.transform = `translateX(calc(50% - ${offset}px - 140px))`;
+/* 🔥 PERFECT CENTER FIX */
+const cardWidth = cards[0].offsetWidth;
+const gap = 30;
+const wrapperWidth = document.querySelector(".feedback-wrapper").offsetWidth;
+
+/* 🔥 IMPORTANT FIX */
+const totalMove = current * (cardWidth + gap);
+const centerOffset = (wrapperWidth / 2) - (cardWidth / 2);
+
+/* 🔥 FINAL */
+track.style.transform = `translateX(${centerOffset - totalMove}px)`;
 }
 
 updateCarousel();
