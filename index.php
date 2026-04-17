@@ -735,7 +735,7 @@ overflow-x:hidden;
     transition:0.3s;
 }
 
-.prev{ left:15px; }
+.prev{ left:25px; }
 .next{ right:15px; }
 
 .nav:hover{
@@ -1060,10 +1060,10 @@ if(!$result){
 ?>
 <div class="feedback-section fade-up">
     <h2>What Our Clients Say</h2>
-
+    <button class="nav prev" onclick="prevSlide()">❮</button>
     <div class="feedback-slider">
 
-        <button class="nav prev" onclick="prevSlide()">❮</button>
+        
 
         <div class="feedback-container">
 
@@ -1098,9 +1098,10 @@ for($i=1; $i<=5; $i++){
 
         </div>
 
-        <button class="nav next" onclick="nextSlide()">❯</button>
+        
 
     </div>
+    <button class="nav next" onclick="nextSlide()">❯</button>
 </div>
 
 <script>

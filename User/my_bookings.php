@@ -444,10 +444,24 @@ $is_edit_allowed = ($today <= $change_last_date);
     <a href="receipt.php?booking_id=<?php echo $booking_id; ?>" class="btn receipt">Receipt</a>
 
     <?php 
-    // OPTIONAL: event complete hone ke baad hi feedback
-    if($event_date < date("Y-m-d")){ ?>
+// OPTIONAL: event complete hone ke baad hi feedback
+if($event_date < date("Y-m-d")){ 
+
+    // ✅ CHECK IF FEEDBACK ALREADY GIVEN
+    $feedback_check = mysqli_query($conn, "
+        SELECT * FROM feedback 
+        WHERE booking_id = $booking_id AND user_id = $user_id
+    ");
+
+    $feedback_given = mysqli_num_rows($feedback_check) > 0;
+
+    if($feedback_given){ ?>
+        <a class="btn disabled">Feedback Submitted</a>
+    <?php } else { ?>
         <a href="feedback.php?booking_id=<?php echo $booking_id; ?>" class="btn feedback">Feedback</a>
-    <?php } ?>
+    <?php } 
+
+} ?>
 
 <?php } else { ?>
 
