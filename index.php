@@ -10,6 +10,18 @@ FROM feedback f
 JOIN events e ON f.event_id = e.event_id
 GROUP BY f.event_id
 ");
+$avgQuery = "
+SELECT AVG(f.rating) AS avg_rating
+FROM feedback f
+JOIN bookings b ON f.booking_id = b.booking_id
+JOIN events e ON b.event_id = e.event_id
+WHERE e.event_name = 'Convocation'
+";
+
+$avgResult = mysqli_query($conn, $avgQuery);
+$avgData = mysqli_fetch_assoc($avgResult);
+
+$avgRating = round($avgData['avg_rating'], 1); // 1 decimal (e.g. 4.7)
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,6 +37,10 @@ body{
 font-family:'Segoe UI',sans-serif;
 background:radial-gradient(circle at top,#1e2a5a,#0b1020 70%);
 color:#eaf0ff;
+overflow-x:hidden;
+margin:0;
+padding:0;
+background:#ffffff; /* match your section */
 overflow-x:hidden;
 }
 
@@ -134,29 +150,42 @@ overflow-x:hidden;
 /* ===== PREMIUM HOW IT WORKS (UPDATED) ===== */
 /* 🔥 FULL SECTION FIXED */
 .how-section{
-    min-height:100vh;                 /* 👈 important fix */
+    min-height:100vh;
     display:flex;
-    align-items:flex-start;           /* 👈 removes vertical centering */
+    align-items:flex-start;
     justify-content:space-between;
-    padding:80px 6%;                  /* 👈 controlled spacing */
+    padding:80px 6%;
     background:linear-gradient(135deg,#ffffff,#f5f3ff);
+
+    /* PREMIUM ENTRY */
+    opacity:0;
+    transform: translateY(60px);
+    animation: fadeInUp 1s ease forwards;
 }
 
-/* LEFT SIDE */
+@keyframes fadeInUp{
+    to{
+        opacity:1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== LEFT SIDE ===== */
 .how-left{
-    width:40%;
-    .how-left{
     width:40%;
     display:flex;
     flex-direction:column;
-    justify-content:center;   /* 👈 centers left content */
-}
+    justify-content:center;
 }
 
+/* HEADING (GRADIENT PREMIUM) */
 .how-left h2{
     font-size:34px;
-    color:#3b0764;
     margin-bottom:15px;
+
+    background: linear-gradient(90deg,#7c3aed,#c4b5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 /* TAGLINE */
@@ -181,24 +210,41 @@ overflow-x:hidden;
     font-size:14px;
 }
 
-/* 🔥 RIGHT SIDE GRID */
-/* 🔥 RIGHT SIDE GRID (FIXED) */
+/* ===== RIGHT SIDE GRID ===== */
 .timeline{
     width:55%;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:22px;                  /* 👈 more spacing */
-    align-content:center;      /* 👈 center vertically (IMPORTANT) */
+    gap:22px;
+    align-content:center;
 }
 
-/* STEP */
+/* ===== STEP ===== */
 .step{
     display:flex;
     align-items:flex-start;
     gap:14px;
+
+    /* FLOAT ANIMATION */
+    animation: floaty 6s ease-in-out infinite;
 }
 
-/* NUMBER */
+/* FLOAT DELAYS */
+.step:nth-child(2){ animation-delay:0.5s; }
+.step:nth-child(3){ animation-delay:1s; }
+.step:nth-child(4){ animation-delay:1.5s; }
+.step:nth-child(5){ animation-delay:2s; }
+.step:nth-child(6){ animation-delay:2.5s; }
+.step:nth-child(7){ animation-delay:3s; }
+.step:nth-child(8){ animation-delay:3.5s; }
+
+@keyframes floaty{
+    0%{ transform: translateY(0px); }
+    50%{ transform: translateY(-6px); }
+    100%{ transform: translateY(0px); }
+}
+
+/* ===== NUMBER ===== */
 .step-number{
     min-width:42px;
     height:42px;
@@ -210,43 +256,62 @@ overflow-x:hidden;
     justify-content:center;
     border-radius:50%;
     font-size:15px;
+
+    transition:0.4s;
 }
 
-/* 🔥 BIGGER CARD (MAIN FIX) */
+/* GLOW ON HOVER */
+.step:hover .step-number{
+    transform: scale(1.1);
+    box-shadow:
+        0 0 15px rgba(124,58,237,0.8),
+        0 0 30px rgba(167,139,250,0.6);
+}
+
+/* ===== STEP BOX (GLASS PREMIUM) ===== */
 .step-box{
-    background:#ffffff;
-    padding:18px;              /* 👈 increased */
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    padding:18px;
     border-radius:14px;
-    border:1px solid #ede9fe;
-    transition:0.3s;
+    border:1px solid rgba(124,58,237,0.15);
+
     width:100%;
-    min-height:85px;           /* 👈 forces height */
+    min-height:85px;
+
     display:flex;
     flex-direction:column;
     justify-content:center;
+
+    transition:0.4s;
+
+    box-shadow: 0 10px 30px rgba(124,58,237,0.08);
 }
 
-/* HOVER */
+/* HOVER PREMIUM */
 .step-box:hover{
-    transform:translateY(-6px);
-    box-shadow:0 15px 30px rgba(124,58,237,0.2);
+    transform: translateY(-10px) scale(1.02);
+    box-shadow:
+        0 20px 40px rgba(124,58,237,0.25),
+        0 0 20px rgba(167,139,250,0.4);
 }
 
-/* TITLE */
+/* ===== TEXT ===== */
 .step-title{
     color:#4c1d95;
-    font-size:16px;            /* 👈 bigger */
+    font-size:16px;
     font-weight:600;
     margin-bottom:6px;
 }
 
-/* DESC */
 .step-desc{
     color:#6b7280;
     font-size:13px;
 }
 
-/* 📱 RESPONSIVE */
+/* ===== RESPONSIVE ===== */
 @media(max-width:900px){
     .how-section{
         flex-direction:column;
@@ -262,7 +327,39 @@ overflow-x:hidden;
         grid-template-columns:1fr;
     }
 }
+/* ===== SCROLL ANIMATION ===== */
+.fade-up{
+    opacity: 0;
+    transform: translateY(80px);
+    transition: all 1s ease;
+}
 
+.fade-item{
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* visible */
+.fade-up.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-item.show{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* 🔥 STAGGER FOR STEPS */
+.step:nth-child(1){ transition-delay:0.1s; }
+.step:nth-child(2){ transition-delay:0.2s; }
+.step:nth-child(3){ transition-delay:0.3s; }
+.step:nth-child(4){ transition-delay:0.4s; }
+.step:nth-child(5){ transition-delay:0.5s; }
+.step:nth-child(6){ transition-delay:0.6s; }
+.step:nth-child(7){ transition-delay:0.7s; }
+.step:nth-child(8){ transition-delay:0.8s; }
 /* ===== EVENT CATEGORIES ===== */
 /* ===== SECTION ===== */
 .event-section{
@@ -375,7 +472,52 @@ overflow-x:hidden;
         width:100%;
     }
 }
+/* ===== SCROLL ANIMATION ===== */
 
+/* section animation */
+.fade-up{
+    opacity: 0;
+    transform: translateY(80px);
+    transition: all 1s ease;
+}
+
+/* card animation */
+.fade-item{
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+    transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* when visible */
+.fade-up.show{
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.fade-item.show{
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* 🔥 STAGGER EFFECT (premium) */
+.event-card:nth-child(1){ transition-delay:0.1s; }
+.event-card:nth-child(2){ transition-delay:0.2s; }
+.event-card:nth-child(3){ transition-delay:0.3s; }
+.event-card:nth-child(4){ transition-delay:0.4s; }
+.event-card:nth-child(5){ transition-delay:0.5s; }
+.event-card:nth-child(6){ transition-delay:0.6s; }
+
+/* EXTRA PREMIUM HOVER */
+.event-card{
+    transition: all 0.4s ease;
+}
+
+.event-card:hover{
+    transform: translateY(-10px) scale(1.04);
+    box-shadow: 
+        0 20px 40px rgba(124,58,237,0.25),
+        0 0 20px rgba(167,139,250,0.3);
+}
 
 
 /* ===== BEST SELLER FULL SCREEN ===== */
@@ -509,16 +651,17 @@ overflow-x:hidden;
 .feedback-section{
     text-align:center;
     padding:60px 5%;
-    background:#fdfbff;
+    background:linear-gradient(135deg,#fdfbff,#f3f0ff);
 }
 
+/* HEADING */
 .feedback-section h2{
     color:#4c1d95;
     margin-bottom:30px;
+    font-size:28px;
 }
 
-/* SLIDER WRAPPER */
-/* SLIDER WRAPPER */
+/* SLIDER */
 .feedback-slider{
     position:relative;
     width:100%;
@@ -529,32 +672,44 @@ overflow-x:hidden;
 /* CONTAINER */
 .feedback-container{
     display:flex;
-    width:100%;
-    transition:transform 0.5s ease;
+    transition:transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* 🔥 CARD FIX */
+/* CARD */
 .feedback-card{
     width:100%;
     min-width:100%;
-    flex:0 0 100%;   /* 🔥 VERY IMPORTANT */
-    
-    background:#fff;
-    padding:25px;
-    border-radius:18px;
-    box-shadow:0 10px 25px rgba(124,58,237,0.15);
+    flex:0 0 100%;
+
+    background:rgba(255,255,255,0.9);
+    backdrop-filter:blur(10px);
+
+    padding:30px;
+    border-radius:20px;
+
+    box-shadow:0 15px 40px rgba(124,58,237,0.15);
+
+    transition:0.4s;
+}
+
+/* HOVER */
+.feedback-card:hover{
+    transform:scale(1.02);
+    box-shadow:0 20px 50px rgba(124,58,237,0.25);
 }
 
 /* TEXT */
 .feedback-text{
     margin:15px 0;
     color:#374151;
-    font-size:14px;
+    font-size:15px;
+    line-height:1.6;
 }
 
 /* EVENT */
 .event-name{
     color:#7c3aed;
+    font-weight:600;
 }
 
 /* NAV BUTTONS */
@@ -565,51 +720,41 @@ overflow-x:hidden;
     background:linear-gradient(135deg,#7c3aed,#5b21b6);
     color:white;
     border:none;
-    width:40px;
-    height:40px;
+    width:45px;
+    height:45px;
     border-radius:50%;
     cursor:pointer;
     font-size:20px;
-    z-index:10; /* 🔥 important */
+    z-index:10;
+
     display:flex;
     align-items:center;
     justify-content:center;
-    box-shadow:0 8px 20px rgba(124,58,237,0.3);
+
+    box-shadow:0 10px 25px rgba(124,58,237,0.4);
+    transition:0.3s;
 }
 
-.prev{ left:10px; }
-.next{ right:10px; }
+.prev{ left:15px; }
+.next{ right:15px; }
 
 .nav:hover{
-    background:#5b21b6;
+    transform:translateY(-50%) scale(1.1);
+}
+.stars{
+    font-size:18px;
+    margin-bottom:10px;
+    color:#facc15; /* 🔥 golden stars */
+    letter-spacing:2px;
 }
 
-/* animationnnnnnnn */
-
-/* ===== SCROLL ANIMATION ===== */
-.fade-up{
-    opacity:0;
-    transform:translateY(60px);
-    transition:all 0.8s ease;
+/* rating text */
+.rating-text{
+    color:#6b7280;
+    font-size:14px;
+    margin-left:8px;
 }
 
-.fade-left{
-    opacity:0;
-    transform:translateX(-60px);
-    transition:all 0.8s ease;
-}
-
-.fade-right{
-    opacity:0;
-    transform:translateX(60px);
-    transition:all 0.8s ease;
-}
-
-/* ACTIVE */
-.show{
-    opacity:1;
-    transform:translate(0,0);
-}
 </style>
 </head>
 
@@ -683,47 +828,47 @@ setInterval(autoSlide,3000);
 </script>
 
 <!-- EVENT CATEGORIES -->
-<div class="event-section" fade-up>
+<div class="event-section fade-up">
 
     <!-- LEFT SIDE -->
     <div class="event-grid">
 
-        <a href="events/annualday.php" class="event-card">
+        <a href="events/annualday.php" class="event-card fade-item">
             <div class="img-box">
                 <img src="uploads/images/events_images/annualday.png">
             </div>
             <h3>Annual Day</h3>
         </a>
 
-        <a href="events/convocation.php" class="event-card">
+        <a href="events/convocation.php" class="event-card fade-item">
             <div class="img-box">
                 <img src="uploads/images/events_images/convocation.png">
             </div>
             <h3>Convocation</h3>
         </a>
 
-        <a href="events/farewell.php" class="event-card">
+        <a href="events/farewell.php" class="event-card fade-item">
             <div class="img-box">
                 <img src="uploads/images/events_images/farewell.PNG">
             </div>
             <h3>Farewell</h3>
         </a>
 
-        <a href="events/fresher.php" class="event-card">
+        <a href="events/fresher.php" class="event-card fade-item">
             <div class="img-box">
                 <img src="uploads/images/events_images/fresher.PNG">
             </div>
             <h3>Freshers</h3>
         </a>
 
-        <a href="events/seminar.php" class="event-card">
+        <a href="events/seminar.php" class="event-card fade-item">
             <div class="img-box">
                 <img src="uploads/images/events_images/seminar.PNG">
             </div>
             <h3>Seminar</h3>
         </a>
 
-        <a href="events/sportsday.php" class="event-card">
+        <a href="events/sportsday.php" class="event-card fade-item">
             <div class="img-box">
                 <img src="uploads/images/events_images/sportsday.PNG">
             </div>
@@ -733,7 +878,7 @@ setInterval(autoSlide,3000);
     </div>
 
     <!-- RIGHT SIDE -->
-    <div class="event-text">
+    <div class="event-text fade-item">
 
         <h2>Crafting Memorable College Experiences</h2>
 
@@ -743,8 +888,7 @@ setInterval(autoSlide,3000);
 
         <p class="desc">
             Whether it’s a grand Annual Day, an emotional Farewell, or a professional Seminar,
-            our platform helps you organize events seamlessly. We provide end-to-end solutions
-            including venue selection, decoration, catering, and execution.
+            our platform helps you organize events seamlessly.
         </p>
 
         <div class="features">
@@ -759,10 +903,10 @@ setInterval(autoSlide,3000);
 </div>
 
 <!-- HOW IT WORKS (UPDATED ONLY THIS PART) -->
-<div class="how-section">
+<div class="how-section fade-up">
 
-    <!-- LEFT SIDE (TEXT) -->
-    <div class="how-left">
+    <!-- LEFT SIDE -->
+    <div class="how-left fade-item">
 
         <h2>How EventHub Works</h2>
 
@@ -772,8 +916,6 @@ setInterval(autoSlide,3000);
 
         <p class="how-desc">
             EventHub simplifies the entire event planning process for colleges.
-            From selecting event types to final execution, everything is handled
-            in a structured and seamless way.
         </p>
 
         <div class="how-points">
@@ -785,10 +927,10 @@ setInterval(autoSlide,3000);
 
     </div>
 
-    <!-- RIGHT SIDE (STEPS) -->
+    <!-- RIGHT SIDE -->
     <div class="timeline">
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">1</div>
             <div class="step-box">
                 <div class="step-title">Choose Event</div>
@@ -796,7 +938,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">2</div>
             <div class="step-box">
                 <div class="step-title">Select Package</div>
@@ -804,7 +946,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">3</div>
             <div class="step-box">
                 <div class="step-title">Capacity</div>
@@ -812,7 +954,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">4</div>
             <div class="step-box">
                 <div class="step-title">Venue</div>
@@ -820,7 +962,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">5</div>
             <div class="step-box">
                 <div class="step-title">Decoration</div>
@@ -828,7 +970,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">6</div>
             <div class="step-box">
                 <div class="step-title">Seating</div>
@@ -836,7 +978,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">7</div>
             <div class="step-box">
                 <div class="step-title">Food</div>
@@ -844,7 +986,7 @@ setInterval(autoSlide,3000);
             </div>
         </div>
 
-        <div class="step">
+        <div class="step fade-item">
             <div class="step-number">8</div>
             <div class="step-box">
                 <div class="step-title">Date</div>
@@ -853,6 +995,7 @@ setInterval(autoSlide,3000);
         </div>
 
     </div>
+
 
 </div>
 
@@ -877,7 +1020,9 @@ setInterval(autoSlide,3000);
 
             <h2>Convocation</h2>
 
-            <p class="rating">⭐ 4.9 / 5 — Top Rated Experience</p>
+            <p class="rating">
+    ⭐ <?= $avgRating ? $avgRating : '0.0' ?> / 5 — Top Rated Experience
+</p>
 
             <p class="desc">
                 Celebrate success with a premium convocation experience —
@@ -913,7 +1058,7 @@ if(!$result){
     die("Query Failed: " . mysqli_error($conn));
 }
 ?>
-<div class="feedback-section">
+<div class="feedback-section fade-up">
     <h2>What Our Clients Say</h2>
 
     <div class="feedback-slider">
@@ -923,11 +1068,22 @@ if(!$result){
         <div class="feedback-container">
 
             <?php while($f=mysqli_fetch_assoc($result)){ ?>
-            <div class="feedback-card">
+            <div class="feedback-card fade-item">
 
                 <div class="stars">
-                    ⭐ <?= $f['rating'] ?>/5
-                </div>
+<?php 
+$rating = (int)$f['rating'];
+
+for($i=1; $i<=5; $i++){
+    if($i <= $rating){
+        echo "⭐"; // filled
+    } else {
+        echo "☆"; // empty
+    }
+}
+?>
+<span class="rating-text">(<?= $rating ?>/5)</span>
+</div>
 
                 <p class="feedback-text">
                     <?= $f['comment'] ?>
@@ -946,8 +1102,10 @@ if(!$result){
 
     </div>
 </div>
+
 <script>
-let fIndex = 0;   // 🔥 अलग variable
+let fIndex = 0;
+let autoSlideInterval;
 
 function showSlide(){
     let slider = document.querySelector(".feedback-container");
@@ -962,18 +1120,64 @@ function showSlide(){
     slider.style.transform = "translateX(" + (-fIndex * 100) + "%)";
 }
 
+/* NEXT */
 function nextSlide(){
     fIndex++;
     showSlide();
+    resetAutoSlide();
 }
 
+/* PREV */
 function prevSlide(){
     fIndex--;
     showSlide();
+    resetAutoSlide();
+}
+
+/* AUTO SLIDE */
+function startAutoSlide(){
+    autoSlideInterval = setInterval(() => {
+        fIndex++;
+        showSlide();
+    }, 3000); // 3 sec
+}
+
+/* RESET TIMER AFTER CLICK */
+function resetAutoSlide(){
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
 }
 
 /* INIT */
 showSlide();
+startAutoSlide();
+</script>
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+
+        if(entry.isIntersecting){
+
+            entry.target.classList.add("show");
+
+            const items = entry.target.querySelectorAll(".fade-item");
+
+            items.forEach((item, index) => {
+                setTimeout(() => {
+                    item.classList.add("show");
+                }, index * 120);
+            });
+
+        }
+
+    });
+}, {
+    threshold: 0.2
+});
+
+document.querySelectorAll(".fade-up").forEach(el => {
+    observer.observe(el);
+});
 </script>
 </body>
 <?php include("footer.php"); ?>
