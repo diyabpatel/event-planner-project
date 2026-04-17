@@ -52,6 +52,7 @@ align-items:center;
 text-align:center;
 }
 
+/* overlay */
 .hero::after{
 content:"";
 position:absolute;
@@ -60,6 +61,7 @@ height:100%;
 background:linear-gradient(rgba(124,58,237,0.2),rgba(0,0,0,0.3));
 }
 
+/* ===== FADE-UP HERO CONTENT ===== */
 .hero-content{
 position:relative;
 z-index:2;
@@ -67,10 +69,29 @@ font-size:55px;
 font-weight:700;
 color:white;
 text-shadow:0 6px 25px rgba(0,0,0,0.7);
+
+/* 🔥 fade up */
+opacity:0;
+transform:translateY(60px);
+animation:fadeUp 1s ease forwards;
+animation-delay:0.3s;
 }
 
+/* animation */
+@keyframes fadeUp{
+0%{
+opacity:0;
+transform:translateY(60px);
+}
+100%{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* BUTTON */
 .hero button{
-margin-top:25px;
+margin-top:20px;
 padding:15px 35px;
 border:none;
 border-radius:30px;
@@ -84,6 +105,7 @@ transition:0.4s;
 .hero button:hover{
 transform:translateY(-5px) scale(1.05);
 }
+
 
 /* ===== CONTAINER ===== */
 .container{
@@ -213,26 +235,60 @@ transform:translateY(-10px);
 box-shadow:0 20px 50px rgba(124,58,237,0.35);
 }
 
-/* ===== FEEDBACK ===== */
-.feedback-section{
-margin-top:100px;
-text-align:center;
+/* FEEDBACK */
+.feedback-wrapper{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+position:relative;
+height:260px;
 }
 
-.feedback-grid{
-margin-top:40px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:30px;
+.feedback-track{
+display:flex;
+align-items:center;
+transition:0.5s;
 }
 
 .feedback-card{
+min-width:280px;
+margin:0 15px;
+padding:20px;
+border-radius:15px;
 background:white;
-padding:25px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(124,58,237,0.15);
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+opacity:0.4;
+transform:scale(0.85);
+transition:0.5s;
 }
 
+.feedback-card.active{
+opacity:1;
+transform:scale(1.05);
+box-shadow:0 20px 50px rgba(124,58,237,0.3);
+}
+
+/* DOTS */
+.dots{
+margin-top:20px;
+text-align:center;
+}
+
+.dot{
+height:8px;
+width:8px;
+margin:5px;
+background:#ccc;
+border-radius:50%;
+display:inline-block;
+}
+
+.dot.active{
+background:#7c3aed;
+}
 /* ===== FOOTER ===== */
 footer{
 background:#2d1b69;
@@ -310,29 +366,26 @@ Freshers Party also helps students overcome hesitation, express their personalit
 </div>
 
 <!-- FEEDBACK -->
+
 <div class="feedback-section reveal">
 <h2>What Our Customers Say</h2>
-<div class="feedback-grid">
+
+<div class="feedback-wrapper">
+<div class="feedback-track">
 
 <?php
-if(isset($feedback_error)){
-echo "<p>$feedback_error</p>";
-}
-else if(mysqli_num_rows($feedback_query)>0){
 while($f=mysqli_fetch_assoc($feedback_query)){
-$stars = str_repeat("⭐",$f['rating']);
 echo "<div class='feedback-card'>
-<div>$stars</div>
+⭐ ".$f['rating']."
 <p>".$f['comment']."</p>
 <b>".$f['college_name']."</b>
 </div>";
 }
-}else{
-echo "<p>No feedback available yet.</p>";
-}
 ?>
 
 </div>
+</div>
+<div class="dots" id="dots"></div>
 </div>
 
 </div>
@@ -363,6 +416,44 @@ document.getElementById("modalImg").src = src;
 function closeImage(){
 document.getElementById("imgModal").style.display="none";
 }
+
+/* FEEDBACK SLIDER */
+let current = 0;
+const cards = document.querySelectorAll(".feedback-card");
+const track = document.querySelector(".feedback-track");
+const dotsContainer = document.getElementById("dots");
+
+cards.forEach((_,i)=>{
+let dot = document.createElement("span");
+dot.classList.add("dot");
+if(i===0) dot.classList.add("active");
+dotsContainer.appendChild(dot);
+});
+
+const dots = document.querySelectorAll(".dot");
+
+function updateCarousel(){
+
+cards.forEach(card => card.classList.remove("active"));
+dots.forEach(dot => dot.classList.remove("active"));
+
+cards[current].classList.add("active");
+dots[current].classList.add("active");
+
+const offset = current * 310;
+track.style.transform = `translateX(calc(50% - ${offset}px - 140px))`;
+}
+
+updateCarousel();
+
+setInterval(()=>{
+current++;
+if(current >= cards.length){
+current = 0;
+}
+updateCarousel();
+},2500);
+
 </script>
 
 </body>

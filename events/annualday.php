@@ -36,17 +36,16 @@ background:#f9f7ff;
 color:#2d1b69;
 }
 
-/* HERO */
 .hero{
-height:700px;
-background:url("../uploads/images/annual/annualday_bg03.jpg") center/cover no-repeat;
+height:750px; /* 800 ne 750 kar */
+background:url("../uploads/images/annual/annualday_bg03.jpg") center center/cover no-repeat;
+/* 👆 important: center center */
 display:flex;
 justify-content:center;
 align-items:center;
 text-align:center;
 position:relative;
 }
-
 .hero::after{
 content:"";
 position:absolute;
@@ -78,15 +77,23 @@ font-size:55px;
 font-weight:700;
 }
 
-/* BUTTON */
 .hero button{
 margin-top:20px;
-padding:12px 30px;
+padding:14px 35px;
 border:none;
-border-radius:30px;
+border-radius:50px;
 background:black;
 color:white;
+font-size:16px;
 cursor:pointer;
+transition:0.4s;
+position:relative;
+overflow:hidden;
+}
+
+.hero button:hover{
+transform:translateY(-4px) scale(1.05);
+box-shadow:0 15px 40px rgba(124,58,237,0.6);
 }
 
 /* CONTAINER */
@@ -136,22 +143,66 @@ grid-template-columns:repeat(3,1fr);
 gap:20px;
 }
 
+/* ===== ONE BY ONE ANIMATION ===== */
 .service-card{
 background:white;
 padding:10px;
 border-radius:15px;
 box-shadow:0 5px 15px rgba(0,0,0,0.1);
-transition:0.3s;
+
+opacity:0;
+transform:translateY(60px) scale(0.95);
+transition:all 0.6s ease;
 }
 
-.service-card:hover{transform:translateY(-8px);}
+.reveal.active .service-card{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+
+/* STAGGER DELAY */
+.service-card:nth-child(1){transition-delay:0.1s;}
+.service-card:nth-child(2){transition-delay:0.3s;}
+.service-card:nth-child(3){transition-delay:0.5s;}
+.service-card:nth-child(4){transition-delay:0.7s;}
+.service-card:nth-child(5){transition-delay:0.9s;}
+.service-card:nth-child(6){transition-delay:1.1s;}
+
+.service-card:hover{
+transform:translateY(-8px) scale(1.03);
+box-shadow:0 20px 40px rgba(124,58,237,0.25);
+}
 
 .service-card img{
 width:100%;
 aspect-ratio:1/1;
 object-fit:cover;
 border-radius:10px;
+transition:0.4s;
 }
+
+.service-card img:hover{
+transform:scale(1.06);
+}
+
+/* ===== GALLERY SAME EFFECT ===== */
+.gallery-card{
+opacity:0;
+transform:translateY(60px) scale(0.95);
+transition:all 0.6s ease;
+}
+
+.reveal.active .gallery-card{
+opacity:1;
+transform:translateY(0) scale(1);
+}
+
+.gallery-card:nth-child(1){transition-delay:0.1s;}
+.gallery-card:nth-child(2){transition-delay:0.3s;}
+.gallery-card:nth-child(3){transition-delay:0.5s;}
+.gallery-card:nth-child(4){transition-delay:0.7s;}
+.gallery-card:nth-child(5){transition-delay:0.9s;}
+.gallery-card:nth-child(6){transition-delay:1.1s;}
 
 /* FEEDBACK */
 .feedback-wrapper{
@@ -219,6 +270,7 @@ transition:0.8s;
 opacity:1;
 transform:translateY(0);
 }
+
 
 </style>
 

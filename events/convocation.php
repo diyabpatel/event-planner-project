@@ -64,26 +64,42 @@ rgba(0,0,0,0.25)
 );
 }
 
+/* FADE UP HERO */
 .hero-content{
 position:relative;
 z-index:2;
-font-size:55px;
-font-weight:700;
 color:white;
-text-shadow:0 6px 25px rgba(0,0,0,0.7);
+opacity:0;
+transform:translateY(60px);
+animation:fadeUp 1s ease forwards;
+animation-delay:0.3s;
+}
+
+@keyframes fadeUp{
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+#heroText{
+font-size:70px;
+font-weight:800;
+margin-bottom:10px; /* 🔥 gap control */
 }
 
 .hero button{
-margin-top:25px;
-padding:15px 35px;
+margin-top:10px; /* pehla 20px hatu */
+padding:14px 35px;
 border:none;
-border-radius:30px;
-background:linear-gradient(135deg,#000,#1f1f1f);
+border-radius:50px;
+background:black;
 color:white;
-font-size:18px;
+font-size:16px;
 cursor:pointer;
-box-shadow:0 10px 30px rgba(0,0,0,0.6);
 transition:0.4s;
+position:relative;
+overflow:hidden;
 }
 
 .hero button:hover{
@@ -214,24 +230,59 @@ transform:translateY(-10px);
 box-shadow:0 20px 50px rgba(124,58,237,0.35);
 }
 
-/* ===== FEEDBACK ===== */
-.feedback-section{
-margin-top:100px;
-text-align:center;
+/* FEEDBACK */
+.feedback-wrapper{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+position:relative;
+height:260px;
 }
 
-.feedback-grid{
-margin-top:40px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:30px;
+.feedback-track{
+display:flex;
+align-items:center;
+transition:0.5s;
 }
 
 .feedback-card{
+min-width:280px;
+margin:0 15px;
+padding:20px;
+border-radius:15px;
 background:white;
-padding:25px;
-border-radius:20px;
-box-shadow:0 10px 30px rgba(124,58,237,0.15);
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+opacity:0.4;
+transform:scale(0.85);
+transition:0.5s;
+}
+
+.feedback-card.active{
+opacity:1;
+transform:scale(1.05);
+box-shadow:0 20px 50px rgba(124,58,237,0.3);
+}
+
+/* DOTS */
+.dots{
+margin-top:20px;
+text-align:center;
+}
+
+.dot{
+height:8px;
+width:8px;
+margin:5px;
+background:#ccc;
+border-radius:50%;
+display:inline-block;
+}
+
+.dot.active{
+background:#7c3aed;
 }
 
 /* ===== FOOTER ===== */
@@ -250,10 +301,10 @@ text-align:center;
 
 <?php include("../navbar.php"); ?>
 
-<!-- HERO -->
 <div class="hero">
 <div class="hero-content">
-Convocation Ceremony
+<h1 id="heroText">Convocation Ceremony</h1>
+
 <br>
 <?php
 if(isset($_SESSION['user_id'])){
@@ -311,36 +362,28 @@ Convocation also provides students with a sense of fulfillment and motivation as
 </div>
 
 <!-- FEEDBACK -->
+
 <div class="feedback-section reveal">
 <h2>What Our Customers Say</h2>
-<div class="feedback-grid">
+
+<div class="feedback-wrapper">
+<div class="feedback-track">
 
 <?php
-if(isset($feedback_error)){
-echo "<p>$feedback_error</p>";
-}
-else if(mysqli_num_rows($feedback_query)>0){
 while($f=mysqli_fetch_assoc($feedback_query)){
-$stars = str_repeat("⭐",$f['rating']);
 echo "<div class='feedback-card'>
-<div>$stars</div>
+⭐ ".$f['rating']."
 <p>".$f['comment']."</p>
 <b>".$f['college_name']."</b>
 </div>";
-}
-}else{
-echo "<p>No feedback available yet.</p>";
 }
 ?>
 
 </div>
 </div>
-
+<div class="dots" id="dots"></div>
 </div>
-<!-- IMAGE MODAL -->
-<div id="imgModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);justify-content:center;align-items:center;">
-<span onclick="closeImage()" style="position:absolute;top:30px;right:40px;font-size:40px;color:white;cursor:pointer;">&times;</span>
-<img id="modalImg" style="max-width:90%;max-height:90%;border-radius:15px;">
+
 </div>
 
 <script>
@@ -363,6 +406,44 @@ document.getElementById("modalImg").src = src;
 function closeImage(){
 document.getElementById("imgModal").style.display="none";
 }
+
+/* FEEDBACK SLIDER */
+let current = 0;
+const cards = document.querySelectorAll(".feedback-card");
+const track = document.querySelector(".feedback-track");
+const dotsContainer = document.getElementById("dots");
+
+cards.forEach((_,i)=>{
+let dot = document.createElement("span");
+dot.classList.add("dot");
+if(i===0) dot.classList.add("active");
+dotsContainer.appendChild(dot);
+});
+
+const dots = document.querySelectorAll(".dot");
+
+function updateCarousel(){
+
+cards.forEach(card => card.classList.remove("active"));
+dots.forEach(dot => dot.classList.remove("active"));
+
+cards[current].classList.add("active");
+dots[current].classList.add("active");
+
+const offset = current * 310;
+track.style.transform = `translateX(calc(50% - ${offset}px - 140px))`;
+}
+
+updateCarousel();
+
+setInterval(()=>{
+current++;
+if(current >= cards.length){
+current = 0;
+}
+updateCarousel();
+},2500);
+
 </script>
 
 </body>
