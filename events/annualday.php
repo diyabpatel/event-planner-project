@@ -146,14 +146,15 @@ gap:20px;
 /* ===== ONE BY ONE ANIMATION ===== */
 .service-card{
 background:white;
-padding:10px;
-border-radius:15px;
-box-shadow:0 5px 15px rgba(0,0,0,0.1);
-
+padding:15px; /* reduced padding */
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 25px rgba(124,58,237,0.12);
+transition:0.4s;
 opacity:0;
-transform:translateY(60px) scale(0.95);
-transition:all 0.6s ease;
+transform:translateY(40px);
 }
+
 
 .reveal.active .service-card{
 opacity:1;
@@ -204,32 +205,16 @@ transform:translateY(0) scale(1);
 .gallery-card:nth-child(5){transition-delay:0.9s;}
 .gallery-card:nth-child(6){transition-delay:1.1s;}
 
-/* ===== FEEDBACK SQUARE PERFECT ===== */
-
-.feedback-wrapper{
-width:100%;
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
-position:relative;
-height:320px;
-}
-
-.feedback-track{
-display:flex;
-align-items:center;
-gap:25px;
-transition:transform 0.6s ease;
-}
-
-/* 🔥 SQUARE CARD */
+/* 🔥 RECTANGLE CARD (PERFECT LOOK) */
 .feedback-card{
-width:280px;
-height:280px;              /* 🔥 square */
+width:320px;
+height:220px;
 padding:20px;
 border-radius:20px;
-background:white;
+
+background:linear-gradient(135deg,#ffffff,#f3f0ff);
+border:1px solid rgba(124,58,237,0.1);
+
 text-align:center;
 box-shadow:0 10px 30px rgba(0,0,0,0.1);
 
@@ -242,19 +227,24 @@ transform:scale(0.9);
 transition:0.5s;
 }
 
-/* ACTIVE CENTER */
-.feedback-card.active{
-opacity:1;
-transform:scale(1.05);
-box-shadow:0 20px 50px rgba(124,58,237,0.3);
+
+.feedback-wrapper{
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+position:relative;
+height:260px;
 }
 
-/* ⭐ rating */
-.feedback-card{
-font-size:14px;
+.feedback-track{
+display:flex;
+align-items:center;
+gap:25px;
+transition:transform 0.6s ease;
 }
-
-/* 🔥 TEXT 3 LINE LIMIT */
+/* TEXT PERFECT FIT */
 .feedback-card p{
 display:-webkit-box;
 -webkit-line-clamp:3;
@@ -267,10 +257,11 @@ line-height:1.5;
 font-size:14px;
 }
 
-/* NAME */
-.feedback-card b{
-font-size:14px;
-color:#2d1b69;
+/* CENTER ACTIVE */
+.feedback-card.active{
+opacity:1;
+transform:scale(1.05);
+box-shadow:0 20px 50px rgba(124,58,237,0.3);
 }
 
 /* DOTS */
@@ -356,12 +347,12 @@ The event also includes prestigious award ceremonies that recognize academic exc
 <div class="reveal">
 <h2>Services</h2>
 <div class="service-grid">
-<div class="service-card"><img src="../uploads/images/annual/venue.PNG"></div>
-<div class="service-card"><img src="../uploads/images/annual/decoration.PNG"></div>
-<div class="service-card"><img src="../uploads/images/annual/catering.PNG"></div>
-<div class="service-card"><img src="../uploads/images/annual/photography.PNG"></div>
-<div class="service-card"><img src="../uploads/images/annual/videography.PNG"></div>
-<div class="service-card"><img src="../uploads/images/annual/sound.PNG"></div>
+<div class="service-card"><img src="../uploads/images/annual/venue.PNG" onclick="openImage(this.src)"><h3>Venue Setup</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/decoration.PNG" onclick="openImage(this.src)"><h3>Decoration</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/catering.PNG" onclick="openImage(this.src)"><h3>Catering</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/photography.PNG" onclick="openImage(this.src)"><h3>Photography</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/videography.PNG" onclick="openImage(this.src)"><h3>Videography</h3></div>
+<div class="service-card"><img src="../uploads/images/annual/sound.PNG" onclick="openImage(this.src)"><h3>Sound System</h3></div>
 </div>
 </div>
 
@@ -417,49 +408,70 @@ el.classList.add("active");
 
 /* FEEDBACK SLIDER */
 let current = 0;
+
 const cards = document.querySelectorAll(".feedback-card");
 const track = document.querySelector(".feedback-track");
 const dotsContainer = document.getElementById("dots");
 
-cards.forEach((_,i)=>{
-let dot = document.createElement("span");
-dot.classList.add("dot");
-if(i===0) dot.classList.add("active");
-dotsContainer.appendChild(dot);
+/* CREATE DOTS */
+cards.forEach((_, i) => {
+    let dot = document.createElement("span");
+    dot.classList.add("dot");
+
+    if (i === 0) dot.classList.add("active");
+
+    dot.addEventListener("click", () => {
+        current = i;
+        updateCarousel();
+    });
+
+    dotsContainer.appendChild(dot);
 });
 
 const dots = document.querySelectorAll(".dot");
 
-function updateCarousel(){
+/* UPDATE FUNCTION */
+function updateCarousel() {
 
-cards.forEach(card => card.classList.remove("active"));
-dots.forEach(dot => dot.classList.remove("active"));
+    cards.forEach(card => card.classList.remove("active"));
+    dots.forEach(dot => dot.classList.remove("active"));
 
-cards[current].classList.add("active");
-dots[current].classList.add("active");
+    cards[current].classList.add("active");
+    dots[current].classList.add("active");
 
-/* 🔥 PERFECT CENTER FIX */
-const cardWidth = cards[0].offsetWidth;
-const gap = 30;
-const wrapperWidth = document.querySelector(".feedback-wrapper").offsetWidth;
+    /* 🔥 PERFECT CENTER CALCULATION */
+    const cardWidth = cards[0].offsetWidth + 25; // width + gap
+    const wrapperWidth = document.querySelector(".feedback-wrapper").offsetWidth;
 
-/* 🔥 IMPORTANT FIX */
-const totalMove = current * (cardWidth + gap);
-const centerOffset = (wrapperWidth / 2) - (cardWidth / 2);
+    const offset = current * cardWidth;
+    const center = (wrapperWidth / 2) - (cardWidth / 2);
 
-/* 🔥 FINAL */
-track.style.transform = `translateX(${centerOffset - totalMove}px)`;
+    track.style.transform = `translateX(${center - offset}px)`;
 }
 
+/* INIT */
 updateCarousel();
 
-setInterval(()=>{
-current++;
-if(current >= cards.length){
-current = 0;
-}
-updateCarousel();
-},2500);
+/* AUTO SLIDE */
+let interval = setInterval(() => {
+    current = (current + 1) % cards.length;
+    updateCarousel();
+}, 250);
+
+/* 🔥 PAUSE ON HOVER (PREMIUM FEEL) */
+track.addEventListener("mouseenter", () => {
+    clearInterval(interval);
+});
+
+track.addEventListener("mouseleave", () => {
+    interval = setInterval(() => {
+        current = (current + 1) % cards.length;
+        updateCarousel();
+    }, 2500);
+});
+
+/* 🔥 RESPONSIVE FIX */
+window.addEventListener("resize", updateCarousel);
 
 </script>
 
