@@ -129,46 +129,95 @@ h2{
     -webkit-text-fill-color:transparent;
 }
 
-/* ================= PACKAGES ================= */
+/* ================= PREMIUM MINIMAL PACKAGES ================= */
+
+/* ===== CLEAN PROFESSIONAL PACKAGES ===== */
+
 .packages{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:25px;
+    grid-template-columns:repeat(3, 1fr);
+    gap:32px;
+    margin-top:50px;
 }
 
+/* CARD */
 .package{
-    padding:28px;
-    border-radius:20px;
-    background:linear-gradient(135deg,#ffffff,#faf9ff);
-    border:1px solid #eee;
-    text-align:center;
+    padding:36px;
+    border-radius:16px;
+    background:#ffffff;
+    border:1px solid #e5e7eb;
+
+    text-align:left;
     cursor:pointer;
     position:relative;
-    box-shadow:0 8px 20px rgba(124,58,237,0.08);
+
+    transition:all 0.25s ease;
 }
 
+/* HOVER (VERY SUBTLE) */
 .package:hover{
-    transform:translateY(-8px) scale(1.02);
-    box-shadow:0 20px 40px rgba(124,58,237,0.15);
+    border-color:#c4b5fd;
+    box-shadow:0 10px 25px rgba(0,0,0,0.06);
 }
 
-.package.active{
-    background:linear-gradient(135deg,var(--purple-main),var(--purple-light));
-    color:white;
-    box-shadow:0 15px 35px rgba(124,58,237,0.3);
+/* TITLE */
+.package h3{
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:10px;
+    color:#111827;
 }
 
-.package.active::after{
-    content:"✔";
+/* DESCRIPTION */
+.package .desc{
+    font-size:14px;
+    color:#6b7280;
+    line-height:1.6;
+    margin-bottom:20px;
+}
+
+/* FEATURES LIST */
+.package ul{
+    list-style:none;
+    padding:0;
+    margin:0 0 25px 0;
+}
+
+.package ul li{
+    font-size:14px;
+    color:#374151;
+    margin-bottom:8px;
+    padding-left:18px;
+    position:relative;
+}
+
+/* SMALL DOT BULLET */
+.package ul li::before{
+    content:"";
+    width:6px;
+    height:6px;
+    background:#7c3aed;
+    border-radius:50%;
     position:absolute;
-    top:12px;
-    right:15px;
-    background:white;
-    color:var(--purple-main);
-    padding:3px 7px;
-    border-radius:8px;
-    font-size:12px;
+    left:0;
+    top:8px;
 }
+
+/* FOOTER TEXT */
+.package .footer{
+    font-size:13px;
+    color:#7c3aed;
+    font-weight:500;
+}
+
+/* ACTIVE */
+.package.active{
+    border:2px solid #7c3aed;
+    box-shadow:0 12px 30px rgba(124,58,237,0.12);
+}
+
+/* ACTIVE INDICATOR (CLEAN LINE) */
+
 
 /* ================= FORM ================= */
 form{
@@ -369,7 +418,45 @@ button:hover{
 <?php while($row=mysqli_fetch_assoc($packages)){ ?>
 <div class="package <?= ($package_id==$row['package_id'])?'active':'' ?>"
 onclick="location='?event_id=<?= $event_id ?>&package_id=<?= $row['package_id'] ?>'">
-<?= $row['package_name'] ?>
+<h3><?= $row['package_name'] ?></h3>
+
+<p class="desc">
+<?php
+$name = strtolower($row['package_name']);
+
+if($name == "basic"){
+    echo "Essential setup for simple and budget-friendly events.";
+}
+elseif($name == "standard"){
+    echo "Enhanced experience with better comfort and styling.";
+}
+else{
+    echo "Complete event experience with premium arrangements and services.";
+}
+?>
+</p>
+
+<ul>
+<?php
+if($name == "basic"){
+    echo "<li>Basic decoration</li>
+          <li>Standard seating</li>
+          <li>Limited food options</li>";
+}
+elseif($name == "standard"){
+    echo "<li>Improved decoration</li>
+          <li>Comfort seating</li>
+          <li>Multiple food choices</li>";
+}
+else{
+    echo "<li>Luxury decoration</li>
+          <li>Premium seating</li>
+          <li>Full-course meals</li>";
+}
+?>
+</ul>
+
+<div class="footer">Select package</div>
 </div>
 <?php } ?>
 </div>

@@ -89,7 +89,7 @@ body{
 /* CONTENT */
 .content{
     margin-left:250px;
-    margin-top:90px;
+    margin-top:30px;
     padding:30px;
 }
 
@@ -160,9 +160,7 @@ body{
 
 <?php include("admin_sidebar.php"); ?>
 
-<div class="header">
-    <div class="header-title">Admin Dashboard</div>
-</div>
+
 
 <div class="content">
 
