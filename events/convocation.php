@@ -224,13 +224,13 @@ transition:0.4s;
 }
 
 
-
 .gallery-card:hover{
 transform:translateY(-10px);
 box-shadow:0 20px 50px rgba(124,58,237,0.35);
 }
 
-/* FEEDBACK */
+/* ===== FEEDBACK SQUARE PERFECT ===== */
+
 .feedback-wrapper{
 width:100%;
 display:flex;
@@ -238,32 +238,64 @@ justify-content:center;
 align-items:center;
 overflow:hidden;
 position:relative;
-height:260px;
+height:320px;
 }
 
 .feedback-track{
 display:flex;
 align-items:center;
-transition:0.5s;
+gap:25px;
+transition:transform 0.6s ease;
 }
 
+/* 🔥 SQUARE CARD */
 .feedback-card{
-min-width:280px;
-margin:0 15px;
+width:280px;
+height:280px;              /* 🔥 square */
 padding:20px;
-border-radius:15px;
+border-radius:20px;
 background:white;
 text-align:center;
 box-shadow:0 10px 30px rgba(0,0,0,0.1);
+
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+
 opacity:0.4;
-transform:scale(0.85);
+transform:scale(0.9);
 transition:0.5s;
 }
 
+/* ACTIVE CENTER */
 .feedback-card.active{
 opacity:1;
 transform:scale(1.05);
 box-shadow:0 20px 50px rgba(124,58,237,0.3);
+}
+
+/* ⭐ rating */
+.feedback-card{
+font-size:14px;
+}
+
+/* 🔥 TEXT 3 LINE LIMIT */
+.feedback-card p{
+display:-webkit-box;
+-webkit-line-clamp:3;
+-webkit-box-orient:vertical;
+
+overflow:hidden;
+text-overflow:ellipsis;
+
+line-height:1.5;
+font-size:14px;
+}
+
+/* NAME */
+.feedback-card b{
+font-size:14px;
+color:#2d1b69;
 }
 
 /* DOTS */
@@ -283,6 +315,7 @@ display:inline-block;
 
 .dot.active{
 background:#7c3aed;
+transform:scale(1.2);
 }
 
 /* ===== FOOTER ===== */
@@ -407,7 +440,6 @@ function closeImage(){
 document.getElementById("imgModal").style.display="none";
 }
 
-/* FEEDBACK SLIDER */
 let current = 0;
 const cards = document.querySelectorAll(".feedback-card");
 const track = document.querySelector(".feedback-track");
@@ -430,8 +462,17 @@ dots.forEach(dot => dot.classList.remove("active"));
 cards[current].classList.add("active");
 dots[current].classList.add("active");
 
-const offset = current * 310;
-track.style.transform = `translateX(calc(50% - ${offset}px - 140px))`;
+/* 🔥 PERFECT CENTER FIX */
+const cardWidth = cards[0].offsetWidth;
+const gap = 30;
+const wrapperWidth = document.querySelector(".feedback-wrapper").offsetWidth;
+
+/* 🔥 IMPORTANT FIX */
+const totalMove = current * (cardWidth + gap);
+const centerOffset = (wrapperWidth / 2) - (cardWidth / 2);
+
+/* 🔥 FINAL */
+track.style.transform = `translateX(${centerOffset - totalMove}px)`;
 }
 
 updateCarousel();
