@@ -45,7 +45,7 @@ scroll-behavior:smooth;
 .hero{
 position:relative;
 height:700px;
-background:url("../uploads/images/farewell/farewell_bg.jpg") center/cover no-repeat;
+background:url("../uploads/images/farewell/farewell_bg.png") center/cover no-repeat;
 display:flex;
 justify-content:center;
 align-items:center;

@@ -45,7 +45,7 @@ scroll-behavior:smooth;
 .hero{
 position:relative;
 height:700px;
-background:url("../uploads/images/sports day/sports_day_bg.jpg") center/cover no-repeat;
+background:url("../uploads/images/sports day/sports_day_bg.png") center/cover no-repeat;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -267,7 +267,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 
 <!-- ABOUT -->
 <div class="about reveal">
-<img src="../uploads/images/sports day/sports_day_about.png">
+<img src="../uploads/images/sports day/sport_day_about.png">
 <div>
 <h2>About Sports Day</h2>
 Sports Day is one of the most energetic and exciting events in any institution, celebrating fitness, teamwork, and the spirit of competition. It brings together students, faculty, and participants to engage in various sports activities and showcase their physical abilities. It serves as a platform to promote health, discipline, and sportsmanship.
@@ -286,7 +286,7 @@ Sports Day also encourages students to stay active, build confidence, and develo
 <div class="service-card"><img src="../uploads/images/sports day/venue.png" onclick="openImage(this.src)"><h3>Venue Setup</h3></div>
 <div class="service-card"><img src="../uploads/images/sports day/decoration.png" onclick="openImage(this.src)"><h3>Decoration</h3></div>
 <div class="service-card"><img src="../uploads/images/sports day/prize_distribution.png" onclick="openImage(this.src)"><h3>Prize Distribution</h3></div>
-<div class="service-card"><img src="../uploads/images/sports day/food_stalls.png" onclick="openImage(this.src)"><h3>Food Stalls</h3></div>
+<div class="service-card"><img src="../uploads/images/sports day/food_stall.png" onclick="openImage(this.src)"><h3>Food Stalls</h3></div>
 <div class="service-card"><img src="../uploads/images/sports day/photography.png" onclick="openImage(this.src)"><h3>Photography</h3></div>
 <div class="service-card"><img src="../uploads/images/sports day/videography.png" onclick="openImage(this.src)"><h3>Videography</h3></div>
 
