@@ -174,13 +174,3 @@
     </div>
 
 </footer>
-
-<!-- LEFT TEXT -->
-<div class="ev-vertical-text">eventhub@gmail.com</div>
-
-<!-- RIGHT SOCIAL -->
-<div class="ev-social-bar">
-    <div class="ev-linkedin"><i class="fab fa-linkedin-in"></i></div>
-    <div class="ev-snapchat"><i class="fab fa-snapchat-ghost"></i></div>
-    <div class="ev-instagram"><i class="fab fa-instagram"></i></div>
-</div>

@@ -19,6 +19,7 @@ LIMIT 6
 ?>
 
 <!DOCTYPE html>
+
 <html>
 <head>
 <meta charset="UTF-8">
@@ -45,6 +46,7 @@ align-items:center;
 text-align:center;
 position:relative;
 }
+
 .hero::after{
 content:"";
 position:absolute;
@@ -52,20 +54,29 @@ width:100%;
 height:100%;
 background:rgba(0,0,0,0.3);
 }
+
+/* FADE UP HERO */
 .hero-content{
 position:relative;
 z-index:2;
 color:white;
+opacity:0;
+transform:translateY(60px);
+animation:fadeUp 1s ease forwards;
+animation-delay:0.3s;
 }
+
+@keyframes fadeUp{
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
 #heroText{
 font-size:55px;
 font-weight:700;
 }
-#heroText::after{
-content:"|";
-animation:blink 1s infinite;
-}
-@keyframes blink{50%{opacity:0;}}
 
 /* BUTTON */
 .hero button{
@@ -89,13 +100,30 @@ background:white;
 padding:40px;
 border-radius:20px;
 box-shadow:0 10px 30px rgba(0,0,0,0.1);
-}
-.about img{width:500px;border-radius:20px;}
 
-/* TYPING */
+opacity:0;
+transform:translateY(80px);
+transition:1s;
+}
+
+.about.active{
+opacity:1;
+transform:translateY(0);
+}
+
+.about img{
+width:500px;
+border-radius:20px;
+transition:0.5s;
+}
+
+.about:hover img{
+transform:scale(1.05);
+}
+
+/* TEXT STYLE */
 #typingText{
 line-height:1.8;
-white-space:pre-line;
 background: linear-gradient(90deg,#7c3aed,#4f46e5,#9333ea);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
@@ -107,6 +135,7 @@ display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:20px;
 }
+
 .service-card{
 background:white;
 padding:10px;
@@ -114,7 +143,9 @@ border-radius:15px;
 box-shadow:0 5px 15px rgba(0,0,0,0.1);
 transition:0.3s;
 }
+
 .service-card:hover{transform:translateY(-8px);}
+
 .service-card img{
 width:100%;
 aspect-ratio:1/1;
@@ -124,56 +155,57 @@ border-radius:10px;
 
 /* FEEDBACK */
 .feedback-wrapper{
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:hidden;
-  position:relative;
-  height:260px;
+width:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+position:relative;
+height:260px;
 }
 
 .feedback-track{
-  display:flex;
-  align-items:center;
-  transition:0.5s;
+display:flex;
+align-items:center;
+transition:0.5s;
 }
 
 .feedback-card{
-  min-width:280px;
-  margin:0 15px;
-  padding:20px;
-  border-radius:15px;
-  background:white;
-  text-align:center;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-  opacity:0.4;
-  transform:scale(0.85);
-  transition:0.5s;
+min-width:280px;
+margin:0 15px;
+padding:20px;
+border-radius:15px;
+background:white;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.1);
+opacity:0.4;
+transform:scale(0.85);
+transition:0.5s;
 }
 
-/* CENTER ACTIVE */
 .feedback-card.active{
-  opacity:1;
-  transform:scale(1.05);
-  box-shadow:0 20px 50px rgba(124,58,237,0.3);
+opacity:1;
+transform:scale(1.05);
+box-shadow:0 20px 50px rgba(124,58,237,0.3);
 }
 
 /* DOTS */
 .dots{
-  margin-top:20px;
-  text-align:center;
+margin-top:20px;
+text-align:center;
 }
+
 .dot{
-  height:8px;
-  width:8px;
-  margin:5px;
-  background:#ccc;
-  border-radius:50%;
-  display:inline-block;
+height:8px;
+width:8px;
+margin:5px;
+background:#ccc;
+border-radius:50%;
+display:inline-block;
 }
+
 .dot.active{
-  background:#7c3aed;
+background:#7c3aed;
 }
 
 /* REVEAL */
@@ -182,12 +214,14 @@ opacity:0;
 transform:translateY(50px);
 transition:0.8s;
 }
+
 .reveal.active{
 opacity:1;
 transform:translateY(0);
 }
 
 </style>
+
 </head>
 
 <body>
@@ -195,34 +229,45 @@ transform:translateY(0);
 <?php include("../navbar.php"); ?>
 
 <!-- HERO -->
+
 <div class="hero">
 <div class="hero-content">
-<h1 id="heroText"></h1>
+<h1 id="heroText">Annual Day Event</h1>
 
 <?php
 if(isset($_SESSION['user_id'])){
 echo "<button onclick=\"location.href='../user/book_event.php?event_id=$event_id'\">Book Now</button>";
 }else{
-echo "<button onclick=\"location.href='../login.php'\">Login</button>";
+echo "<button onclick=\"location.href='../login.php'\">Login to Book</button>";
 }
 ?>
+
 </div>
 </div>
 
 <div class="container">
 
 <!-- ABOUT -->
+
 <div class="about reveal">
 <img src="../uploads/images/annual/annualday_about.png">
 <div>
 <h2>About Annual Day</h2>
-<p id="typingText"></p>
-</div>
-</div>
+<p id="typingText">
+Annual Day is one of the most anticipated and grand celebrations in any institution, bringing together students, faculty, and guests for a day filled with joy, creativity, and achievement. It is not just an event, but a reflection of the entire year’s hard work, dedication, and talent.
 
-<br>
+This special occasion provides a vibrant platform for students to showcase their skills through cultural performances such as dance, music, drama, and artistic presentations. Every performance tells a story, highlighting the passion and creativity of students.
+
+The event also includes prestigious award ceremonies that recognize academic excellence, extracurricular achievements, and outstanding contributions. It boosts confidence and motivates students to strive for greater success in the future.
+
+</p>
+</div>
+</div>
+<br><br>
+
 
 <!-- SERVICES -->
+
 <div class="reveal">
 <h2>Services</h2>
 <div class="service-grid">
@@ -236,6 +281,7 @@ echo "<button onclick=\"location.href='../login.php'\">Login</button>";
 </div>
 
 <!-- GALLERY -->
+
 <div class="reveal">
 <h2>Our Previous Works</h2>
 <div class="service-grid">
@@ -249,11 +295,12 @@ echo "<button onclick=\"location.href='../login.php'\">Login</button>";
 </div>
 
 <!-- FEEDBACK -->
+
 <div class="feedback-section reveal">
 <h2>What Our Customers Say</h2>
 
 <div class="feedback-wrapper">
-  <div class="feedback-track">
+<div class="feedback-track">
 
 <?php
 while($f=mysqli_fetch_assoc($feedback_query)){
@@ -274,38 +321,7 @@ echo "<div class='feedback-card'>
 
 <script>
 
-// HERO TYPING
-const heroText="Annual Day Event";
-let h=0;
-function heroType(){
-if(h<heroText.length){
-document.getElementById("heroText").innerHTML+=heroText[h];
-h++;
-setTimeout(heroType,80);
-}}
-window.onload=heroType;
-
-// ABOUT TYPING
-const text=`Annual Day is one of the most anticipated and grand celebrations in any institution, bringing together students, faculty, and guests for a day filled with joy, creativity, and achievement. It serves as a platform to showcase the talents, hard work, and accomplishments of students throughout the year.
-The event includes cultural dances, music, drama, and award ceremonies.
-It is a celebration of unity and creativity.`;
-
-let i=0,started=false;
-function type(){
-if(i<text.length){
-document.getElementById("typingText").innerHTML+=text[i];
-i++;
-setTimeout(type,20);
-}}
-window.addEventListener("scroll",()=>{
-let about=document.querySelector(".about");
-if(about.getBoundingClientRect().top<window.innerHeight-100 && !started){
-started=true;
-type();
-}
-});
-
-// SCROLL REVEAL
+/* SCROLL REVEAL */
 window.addEventListener("scroll",()=>{
 document.querySelectorAll(".reveal").forEach(el=>{
 if(el.getBoundingClientRect().top<window.innerHeight-100){
@@ -314,44 +330,41 @@ el.classList.add("active");
 });
 });
 
-// FEEDBACK SLIDER
+/* FEEDBACK SLIDER */
 let current = 0;
 const cards = document.querySelectorAll(".feedback-card");
 const track = document.querySelector(".feedback-track");
 const dotsContainer = document.getElementById("dots");
 
-// create dots
 cards.forEach((_,i)=>{
-  let dot = document.createElement("span");
-  dot.classList.add("dot");
-  if(i===0) dot.classList.add("active");
-  dotsContainer.appendChild(dot);
+let dot = document.createElement("span");
+dot.classList.add("dot");
+if(i===0) dot.classList.add("active");
+dotsContainer.appendChild(dot);
 });
 
 const dots = document.querySelectorAll(".dot");
 
 function updateCarousel(){
 
-  cards.forEach(card => card.classList.remove("active"));
-  dots.forEach(dot => dot.classList.remove("active"));
+cards.forEach(card => card.classList.remove("active"));
+dots.forEach(dot => dot.classList.remove("active"));
 
-  cards[current].classList.add("active");
-  dots[current].classList.add("active");
+cards[current].classList.add("active");
+dots[current].classList.add("active");
 
-  const offset = current * 310;
-  track.style.transform = `translateX(calc(50% - ${offset}px - 140px))`;
+const offset = current * 310;
+track.style.transform = `translateX(calc(50% - ${offset}px - 140px))`;
 }
 
-// first load
 updateCarousel();
 
-// auto slide
 setInterval(()=>{
-  current++;
-  if(current >= cards.length){
-    current = 0;
-  }
-  updateCarousel();
+current++;
+if(current >= cards.length){
+current = 0;
+}
+updateCarousel();
 },2500);
 
 </script>

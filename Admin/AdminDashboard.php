@@ -233,13 +233,6 @@ body{
     <canvas id="revenueChart"></canvas>
 </div>
 
-<!-- ACTIONS -->
-<div class="actions">
-    <a href="add_event.php">+ Add Event</a>
-    <a href="bookings.php">View Bookings</a>
-    <a href="payments.php">Payments</a>
-</div>
-
 </div>
 
 <!-- CHART JS -->
