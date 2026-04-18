@@ -456,7 +456,7 @@ updateCarousel();
 let interval = setInterval(() => {
     current = (current + 1) % cards.length;
     updateCarousel();
-}, 250);
+}, 2500);
 
 /* 🔥 PAUSE ON HOVER (PREMIUM FEEL) */
 track.addEventListener("mouseenter", () => {

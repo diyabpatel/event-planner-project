@@ -470,7 +470,7 @@ else{
 
 <div class="input">
 <label>Capacity</label>
-<input type="number" name="capacity" id="capacityInput" required>
+<input type="number" name="capacity" id="capacityInput" required min="1">
 <small id="capacityMsg" style="color:#f87171;"></small>
 </div>
 
@@ -713,8 +713,17 @@ const capacityMsg = document.getElementById("capacityMsg");
 capacityInput.addEventListener("input", function(){
 
     let max = limits[currentPackageName] || 200;
+    let value = parseInt(this.value);
 
-    if(this.value > max){
+    // ❌ Negative value check
+    if(value < 1){
+        capacityMsg.innerText = "Capacity must be at least 1";
+        this.value = 1;
+        return;
+    }
+
+    // ❌ Max limit check
+    if(value > max){
         capacityMsg.innerText = "Max capacity allowed: " + max;
         this.value = max;
     }else{
